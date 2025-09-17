@@ -1,0 +1,21 @@
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsps/
+      suffix: .jsp
+    static-path-pattern: /static/**
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+wx:
+  miniapp:
+    configs:
+      #微信小程序的appid
+      - appid: wxeba3463faae34128
+        #微信小程序的Secret
+        secret: 50d6f56c26c20c8621a2b437a6e3c626
+        #微信小程序消息服务器配置的token
+        token:
+        #微信小程序消息服务器配置的EncodingAESKey
+        aesKey:
+        msgDataFormat: JSON
