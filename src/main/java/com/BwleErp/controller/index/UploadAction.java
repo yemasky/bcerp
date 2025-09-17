@@ -10,14 +10,11 @@ import com.BwleErp.config.Category;
 import com.BwleErp.config.Config;
 import com.base.controller.AbstractAction;
 import com.base.model.dto.FileDTO;
-import com.base.model.vo.upload.ChatFile;
-import com.base.service.BwleErp.NewsService;
 import com.base.service.BwleErp.UploadService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
 import com.base.type.UseType;
 import com.base.util.EncryptUtiliy;
-import com.google.gson.Gson;
 
 import core.jdbc.mysql.WhereRelation;
 import core.util.FileUpload;
@@ -29,8 +26,6 @@ public class UploadAction extends AbstractAction {
 	private int member_id;
 	@Autowired
 	private UploadService uploadService;
-	@Autowired
-	private NewsService newsService;
 
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -148,13 +143,10 @@ public class UploadAction extends AbstractAction {
 			uploadService.saveUploadFileDb(fileList, Category.HouseForRent, _house_id, use_type, "", this.member_id);
 			if (_i != null && _i.equals("0")) {
 				String chat_file = request.getParameter("chat_file");
-				ChatFile chatFile = new Gson().fromJson(chat_file, ChatFile.class);
 				
 				HashMap<String, Object> updateData = new HashMap<>();
 				updateData.put("house_img_src", fileList.get(0).getFile_url());//
-				if(chatFile.getType().equals("img")) {
-					updateData.put("house_img_ext", "{\"h\":"+chatFile.getH()+",\"w\":"+chatFile.getW()+"}");
-				} 
+				
 				this.success.setItem("linked_id", linked_id);
 			}
 			fileList.get(0).setFile_datetime(null);
@@ -200,16 +192,12 @@ public class UploadAction extends AbstractAction {
 			uploadService.saveUploadFileDb(fileList, Category.News, _news_id, use_type, "", this.member_id);
 			if (_i != null && _i.equals("0")) {
 				String chat_file = request.getParameter("chat_file");
-				ChatFile chatFile = new Gson().fromJson(chat_file, ChatFile.class);
 				
 				HashMap<String, Object> updateData = new HashMap<>();
 				updateData.put("news_img_src", fileList.get(0).getFile_url());//
-				if(chatFile.getType().equals("img")) {
-					updateData.put("news_img_ext", "{\"h\":"+chatFile.getH()+",\"w\":"+chatFile.getW()+"}");
-				} 
+		
 				WhereRelation whereRelation = new WhereRelation();
 				whereRelation.setUpdate(updateData).EQ("news_id", _news_id).EQ("member_id", this.member_id);
-				newsService.update(whereRelation);
 				//(updateData, _news_id, this.member_id);
 				this.success.setItem("linked_id", linked_id);
 			}
@@ -234,13 +222,10 @@ public class UploadAction extends AbstractAction {
 			uploadService.saveUploadFileDb(fileList, Category.Riji, _riji_id, use_type, "", this.member_id);
 			if (_i != null && _i.equals("0")) {
 				String chat_file = request.getParameter("chat_file");
-				ChatFile chatFile = new Gson().fromJson(chat_file, ChatFile.class);
 				
 				HashMap<String, Object> updateData = new HashMap<>();
 				updateData.put("riji_img_src", fileList.get(0).getFile_url());//
-				if(chatFile.getType().equals("img")) {
-					updateData.put("riji_img_ext", "{\"h\":"+chatFile.getH()+",\"w\":"+chatFile.getW()+"}");
-				} 
+				
 				WhereRelation whereRelation = new WhereRelation();
 				whereRelation.setUpdate(updateData).EQ("riji_id", _riji_id).EQ("member_id", this.member_id);
 				//(updateData, _news_id, this.member_id);

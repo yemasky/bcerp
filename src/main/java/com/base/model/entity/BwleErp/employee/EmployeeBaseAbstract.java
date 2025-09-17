@@ -2,13 +2,14 @@ package com.base.model.entity.BwleErp.employee;
 
 import core.custom_interface.Column;
 
-public abstract class EmployeeAbstract {
+public abstract class EmployeeBaseAbstract {
 	@Column(name = "employee_name")
 	private String e_name;
 	@Column(name = "company_id")
-	private String com_id;
+	private Integer com_id;
 	private Integer mobile;
 	private String email;
+	private String id_card;
 	private String weixin;
 	private String add_datetime;
 	private String sex;
@@ -19,10 +20,10 @@ public abstract class EmployeeAbstract {
 	public void setE_name(String e_name) {
 		this.e_name = e_name;
 	}
-	public String getCom_id() {
+	public Integer getCom_id() {
 		return com_id;
 	}
-	public void setCom_id(String com_id) {
+	public void setCom_id(Integer com_id) {
 		this.com_id = com_id;
 	}
 	public Integer getMobile() {
@@ -36,6 +37,12 @@ public abstract class EmployeeAbstract {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getId_card() {
+		return id_card;
+	}
+	public void setId_card(String id_card) {
+		this.id_card = id_card;
 	}
 	public String getWeixin() {
 		return weixin;

@@ -4,15 +4,14 @@ import core.custom_interface.Column;
 import core.custom_interface.Table;
 
 @Table(name = "employee", isAnnotationField = true)
-public class Employee extends EmployeeAbstract {
+public class Employee extends EmployeeBaseAbstract {
 	@Column(name = "employee_id", update_ignore = true)
 	private Integer e_id;
 	private String password;
+	@Column(name = "password_salt", update_ignore = true)
 	private String password_salt;
-	private String id_card;
 	private String wx_openid;
 	private String wx_unionid;
-	private String default_channel_id;
 	private String dimission;
 	private String valid;
 	private String is_system;
@@ -34,12 +33,6 @@ public class Employee extends EmployeeAbstract {
 	public void setPassword_salt(String password_salt) {
 		this.password_salt = password_salt;
 	}
-	public String getId_card() {
-		return id_card;
-	}
-	public void setId_card(String id_card) {
-		this.id_card = id_card;
-	}
 	public String getWx_openid() {
 		return wx_openid;
 	}
@@ -51,12 +44,6 @@ public class Employee extends EmployeeAbstract {
 	}
 	public void setWx_unionid(String wx_unionid) {
 		this.wx_unionid = wx_unionid;
-	}
-	public String getDefault_channel_id() {
-		return default_channel_id;
-	}
-	public void setDefault_channel_id(String default_channel_id) {
-		this.default_channel_id = default_channel_id;
 	}
 	public String getDimission() {
 		return dimission;

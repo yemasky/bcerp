@@ -6,20 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-//import javax.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 //import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.base.model.dto.FileDTO;
-import com.base.model.vo.upload.ChatFile;
-import com.google.gson.Gson;
-
 import com.base.util.EncryptUtiliy;
 import com.base.util.ImagesUtil;
+
+//import javax.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class FileUpload {
 	public static FileUpload instance() {
@@ -59,8 +56,6 @@ public class FileUpload {
 		//if (servletContext.isMultipart(request)) {// 检查form中是否有enctype="multipart/form-data"
 		if(multipartResolver.isMultipart(request)) {
 			String chat_file = request.getParameter("chat_file");
-			ChatFile chatFile = null;
-			if(chat_file != null && !chat_file.equals("")) chatFile = new Gson().fromJson(chat_file, ChatFile.class);
 			// 将request变成多部分request
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			// 获取multiRequest 中所有的文件名
@@ -88,10 +83,7 @@ public class FileUpload {
 					fileDTO.setFile_url(urlPath + newName + suffix);
 					fileDTO.setFile_datetime(Utiliy.instance().getTodayDate());
 					//扩展信息
-					if(chatFile != null && chatFile.getType() != null) {
-						if(chatFile.getType().equals("img")) fileDTO.setFile_extend("{\"h\":"+chatFile.getH()+",\"w\":"+chatFile.getW()+"}");				
-						if(chatFile.getType().equals("voice")) fileDTO.setFile_extend(chatFile.getLength());
-					}
+					
 					fileDTOList.add(fileDTO);
 				}
 			}
