@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>liaoyou</groupId>
-	<artifactId>liaoyou.xyz</artifactId>
+	<groupId>BwleErp</groupId>
+	<artifactId>BwleErp.xyz</artifactId>
 	<version>1.0.0.0-SNAPSHOT</version>
 	<name>Boot Service Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -121,7 +121,7 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- servlet依赖. -->
-		<dependency>
+		<!--<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
@@ -131,7 +131,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
-		</dependency>
+		</dependency>-->
 		<!-- tomcat的支持. -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
