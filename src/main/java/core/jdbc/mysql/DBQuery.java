@@ -724,7 +724,7 @@ public abstract class DBQuery {
 		return result;
 	}
 
-	// 根据ResultSet 取得列表值
+	// 根据ResultSet 取得列表值 never null
 	private ResultSet executeForQuery(PreparedStatement preparedStatement, Object... paramters) throws SQLException {
 		if (paramters != null && paramters.length > 0) {
 			MDC.put("APP_NAME", "mysql_info");
@@ -747,8 +747,11 @@ public abstract class DBQuery {
 		HashMap<String, Field> fieldHashMap = entityParseMap.get(entityClassT).getDbFieldHashMap();
 		//HashMap<String,String> annotationFileIdMap = entityParseMap.get(this.table_name).getAnnotationFileIdMap();
 		HashMap<String,String> selectIgnoreMap = entityParseMap.get(entityClassT).getSelectIgnoreMap();
-
+		/*去掉注释则默认值返回 null
+		list = null; 
+		if(rs.isBeforeFirst()) list = new ArrayList<T>();*/
 		while (rs.next()) {// 对每一行记录进行操作
+			//if(list == null) list = new ArrayList<T>();
 			T objClass = entityClassT.getDeclaredConstructor().newInstance();// 构造Entity实体，每一个rs对应一个entity对象存储数据
 			for (int j = 1; j <= columnCount; j++) {// 将每一个字段取出进行赋值
 				String columnName = rsm.getColumnName(j).toLowerCase();
@@ -791,11 +794,16 @@ public abstract class DBQuery {
 	// 根据ResultSet 取得列表值
 	private List<HashMap<String, Object>> resultSetToListMap(ResultSet rs, Class<?> table_clazz, boolean isSelectShow) throws SQLException {
 		List<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+		/*此处是返回值是 null
+		 List<HashMap<String, Object>> list = null;
+		 if(rs.isBeforeFirst()) list = new ArrayList<HashMap<String, Object>>();
+		 */
 		HashMap<String,String> annotationFileIdMap = entityParseMap.get(table_clazz).getAnnotationFileIdMap();
 		HashMap<String,String> selectIgnoreMap = entityParseMap.get(table_clazz).getSelectIgnoreMap();
 		ResultSetMetaData md = rs.getMetaData();
 		int columnCount = md.getColumnCount();
 		while (rs.next()) {
+			//if(list == null) list = new ArrayList<HashMap<String, Object>>();
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			for (int i = 1; i <= columnCount; i++) {
 				String columnName = md.getColumnLabel(i);

@@ -59,7 +59,7 @@ public class BwleErpController extends AbstractController {
 		model.addAttribute("__WEB", "/erp/");
 		model.addAttribute("__RESOURCE", "/static/");
 		model.addAttribute("__VERSION", "1.0.0");
-		model.addAttribute("__TITLE", "ERP 版本 1.0.0");
+		model.addAttribute("__TITLE", "博威利尔.ERP v1.0.0");
 		model.addAttribute("thisDateTime", Utiliy.instance().getTodayDate());
 		model.addAttribute("noLogin", "1");
 		return "BwleErp/default";

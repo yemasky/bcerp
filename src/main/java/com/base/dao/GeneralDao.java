@@ -14,7 +14,6 @@ import com.base.util.EncryptUtiliy;
 
 public class GeneralDao extends BaseDao {
 	private DBQueryDao dBQueryDao;
-	private Class<?> tableClass;
 
 	public GeneralDao(String jdbcDsn) throws SQLException {
 		super(jdbcDsn);
@@ -22,25 +21,14 @@ public class GeneralDao extends BaseDao {
 		dBQueryDao = new DBQueryDao(jdbcDsn);
 	}
 
-	public GeneralDao setTableClass(Class<?> tableClass) {
-		this.tableClass = tableClass;
-		return this;
-	}
-
-	public Object getEntity(String field, int _id) throws SQLException {
+	public Object getEntity(String field, int _id, Class<?> tableClass) throws SQLException {
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.EQ(field, _id);
-		return dBQueryDao.setDsn(this.jdbcDsn).getEntity(this.tableClass, whereRelation);
-	}
-	
-	public Object getEntity(String field, String _id) throws SQLException {
-		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.EQ(field, _id);
-		return dBQueryDao.setDsn(this.jdbcDsn).getEntity(this.tableClass, whereRelation);
+		return dBQueryDao.setDsn(this.jdbcDsn).getEntity(tableClass, whereRelation);
 	}
 	
 	public Object getEntity(WhereRelation whereRelation) throws SQLException {
-		return dBQueryDao.setDsn(this.jdbcDsn).getEntity(this.tableClass, whereRelation);
+		return dBQueryDao.setDsn(this.jdbcDsn).getEntity(whereRelation.getTable_clazz(), whereRelation);
 	}
 
 	public Object getEntityByObject(Object object) throws SQLException {
@@ -48,18 +36,18 @@ public class GeneralDao extends BaseDao {
 	}
 
 	public int getCount(WhereRelation whereRelation) throws Exception {
-		return dBQueryDao.setDsn(this.jdbcDsn).table(this.tableClass).getCount(whereRelation);
+		return dBQueryDao.setDsn(this.jdbcDsn).table(whereRelation.getTable_clazz()).getCount(whereRelation);
 	}
 	
 	public HashMap<String, Object> getRow(WhereRelation whereRelation, String fieId) throws SQLException {
-		List<HashMap<String, Object>> listRes = dBQueryDao.setDsn(this.jdbcDsn).table(this.tableClass).getList(whereRelation);
+		List<HashMap<String, Object>> listRes = dBQueryDao.setDsn(this.jdbcDsn).table(whereRelation.getTable_clazz()).getList(whereRelation);
 		if (listRes != null && !listRes.isEmpty())
 			return listRes.get(0);
 		return null;
 	}
 
 	public List<HashMap<String, Object>> getList(WhereRelation whereRelation,NeedEncrypt needEncrypt) throws SQLException {
-		List<HashMap<String, Object>> objectList = dBQueryDao.setDsn(this.jdbcDsn).table(this.tableClass).getList(whereRelation);
+		List<HashMap<String, Object>> objectList = dBQueryDao.setDsn(this.jdbcDsn).table(whereRelation.getTable_clazz()).getList(whereRelation);
 		return this.needEncrypt(objectList, needEncrypt);
 	}
 	//fieId 数据库的fieId
@@ -116,19 +104,19 @@ public class GeneralDao extends BaseDao {
 	public <T> List<T> getEntityList(String field, int[] _ids) throws SQLException {
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.IN(field, _ids);
-		return (List<T>) dBQueryDao.setDsn(this.jdbcDsn).getEntityList(this.tableClass, whereRelation);
+		return (List<T>) dBQueryDao.setDsn(this.jdbcDsn).getEntityList(whereRelation.getTable_clazz(), whereRelation);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getEntityList(String field, List<Integer> _ids) throws SQLException {
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.IN(field, _ids);
-		return (List<T>) dBQueryDao.setDsn(this.jdbcDsn).getEntityList(this.tableClass, whereRelation);
+		return (List<T>) dBQueryDao.setDsn(this.jdbcDsn).getEntityList(whereRelation.getTable_clazz(), whereRelation);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getEntityList(WhereRelation whereRelation) throws SQLException {
-		return (List<T>) dBQueryDao.table(this.tableClass).getEntityList(this.tableClass, whereRelation);
+		return (List<T>) dBQueryDao.table(whereRelation.getTable_clazz()).getEntityList(whereRelation.getTable_clazz(), whereRelation);
 	}
 
 	
@@ -136,7 +124,7 @@ public class GeneralDao extends BaseDao {
 		String field = whereRelation.getField();
 		whereRelation.emptyField();
 		Class<? extends Object> _tableClass = whereRelation.getTable_clazz();
-		_tableClass = this.tableClass == null ? _tableClass : this.tableClass;
+		_tableClass = whereRelation.getTable_clazz() == null ? _tableClass : whereRelation.getTable_clazz();
 		int allRows = dBQueryDao.table(_tableClass).getCount(whereRelation);
 		Double allPage = Math.ceil((float) allRows / (float) pageVo.getPerPage());
 		int page = pageVo.getCurrentPage();
@@ -151,7 +139,7 @@ public class GeneralDao extends BaseDao {
 		whereRelation.LIMIT((page - 1) * pageVo.getPerPage(), pageVo.getPerPage());
 		whereRelation.emptyField().setField(field);
 		@SuppressWarnings("unchecked")
-		List<T> objectList = (List<T>) dBQueryDao.getEntityList(this.tableClass, whereRelation);
+		List<T> objectList = (List<T>) dBQueryDao.getEntityList(whereRelation.getTable_clazz(), whereRelation);
 		pageVo.setPageList(objectList);
 		return pageVo;
 	}
@@ -160,7 +148,7 @@ public class GeneralDao extends BaseDao {
 			throws Exception {
 		String field = whereRelation.getField();
 		whereRelation.emptyField();
-		int allRows = dBQueryDao.table(this.tableClass).getCount(whereRelation);
+		int allRows = dBQueryDao.table(whereRelation.getTable_clazz()).getCount(whereRelation);
 		Double allPage = Math.ceil((float) allRows / (float) pageVo.getPerPage());
 		int page = pageVo.getCurrentPage();
 		//System.out.println("page3=======>"+page);
@@ -173,7 +161,7 @@ public class GeneralDao extends BaseDao {
 		pageVo.setAllNum(allRows);
 		whereRelation.LIMIT((page - 1) * pageVo.getPerPage(), pageVo.getPerPage());
 		whereRelation.emptyField().setField(field);
-		List<HashMap<String, Object>> objectList = dBQueryDao.getListByEntity(this.tableClass, whereRelation);
+		List<HashMap<String, Object>> objectList = dBQueryDao.getListByEntity(whereRelation.getTable_clazz(), whereRelation);
 		objectList = this.needEncrypt(objectList, needEncrypt);
 		pageVo.setPageList(objectList);
 		return pageVo;
@@ -198,11 +186,11 @@ public class GeneralDao extends BaseDao {
 	}
 	
 	public int increase(WhereRelation whereRelation) throws SQLException {
-		return dBQueryDao.table(this.tableClass).increase(whereRelation);
+		return dBQueryDao.table(whereRelation.getTable_clazz()).increase(whereRelation);
 	}
 
 	public int update(WhereRelation whereRelation) throws SQLException {
-		return dBQueryDao.table(this.tableClass).update(whereRelation);
+		return dBQueryDao.table(whereRelation.getTable_clazz()).update(whereRelation);
 	}
 
 	public int updateEntity(Object object, WhereRelation whereRelation) throws Exception {

@@ -53,7 +53,7 @@ public class GeneralServiceImpl  implements GeneralService{
 		conditionMap.put("member_id", member_id);*/
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setField(field).EQ("member_id", member_id).EQ(increase_key,increase_key_id);
-		return genernalDao.setTableClass(clazz).increase(whereRelation);//(field, conditionMap);
+		return genernalDao.increase(whereRelation);//(field, conditionMap);
 	}
 
 	@Override

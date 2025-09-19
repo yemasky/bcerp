@@ -54,7 +54,7 @@ public class UploadServiceImpl implements UploadService {
 	@Override
 	public List<HashMap<String, Object>> getList(Object object, String fieId) throws SQLException {
 		// TODO Auto-generated method stub
-		return genernalDao.setTableClass(UploadFile.class).getList(object, fieId, null);
+		return genernalDao.getList(object, fieId, null);
 	}
 
 	@Override
@@ -82,24 +82,24 @@ public class UploadServiceImpl implements UploadService {
 				if(privacy != null && privacy.equals("private")) uploadFile.setFile_valid(2);
 				uploadFilesList.add(uploadFile);
 			}
-			genernalDao.setTableClass(UploadFile.class).batchSave(uploadFilesList);
+			genernalDao.batchSave(uploadFilesList);
 		}
 	}
 	
 	@Override
 	public int batchSaveUploadFile(List<UploadFile> uploadFileList) throws Exception {
 		// TODO Auto-generated method stub
-		 return genernalDao.setTableClass(UploadFile.class).batchSave(uploadFileList);
+		 return genernalDao.batchSave(uploadFileList);
 	}
 	
 	@Override
 	public List<UploadFile> getUpload(WhereRelation whereRelation) throws Exception {
-		return genernalDao.setTableClass(UploadFile.class).getEntityList(whereRelation);
+		return genernalDao.getEntityList(whereRelation);
 	}
 	
 	@Override
 	public List<UploadFileVo> getUploadVo(WhereRelation whereRelation) throws Exception {
-		return genernalDao.setTableClass(UploadFileVo.class).getEntityList(whereRelation);
+		return genernalDao.getEntityList(whereRelation);
 	}
 	@Override
 	public int deleteFile(WhereRelation whereRelation) throws Exception {
@@ -111,7 +111,7 @@ public class UploadServiceImpl implements UploadService {
 	@Override
 	public <T> List<T> getEntityList(WhereRelation whereRelation) throws SQLException {
 		// TODO Auto-generated method stub
-		return genernalDao.setTableClass(whereRelation.getTable_clazz()).getEntityList(whereRelation);
+		return genernalDao.getEntityList(whereRelation);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class UploadServiceImpl implements UploadService {
 	@Override
 	public List<HashMap<String, Object>> getList(WhereRelation whereRelation, NeedEncrypt needEncrypt) throws SQLException {
 		// TODO Auto-generated method stub
-		return genernalDao.setTableClass(UploadFile.class).getList(whereRelation, needEncrypt);
+		return genernalDao.getList(whereRelation, needEncrypt);
 	}
 
 

@@ -12,9 +12,8 @@ public class Employee extends EmployeeBaseAbstract {
 	private String password_salt;
 	private String wx_openid;
 	private String wx_unionid;
-	private String dimission;
-	private String valid;
-	private String is_system;
+	private Integer valid;
+	private Integer is_system;
 	public Integer getE_id() {
 		return e_id;
 	}
@@ -45,22 +44,16 @@ public class Employee extends EmployeeBaseAbstract {
 	public void setWx_unionid(String wx_unionid) {
 		this.wx_unionid = wx_unionid;
 	}
-	public String getDimission() {
-		return dimission;
-	}
-	public void setDimission(String dimission) {
-		this.dimission = dimission;
-	}
-	public String getValid() {
+	public Integer getValid() {
 		return valid;
 	}
-	public void setValid(String valid) {
+	public void setValid(Integer valid) {
 		this.valid = valid;
 	}
-	public String getIs_system() {
+	public Integer getIs_system() {
 		return is_system;
 	}
-	public void setIs_system(String is_system) {
+	public void setIs_system(Integer is_system) {
 		this.is_system = is_system;
 	}
 	

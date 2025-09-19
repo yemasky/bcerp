@@ -3,7 +3,7 @@ package com.BwleErp.config;
 import core.util.ReadProperties;
 
 public class Config {
-	public static String erpDSN = "zhizuDSN";
+	public static String erpDSN = "erpDSN";
 	public static String imagesDomain = "";
 	public static String defaultHouseImages = ReadProperties.instance().read("defaultHouseImages");
 	public static String uploadPath = ReadProperties.instance().read("xiaoquUploadPath");

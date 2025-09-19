@@ -64,9 +64,10 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
     }), $translateProvider.preferredLanguage("en"), $translateProvider.useLocalStorage(),$translateProvider.useSanitizeValueStrategy('sanitize');
 }]).factory("$httpFactory", function($http, $modal, $translate, $alert, cfpLoadingBar) {
     var factory = {};
+	let header = $http.defaults.headers.common;
     factory.post = function($url, $scope, callBack) {//,'Content-Type': 'application/json'
         //$http.defaults.headers.common.ajaxrequest = true;
-        $http.post($url, $scope.param, {timeout : 5000}).then(function(response) {
+        $http.post($url, $scope.param, {timeout : 5000,headers:{header}}).then(function(response) {
 			if(response.data.success == 0) {
                 var message = $translate.instant("error.code."+response.data.code);
 				if(response.data.message != "") message = message + ' "' + response.data.message+'"';
@@ -98,7 +99,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
     }
 	factory.get = function($url, $scope, callBack) {//,'Content-Type': 'application/json'
         //$http.defaults.headers.common.ajaxrequest = true;
-        $http.get($url, $scope.param, {timeout : 5000}).then(function(response) {
+        $http.get($url, $scope.param, {timeout : 5000, headers:{header}}).then(function(response) {
 			if(response.data.success == 0) {
 				var message = $scope.getErrorByCode(response.data.code);
 				$modal({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -245,7 +246,7 @@ angular.module("app").directive("uiFullscreen", ["$ocLazyLoad", "$document", fun
     return {
         restrict: "AC",
         link: function(c, d, e) {
-            d.addClass("hide"), a.load("resource/vendor/libs/screenfull.min.js").then(function() {
+            d.addClass("hide"), a.load("${__RESOURCE}vendor/libs/screenfull.min.js").then(function() {
                 screenfull.enabled && d.removeClass("hide"), d.bind("click", function() {
                     var a;
                     e.target && (a = angular.element(e.target)[0]), screenfull.toggle(a)
@@ -304,8 +305,9 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state("app.home", {
         url: "/home",
 		templateUrl: function() {
-			return randomUrl('${home_channel}');
+			//return randomUrl('${home_channel}');
 			//return "${__WEB}app.do?channel=${home_channel}";
+			return '${__RESOURCE}views/home.html?${__VERSION}';
 		},
         controller: function ($scope) {
         }
@@ -530,6 +532,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			return $translate.instant("error.code."+$errorCode);
 		};
 		$scope.setChannelMenu = function($module_channel) {
+			console.log($rootScope.employeeMenu, $module_channel);
 			$scope.setMenu($rootScope.employeeMenu, $module_channel);
             $location.path('/app/home');
 		};
@@ -552,8 +555,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             return $scope.hashEmployeeModule[module_id];
         }
         $rootScope.defaultChannel = {};
-        $rootScope.business_day = $scope.business_day = '';
+        $rootScope.employeeMenu = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
+			console.log($rootScope);
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
 					$rootScope.employeeMenu = common.employeeMenu;
@@ -577,9 +581,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
 					$scope.setActionNavName(common._self_module['module_id']);
-				}
-                if(angular.isDefined(common.business_day)) $rootScope.business_day = $scope.business_day = common.business_day;
-				
+				}				
 			}
 		};
         $scope.getBusinessDay = function(format) {
@@ -744,11 +746,12 @@ app.controller("LoginController",function($rootScope, $scope, $httpService, $mod
                 $location.path('/app/home');
 				//$rootScope.employeeMenu = result.data.item.loginEmployee.employeeMenu;//$scope.module_channel = result.data.item.module_channel;
 				//$rootScope.employeeInfo = result.data.item.loginEmployee.employeeInfo;
-				var employeeChannel = result.data.item.loginEmployee.employeeChannel;
-				for(var i in employeeChannel) {if(employeeChannel[i].default == 1) {$httpService.header('default', employeeChannel[i].id);break;}}
+				//var employeeChannel = result.data.item.loginEmployee.employeeChannel;
+				//for(var i in employeeChannel) {if(employeeChannel[i].default == 1) {$httpService.header('default', employeeChannel[i].id);break;}}
 				//$rootScope.employeeChannel = employeeChannel;
                 //$scope.setMenu($rootScope.employeeMenu, result.data.item.module_channel);
-				$scope.setCommonSetting(result.data.item.loginEmployee);
+				$scope.setCommonSetting(result.data.item);
+				$httpService.header('_m', result.data.item.employee.e_id);
             } else {
 			    var message = $scope.reconvertChinese($translate.instant("error.code."+result.data.code));
                 $scope.param.password = password;
