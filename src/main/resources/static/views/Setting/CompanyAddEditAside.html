@@ -1,0 +1,26 @@
+<div class="aside box-shadow h-9x col-sm-12 b-r box-shadow no-padding" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+      <div class="aside-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title" ng-bind-html="action"></h4>
+      </div>
+      <form name="thisForm" class="form-validation" id="thisForm" ng-submit="saveSectorPositionData()">
+      <input type="hidden" name="item_type" value="item">
+      <div class="aside-body p-md h-8x scrollable">
+		  <div>
+		  	<div class="form-group">
+				<label>名称</label>
+				<input class="form-control w" name="sector_name" value="" ng-model="param.sector_name" required>
+			</div>
+		  </div>
+      </div>
+      <div class="aside-footer panel-footer">
+      	<input type="hidden" name="sector_id" value="" ng-model="param.sector_id" >
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

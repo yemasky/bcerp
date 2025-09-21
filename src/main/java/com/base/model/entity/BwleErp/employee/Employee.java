@@ -7,6 +7,8 @@ import core.custom_interface.Table;
 public class Employee extends EmployeeBaseAbstract {
 	@Column(name = "employee_id", update_ignore = true)
 	private Integer e_id;
+	private Long mobile;
+	private String email;
 	private String password;
 	@Column(name = "password_salt", update_ignore = true)
 	private String password_salt;
@@ -19,6 +21,18 @@ public class Employee extends EmployeeBaseAbstract {
 	}
 	public void setE_id(Integer e_id) {
 		this.e_id = e_id;
+	}
+	public Long getMobile() {
+		return mobile;
+	}
+	public void setMobile(Long mobile) {
+		this.mobile = mobile;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getPassword() {
 		return password;

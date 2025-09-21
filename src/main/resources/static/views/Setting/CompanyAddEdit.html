@@ -1,0 +1,39 @@
+<div class="p-h-md p-xs bg-white box-shadow pos-rlt"><i class="fa fa-building-o"> </i> 
+	<span class="no-margin" ng-bind-html="action_nav"></span> 
+</div>
+<div class="p-md" ng-controller="CompanyAddEditController">
+  <div class="row">
+    <div class="col-sm-6">
+      <form name="form-contact" class="form-validation">
+        <div class="panel panel-default">
+          <div class="panel-heading bg-white">
+            <span class="font-bold">Contact</span>
+          </div>
+          <div class="panel-body">                   
+            <div class="form-group m-h-n clearfix">
+              <div class="col-sm-6">
+                <label>Your name</label>
+                <input type="text" class="form-control" placeholder="Name" ng-model="contact.name" required >
+              </div>
+              <div class="col-sm-6">
+                <label>Email</label>
+                <input type="email" class="form-control" placeholder="Enter email" ng-model="contact.email" required >
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Your website</label>
+              <input type="url" class="form-control" placeholder="http://" ng-model="contact.url" required>
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea class="form-control" rows="6" placeholder="Type your message"></textarea>
+            </div>
+          </div>
+          <footer class="panel-footer text-right">
+            <button type="submit" class="btn btn-info">Submit</button>
+          </footer>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

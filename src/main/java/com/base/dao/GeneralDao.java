@@ -84,7 +84,15 @@ public class GeneralDao extends BaseDao {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+							} else if(mapValue.containsKey(val)) {//把key的value加密后放到val
+								String type = EncryptUtiliy.instance().getType(value);
+								if (type.equals("Integer")) {
+									String encryptId = EncryptUtiliy.instance().intIDEncrypt((int) value);
+									mapValue.put(val, encryptId);
+								}
 							}
+							System.out.println("encryptId===>"+val);
+
 						}
 					}
 				}

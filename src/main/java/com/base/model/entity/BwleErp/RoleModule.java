@@ -2,10 +2,11 @@ package com.base.model.entity.BwleErp;
 
 import core.custom_interface.Table;
 
-@Table(name = "employee_sector", isAnnotationField = false)
+@Table(name = "role_module", isAnnotationField = false)
 public class RoleModule {
 	private Integer role_id;
 	private Integer module_id;
+	private Integer access ;
 	public Integer getRole_id() {
 		return role_id;
 	}
@@ -17,5 +18,11 @@ public class RoleModule {
 	}
 	public void setModule_id(Integer module_id) {
 		this.module_id = module_id;
+	}
+	public Integer getAccess() {
+		return access;
+	}
+	public void setAccess(Integer access) {
+		this.access = access;
 	}
 }

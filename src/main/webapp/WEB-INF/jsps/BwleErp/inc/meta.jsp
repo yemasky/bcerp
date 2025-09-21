@@ -128,7 +128,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	factory.deleteHeader = function($key) {
 		if(typeof($http.defaults.headers.common[$key]) != 'undefined') delete $http.defaults.headers.common[$key];
 	}
-	if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];//删除刷新
+	//if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];//删除刷新
     return factory;
 });
 app.service("$httpService", function($httpFactory){
@@ -267,10 +267,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 	} else {
 		var current_path = $location.path();
 		current_path = current_path == '' || current_path == '/login' ? '/app/home' : current_path;
-		$httpService.header('refresh', '1');
 		$location.path(current_path);//'/app/home'
-		//$httpProvider.defaults.headers.common = {'refresh' : '0'};
-	//<th:/if>
 	}
 	//
 }]).config(function($controllerProvider, $compileProvider,$filterProvider,$provide){        
@@ -305,88 +302,27 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state("app.home", {
         url: "/home",
 		templateUrl: function() {
-			//return randomUrl('${home_channel}');
-			//return "${__WEB}app.do?channel=${home_channel}";
 			return '${__RESOURCE}views/home.html?${__VERSION}';
 		},
         controller: function ($scope) {
         }
-    }).state('app.Booking', {
-        url: "/booking/:view/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams, $rootScope, $scope, $ocLazyLoad) {
-			return 'resource/views/Booking/'+$routeParams.view+'.html?${__VERSION}';
-        },
-		controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
-		resolve: {
-            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
-                return $ocLazyLoad.load(["resource/vendor/modules/angular-ui-select/select.min.css",
-                                         "resource/vendor/modules/angular-ui-select/select.min.js",
-                      					 "resource/scripts/controllers/Booking/"+$stateParams.view+".js?${__VERSION}",
-										 "resource/styles/booking.css?${__VERSION}"]);
-            }]
-        },
-        data: {pageTitle: '预订'}
-    }).state('app.Management', {
-        url: "/Management/:view/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams) {
-            return 'resource/views/Management/'+$routeParams.view+'.html?${__VERSION}';
-        },
-		controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
-		resolve: {
-            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
-                if($stateParams.view == 'SectorPosition' || $stateParams.view == 'Employee') {
-					return $ocLazyLoad.load(["resource/scripts/controllers/Management/SectorPosition.js?${__VERSION}"]);
-				}
-            }]
-        }
     }).state('app.Setting', {
-        url: "/Setting/:view/:channel", //url: "/role/edit?id",
+        url: "/Setting/:view/:id/:channel", //url: "/role/edit?id", 由view的 ui-sref="app.{{module.module_channel}}({view:module.module_view,channel:module.url})" 决定
         templateUrl: function($routeParams, $rootScope, $scope) {
 			var view = $routeParams.view;//有view访问静态文件
-			if(view != '') return 'resource/views/Setting/'+$routeParams.view+'.html?${__VERSION}';
-            return randomUrl($routeParams.channel); 
+			return __RESOURCE + 'views/Setting/'+$routeParams.view+'.html?${__VERSION}';
         },
-		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
-		}
-    }).state('app.Marketing', {
-        url: "/Marketing/:view/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams, $rootScope, $scope) {
-			var view = $routeParams.view;//有view访问静态文件
-			if(view != '') return 'resource/views/Marketing/'+$routeParams.view+'.html?${__VERSION}';
-            return randomUrl($routeParams.channel); 
-        },
-		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
-		}
-    }).state('app.Channel', {
-        url: "/Channel/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams) {
-			//var view = $routeParams.view;//有view访问静态文件
-			//if(view != '') return 'resource/views/Channel/'+$routeParams.view+'.html?${__VERSION}';
-            return randomUrl($routeParams.channel);
-        },
-		controller: function() {
-		}
-    }).state('app.ChannelConfig', {
-        url: "/ChannelConfig/:view/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams) {
-			var view = $routeParams.view;//有view访问静态文件
-			//if(view != '') 
-            return 'resource/views/ChannelConfig/'+$routeParams.view+'.html?${__VERSION}';
-        },
-		controller: function() {
-		},
+        controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
 		resolve: {
             deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
-                return $ocLazyLoad.load([__RESOURCE+"editor/kindeditor/kindeditor-all-min.js?${__VERSION}",
-										 __RESOURCE+"editor/kindeditor/themes/default/default.css",
-						  __RESOURCE + "vendor/modules/angular-ui-select/select.min.js",
-                          __RESOURCE + "vendor/modules/angular-ui-select/select.min.css",__RESOURCE + "styles/booking.css"]);
+				return $ocLazyLoad.load([__RESOURCE + "scripts/controllers/Setting/"+$stateParams.view+".js?${__VERSION}"]);
             }]
         }
+        
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
-            return 'resource/views/Test/'+$routeParams.test+'.html?${__VERSION}';
+            return __RESOURCE + 'views/Test/'+$routeParams.test+'.html?${__VERSION}';
         },
 		controller: function() {
 		}
@@ -405,14 +341,15 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
             return "/login.html";
         },
         controller: function ($httpService, $location) {
-            $httpService.post('${__WEB}app.do?action=logout', '', function(response){
+            $httpService.post('${__WEB}index/logout', '', function(response){
                 $location.path('/login');
             });
         }
     })
 }]);
-app.controller('MainController',["$rootScope","$scope","$translate","$localStorage","$window","$location","$httpService","$modal","$tooltip","$filter","$alert","$interval","$log", 
-	function($rootScope,$scope,$translate,$localStorage,$window,$location,$httpService,$modal,$tooltip,$filter,$alert,$interval,$log) {
+app.controller('MainController',["$rootScope","$scope","$translate","$localStorage","$window","$location","$httpService","$stateParams","$modal",
+	"$tooltip","$filter","$alert","$interval","$log", 
+	function($rootScope,$scope,$translate,$localStorage,$window,$location,$httpService,$stateParams,$modal,$tooltip,$filter,$alert,$interval,$log) {
 		function matchNavigator($window) {
 			var navigatorInfo = $window.navigator.userAgent || $window.navigator.vendor || $window.opera;
 			return /iPhone|iPod|iPad|Silk|Android|BlackBerry|Opera Mini|IEMobile/.test(navigatorInfo)
@@ -462,19 +399,28 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         $scope.__RESOURCE = __RESOURCE;
 		$scope._resource = '${__RESOURCE}';
-		//
-		$scope.setUiNav = function($event) {
+		//刷新之后数据重新获取
+		console.log("======>",$rootScope.employeeMenu);
+		let noLogin = "${noLogin}";
+		if (noLogin == "0") {
+			if(typeof($rootScope.employeeMenu) == 'undefined' || $rootScope.employeeMenu == "") {
+				$httpService.post('/erp/index/refresh', {}, function(result){
+					if(result.data.success == true) {
+						$scope.setCommonSetting(result.data.item);
+						$httpService.header('token', result.data.item.employee.e_id);
+		            }
+				});
+			}
+		}
+		$scope.setUiNav = function($event) {//设置css样式点击状态
 			var b = angular.element($event.target).parent();
 			b.parent().find("li").removeClass("active"), b.toggleClass("active"), b.find("ul") && ($scope.app.asideCollapse = !1)
 		}//
-        $scope.switchChannel = function(channel_id) {
-            //console.log($scope.employeeChannel[channel_id]);
-        }
 		$rootScope.employeeMenu = {};$scope.hashEmployeeModule = {};
 		$scope.setMenu = function($menus, $module_channel) {
 			var resultList = $scope.resolvingModuleData($menus, $module_channel);
-			$scope.menus = resultList.menus;$scope.channels = resultList.channels;
-            $scope.hashEmployeeModule = resultList.hashEmployeeModule;
+			$scope.menus = resultList.menus;$scope.channels = resultList.channels;//构造顶部菜单和下拉菜单
+            $scope.hashEmployeeModule = resultList.hashEmployeeModule;//用户所有的module
 		};
 		$scope.resolvingModuleData = function($menus, $module_channel) {
 			if($menus == '') $menus = $rootScope.employeeMenu;
@@ -532,105 +478,65 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			return $translate.instant("error.code."+$errorCode);
 		};
 		$scope.setChannelMenu = function($module_channel) {
-			console.log($rootScope.employeeMenu, $module_channel);
 			$scope.setMenu($rootScope.employeeMenu, $module_channel);
             $location.path('/app/home');
 		};
 		$rootScope._self_module = '';
-		$scope.setActionNavName = function(module_id, nav) {
-			if(angular.isDefined(nav) && nav != '') {$scope.action_nav_name = '' + nav; return;}
-			var menus = $scope.hashEmployeeModule, nav = '', _self_module = $rootScope._self_module;			getChannelNav(_self_module);
-			function getChannelNav(_this_module) {
+		$scope.action_nav = "";
+		$scope.setActionNavName = function(module_id, _self_nav) {//设置导航栏
+			let menus = $scope.hashEmployeeModule, nav = "";
+			let _self_module = menus[module_id];	
+			$rootScope._self_module = _self_module;
+			getChannelNav(_self_module);
+			function getChannelNav(_this_module) {//递归函数
 				if(typeof(menus[_this_module.module_id]) != 'undefined') {
-					var href = 'href="/#!/app/'+menus[_this_module.module_id].module_channel+'//'+menus[_this_module.module_id].url+'"';
-					nav = '<a '+href+'>' + menus[_this_module.module_id].module_name + '</a> <i class="fa fa-angle-double-right"></i> ' + nav;
+					let href = 'href="/erp/index/#!/app/'+menus[_this_module.module_id].module_channel+'/'+menus[_this_module.module_id].module_view+'/'
+						+menus[_this_module.module_id].module_id+'/'+menus[_this_module.module_id].url+'"';
+					let _nav = '<a '+href+'>' + menus[_this_module.module_id].module_name + '</a>';
+					if(nav != "") {
+						nav = nav + ' <i class="fa fa-angle-double-right"></i> ' + _nav;
+					} else {
+						nav = _nav;
+					}
 				} 
 				if(typeof(menus[_this_module.module_father_id]) > 0) {
 					getChannelNav(menus[_self_module.module_father_id]);
 				}
 			}
-			$scope.action_nav_name = '' + nav;
+			if(angular.isDefined(_self_nav) && _self_nav != '') {
+				if(nav != "") nav += ' <i class="fa fa-angle-double-right"></i> ';
+				nav += _self_nav;
+			}
+			$scope.action_nav = '' + nav;
 		};
         $scope.getChannelModule = function(module_id) {
             return $scope.hashEmployeeModule[module_id];
         }
         $rootScope.defaultChannel = {};
-        $rootScope.employeeMenu = {};
+        $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
-			console.log($rootScope);
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
 					$rootScope.employeeMenu = common.employeeMenu;
 					if(common.employeeMenu != null && common.employeeMenu != '') $scope.setMenu(common.employeeMenu, common.module_channel);
 				}
-				if(typeof(common.employeeInfo) != 'undefined') {
-					$rootScope.employeeInfo = common.employeeInfo;
+				if(typeof(common.access) != 'undefined') {
+					if(common.access != null && common.access != '') $scope.getHashAccess(common.access);
 				}
-                if(typeof(common.channelSettingList) != 'undefined') {
-					$rootScope.channelSettingList = common.channelSettingList;
+				if(typeof(common.employee) != 'undefined') {
+					$rootScope.employeeInfo = common.employee;
 				}
-				if(typeof(common.employeeChannel) != 'undefined') {
-					for(var i in common.employeeChannel) {
-                        if(common.employeeChannel[i].default == 1) {
-                            $rootScope.defaultChannel = common.employeeChannel[i];
-                            $httpService.header('default', common.employeeChannel[i].id);break;
-                        }
-                    }
-					$rootScope.employeeChannel = common.employeeChannel;
-				}
+				//未起作用 ? 
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
 					$scope.setActionNavName(common._self_module['module_id']);
-				}				
+				} else if(typeof($stateParams.id) != 'undefined') {
+					$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+					$scope.setActionNavName(common._self_module['module_id']);
+				}//未起作用
 			}
 		};
-        $scope.getBusinessDay = function(format) {
-            if(angular.isUndefined(format)) format = "yyyy-MM-dd";
-            var businessDate = new Date($rootScope.business_day).getTime();
-            return $filter("date")(businessDate, format);
-        };
 		$rootScope.employeeChannel = {};
-        $scope.setThisChannel = function(channel) {
-			var thisChannel = [];
-			var employeeChannel = angular.copy($rootScope.employeeChannel);
-			var k = 0, thisChannel_id = '',channel_father_id = '';
-			if(channel == 'Hotel') {
-				/*thisChannel[0] = {};
-				thisChannel[0]['id'] = 0;
-				thisChannel[0]['channel_id'] = 0;
-				thisChannel[0]['channel_name'] = '<i class="fa fa-lightbulb-o"></i> 所有酒店适用</a>';
-				k++;*/
-			};
-			for(var i in employeeChannel) {
-				if(employeeChannel[i].channel == channel || channel == 'ALL') {//ALL 全部企业
-					thisChannel[k] = {};
-					thisChannel[k]['id'] = employeeChannel[i].id;
-					thisChannel[k]['channel_id'] = employeeChannel[i].channel_id;
-					thisChannel[k]['channel_name'] = employeeChannel[i].channel_name;
-                    thisChannel[k]['channel_father_id'] = employeeChannel[i].channel_father_id;
-					if(employeeChannel[i].default == 1) {
-						thisChannel_id = employeeChannel[i].id;
-						channel_father_id = employeeChannel[i].channel_father_id;
-					}
-					k++;
-				}
-			}
-			if(thisChannel_id == '' && typeof(thisChannel[0]) != 'undefined') {
-				thisChannel_id = thisChannel[0]['channel_id'];
-				channel_father_id = thisChannel[0]['channel_father_id'];
-			}
-			$scope.thisChannel_id = thisChannel_id;$scope.channel_father_id = channel_father_id;
-			$scope.thisChannel = thisChannel;
-		};
-		$scope.getChannelSetting = function(channel_id, key) {//取得门店的默认设置
-			if(angular.isDefined($rootScope.channelSettingList[channel_id][key])) {
-				return $rootScope.channelSettingList[channel_id][key];
-			}
-			if(angular.isDefined($rootScope.channelSettingList[channel_id])) {
-			   return $rootScope.channelSettingList[channel_id];
-			}
-			return null;
-		}
 		$scope.getHashMarket = function (marketList) {
 			var hashMarket = {};
 			if(marketList != '') {
@@ -642,6 +548,13 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				}
 			}
 			$scope.hashMarket = hashMarket;
+		}
+		$scope.getHashAccess = function (accessList) {
+			var hashAccess = {};
+			for(var i in accessList) {
+				hashAccess[accessList[i].module_id] = accessList[i].access;
+			}
+			$rootScope.hashAccess = hashAccess;
 		}
 		////*********************************////
 		$scope.redirect = function(url) {
@@ -739,19 +652,12 @@ app.controller("LoginController",function($rootScope, $scope, $httpService, $mod
 		$scope.beginLoading =! $scope.beginLoading;
 		var password = $scope.param.password;
 		$scope.param.password = md5(md5(password));
-		$httpService.deleteHeader('ajaxRequest');
 		$httpService.post('${__WEB}app.do?method=checkLogin', $scope, function(result){
 			$scope.beginLoading =! $scope.beginLoading;
 			if(result.data.success == true) {
                 $location.path('/app/home');
-				//$rootScope.employeeMenu = result.data.item.loginEmployee.employeeMenu;//$scope.module_channel = result.data.item.module_channel;
-				//$rootScope.employeeInfo = result.data.item.loginEmployee.employeeInfo;
-				//var employeeChannel = result.data.item.loginEmployee.employeeChannel;
-				//for(var i in employeeChannel) {if(employeeChannel[i].default == 1) {$httpService.header('default', employeeChannel[i].id);break;}}
-				//$rootScope.employeeChannel = employeeChannel;
-                //$scope.setMenu($rootScope.employeeMenu, result.data.item.module_channel);
 				$scope.setCommonSetting(result.data.item);
-				$httpService.header('_m', result.data.item.employee.e_id);
+				$httpService.header('token', result.data.item.employee.e_id);
             } else {
 			    var message = $scope.reconvertChinese($translate.instant("error.code."+result.data.code));
                 $scope.param.password = password;

@@ -39,7 +39,7 @@
         <input type="password" placeholder="Password" class="form-control" ng-model="param.password" required>
       </div>
       <!--<div class="checkbox no-margin"><label class="ui-checks"><input type="checkbox"><i></i> Keep me signed in</label></div>-->
-      <button type="submit" class="btn btn-info p-h-md m-v-lg" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading" translate="login.hint.SIGN">Sign in</button>
+      <button type="submit" class="btn btn-rounded btn-info p-h-md m-v-lg" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading" translate="login.hint.SIGN">Sign in</button>
       <div class="btn-group m-b">
         <div class="btn-group dropdown">
           <button type="button" class="btn btn-link" data-animation="am-fade-and-slide-top" bs-dropdown="dropdown" aria-haspopup="true" aria-expanded="false" data-template-url="/langs.html">{{select_lang}} <span class="caret"></span>

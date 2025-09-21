@@ -5,9 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.MDC;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,28 +20,33 @@ import com.base.type.Success;
 import com.base.util.EncryptUtiliy;
 
 import core.util.Utiliy;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/erp")
 public class BwleErpController extends AbstractController {
 	private final String thisController = "BwleErp";
 	private int noLogin = 1;
+	private String employeeCookieName = "token";
 
 	@Override
 	public void beforeCheck(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		String _m = request.getHeader("_m");
-		int member_id;
+		String eidDecryptHeader = request.getHeader(this.employeeCookieName);
+		String eidDecryptCookie = this.getCookie(request, this.employeeCookieName);
+		String eidDecrypt = eidDecryptHeader == null || eidDecryptHeader.equals("") ? eidDecryptCookie : eidDecryptHeader;	    
 		try {
-			member_id = EncryptUtiliy.instance().myIDDecrypt(_m);
-			if (member_id == 0) {
+			int employee_id = EncryptUtiliy.instance().myIDDecrypt(eidDecrypt);
+			if (employee_id > 0) {
 				this.noLogin = 0;
+			} else {
+				this.noLogin = 1;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.noLogin = 1;
 	}
 
 	@Override
@@ -58,10 +60,10 @@ public class BwleErpController extends AbstractController {
 	public String defaultAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		model.addAttribute("__WEB", "/erp/");
 		model.addAttribute("__RESOURCE", "/static/");
-		model.addAttribute("__VERSION", "1.0.0");
+		model.addAttribute("__VERSION", "");
 		model.addAttribute("__TITLE", "博威利尔.ERP v1.0.0");
 		model.addAttribute("thisDateTime", Utiliy.instance().getTodayDate());
-		model.addAttribute("noLogin", "1");
+		model.addAttribute("noLogin", this.noLogin);
 		return "BwleErp/default";
 	}
 

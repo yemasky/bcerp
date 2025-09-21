@@ -139,7 +139,7 @@ public class UploadAction extends AbstractAction {
 		int size = fileList.size();
 		if (size > 0) {
 			//
-			int _house_id = EncryptUtiliy.instance().getIntIDDecrypt(linked_id);
+			int _house_id = EncryptUtiliy.instance().intIDDecrypt(linked_id);
 			uploadService.saveUploadFileDb(fileList, Category.HouseForRent, _house_id, use_type, "", this.member_id);
 			if (_i != null && _i.equals("0")) {
 				String chat_file = request.getParameter("chat_file");
@@ -165,7 +165,7 @@ public class UploadAction extends AbstractAction {
 		int size = fileList.size();
 		if (size > 0) {
 			//
-			int _house_id = EncryptUtiliy.instance().getIntIDDecrypt(linked_id);
+			int _house_id = EncryptUtiliy.instance().intIDDecrypt(linked_id);
 			if(_house_id == 0) {
 				throw new Exception("解析 linked_id 失败："+linked_id+"==>"+request.getAttribute("linked_id")+"==>"+request.getParameter("linked_id"));
 			}
@@ -188,7 +188,7 @@ public class UploadAction extends AbstractAction {
 		int size = fileList.size();
 		if (size > 0) {
 			//
-			int _news_id = EncryptUtiliy.instance().getIntIDDecrypt(linked_id);
+			int _news_id = EncryptUtiliy.instance().intIDDecrypt(linked_id);
 			uploadService.saveUploadFileDb(fileList, Category.News, _news_id, use_type, "", this.member_id);
 			if (_i != null && _i.equals("0")) {
 				String chat_file = request.getParameter("chat_file");
@@ -218,7 +218,7 @@ public class UploadAction extends AbstractAction {
 		int size = fileList.size();
 		if (size > 0) {
 			//
-			int _riji_id = EncryptUtiliy.instance().getIntIDDecrypt(linked_id);
+			int _riji_id = EncryptUtiliy.instance().intIDDecrypt(linked_id);
 			uploadService.saveUploadFileDb(fileList, Category.Riji, _riji_id, use_type, "", this.member_id);
 			if (_i != null && _i.equals("0")) {
 				String chat_file = request.getParameter("chat_file");

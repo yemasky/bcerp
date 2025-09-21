@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <!DOCTYPE html>
-<html lang="cn-zh">
+<html lang="zh-Hans-CN">
 <head>
 <%@ include file="inc/meta.jsp" %>
 </head>

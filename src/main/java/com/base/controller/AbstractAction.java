@@ -2,6 +2,7 @@ package com.base.controller;
 
 import java.sql.SQLException;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -15,6 +16,8 @@ import com.base.dao.DBQueryDao;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
 import com.base.type.Success;
+
+import core.util.Cookies;
 
 public abstract class AbstractAction {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -48,6 +51,22 @@ public abstract class AbstractAction {
 	private void rollbackAllConnection() throws SQLException {
 		DBQueryDao dBQueryDao = new DBQueryDao("");
 		dBQueryDao.rollbackAll();
+	}
+
+	public String getCookie(HttpServletRequest httpRequest, String name) {
+		Cookie cookie =  Cookies.getCookie(httpRequest, name);
+		if(cookie != null) {
+			return cookie.getValue();
+		}
+		return "";
+	}
+	
+	public void setCookie(HttpServletResponse httpResponse, String name, String value) {
+		Cookies.setCookie(httpResponse, name, value);
+	}
+	
+	public void removeCookie(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String name) {
+		Cookies.removeCookie(httpRequest, httpResponse, name);
 	}
 
 	public Success execute(HttpServletRequest request, HttpServletResponse response) {

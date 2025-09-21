@@ -21,7 +21,7 @@ public class EncryptUtiliy {
 		return Encrypt.base64DESEncrypt(intId + "---" + Utiliy.instance().getTodayDate(), Config.encryptKey);
 	}
 
-	public int getIntIDDecrypt(String intEncrypt) {
+	public int intIDDecrypt(String intEncrypt) {
 		String[] decrypt = this.dateDecrypt(intEncrypt);
 		if (decrypt != null && decrypt.length > 0)
 			return Integer.parseInt(decrypt[0]);
