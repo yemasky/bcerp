@@ -58,7 +58,7 @@ public class UploadServiceImpl implements UploadService {
 	}
 
 	@Override
-	public void saveUploadFileDb(ArrayList<FileDTO> fileList, int category_id, int linked_id, String use_type, String privacy, int member_id) throws Exception {
+	public void saveUploadFileDb(ArrayList<FileDTO> fileList, int category_id, int linked_id, String use_type, String privacy, int employee_id) throws Exception {
 		ArrayList<UploadFile> uploadFilesList = new ArrayList<>();
 		FileDTO fileDTO;
 		int size = fileList.size();
@@ -66,7 +66,7 @@ public class UploadServiceImpl implements UploadService {
 			for (int i = 0; i < size; i++) {
 				fileDTO = fileList.get(i);
 				UploadFile uploadFile = new UploadFile();
-				uploadFile.setMember_id(member_id);
+				uploadFile.setEmployee_id(employee_id);
 				uploadFile.setFile_name(fileDTO.getFile_name());
 				uploadFile.setCategory_id(category_id);
 				uploadFile.setFile_linked_id(linked_id);

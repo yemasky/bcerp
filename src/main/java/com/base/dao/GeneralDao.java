@@ -91,8 +91,6 @@ public class GeneralDao extends BaseDao {
 									mapValue.put(val, encryptId);
 								}
 							}
-							System.out.println("encryptId===>"+val);
-
 						}
 					}
 				}

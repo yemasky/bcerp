@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.base.model.dto.FileDTO;
-import com.base.util.EncryptUtiliy;
 import com.base.util.ImagesUtil;
 
 //import javax.servlet.ServletContext;
@@ -42,9 +41,8 @@ public class FileUpload {
 	/*
 	 * spring 上传文件
 	 */
-	public ArrayList<FileDTO> multiSpringUpload(HttpServletRequest request, String savePath) throws Exception {
-		String _m = request.getHeader("_m");
-		int member_id = EncryptUtiliy.instance().myIDDecrypt(_m);
+	public ArrayList<FileDTO> multiSpringUpload(HttpServletRequest request, String savePath) throws Exception { 
+		int employee_id = (int) request.getAttribute("employee_id");
 		String diskPath = this.getDatePath(savePath);
 		String urlPath = diskPath.replace(savePath, "");
 		// long startTime = System.currentTimeMillis();
@@ -55,7 +53,6 @@ public class FileUpload {
 		//ServletContext servletContext = request.getSession().getServletContext();
 		//if (servletContext.isMultipart(request)) {// 检查form中是否有enctype="multipart/form-data"
 		if(multipartResolver.isMultipart(request)) {
-			String chat_file = request.getParameter("chat_file");
 			// 将request变成多部分request
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			// 获取multiRequest 中所有的文件名
@@ -67,7 +64,7 @@ public class FileUpload {
 				if (file != null) {
 					String originalFilename = file.getOriginalFilename();
 					int n = originalFilename.lastIndexOf(".");
-					String newName = member_id + Utiliy.instance().formatDate("HHmmss")+(int)((Math.random()*9+1)*100000);
+					String newName = employee_id + Utiliy.instance().formatDate("HHmmss")+(int)((Math.random()*9+1)*100000);
 					String suffix =  originalFilename.substring(n);
 					String path = diskPath + newName + suffix;
 					// 上传

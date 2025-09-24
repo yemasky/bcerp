@@ -1,4 +1,4 @@
-package com.BwleErp.controller.index;
+package com.BwleErp.controller.Index;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
-import com.base.model.entity.BwleErp.Company;
 import com.base.model.entity.BwleErp.RoleModule;
 import com.base.model.entity.BwleErp.employee.Employee;
 import com.base.model.entity.BwleErp.employee.EmployeeSector;
 import com.base.model.entity.BwleErp.module.Modules;
-import com.base.model.vo.BwleErp.employee.EmployeeVo;
+import com.base.model.vo.BwleErp.CompanyVo;
+import com.base.model.vo.BwleErp.EmployeeVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
@@ -169,16 +169,14 @@ public class IndexAction extends AbstractAction {
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("module_id", "url");
-		// List<HashMap<String, Object>> employeeModuleList =
-		// this.generalService.getList(whereRelation, needEncrypt);
-		// List<ModulesVo> employeeModuleVoList = new ArrayList<>();
-		// BeanUtils.copyProperties(employeeModuleList, employeeModuleVoList);
-		// List<Modules>
 		List<HashMap<String, Object>> employeeModuleVoList = this.generalService.getList(whereRelation, needEncrypt);
 		// 获取公司
 		whereRelation = new WhereRelation();
-		whereRelation.setTable_clazz(Company.class);
-		List<Company> companyList = this.generalService.getEntityList(whereRelation);
+		whereRelation.setTable_clazz(CompanyVo.class);
+		needEncrypt = new NeedEncrypt();
+		needEncrypt.setNeedEncrypt(true);
+		needEncrypt.setNeedEncrypt("company_id", NeedEncrypt._ENCRYPT);
+		List<HashMap<String, Object>> companyList = this.generalService.getList(whereRelation, needEncrypt);
 		// System.out.println(new Gson().toJson(employeeModuleVoList));
 		this.success.setItem("employeeMenu", employeeModuleVoList);
 		this.success.setItem("module_channel", "Setting");

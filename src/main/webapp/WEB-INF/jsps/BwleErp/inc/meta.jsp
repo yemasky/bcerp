@@ -1,14 +1,14 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-    pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>${__TITLE}</title>
+<link rel="shortcut icon" href="${__RESOURCE}favicon.ico">
 <script language="javascript">var __VERSION = '${__VERSION}'; var baseDateTime = '${thisDateTime}', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
 <link rel="stylesheet" href="${__RESOURCE}styles/app.min.css?${__VERSION}" type="text/css" />
 <!-- commom -->
 <script language="javascript" src="${__RESOURCE}jquery-3.4.1.min.js?${__VERSION}"></script>
 <script language="javascript">
-    var __RESOURCE = '${__RESOURCE}';
+    var __RESOURCE = '${__RESOURCE}'; var __IMGWEB = '${__IMGWEB}';var __WEB = '${__WEB}';
 //jQuery 插件
 (function ($) {
     $.serializeFormat = function (id) {
@@ -397,14 +397,20 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			if(format == 'w') return new Date($scope._baseDateTime()).getDay();
             return $filter("date")($scope._baseDateTime(), format, 'UTC +8');
         }
+        //初始化变量
         $scope.__RESOURCE = __RESOURCE;
 		$scope._resource = '${__RESOURCE}';
+		$scope.__WEB = '${__WEB}';
+		$scope.employee = {};
+		$scope.companyList = {};
+		$rootScope.__ImagesUploadUrl = '${__ImagesUploadUrl}';
+		$rootScope.__ImagesManagerUrl = '${__ImagesManagerUrl}';
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "${noLogin}";
 		if (noLogin == "0") {
 			if(typeof($rootScope.employeeMenu) == 'undefined' || $rootScope.employeeMenu == "") {
-				$httpService.post('/erp/index/refresh', {}, function(result){
+				$httpService.post('${__WEB}index/refresh', {}, function(result){
 					if(result.data.success == true) {
 						$scope.setCommonSetting(result.data.item);
 						$httpService.header('token', result.data.item.employee.e_id);
@@ -489,17 +495,16 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			$rootScope._self_module = _self_module;
 			getChannelNav(_self_module);
 			function getChannelNav(_this_module) {//递归函数
-				if(typeof(menus[_this_module.module_id]) != 'undefined') {
-					let href = 'href="/erp/index/#!/app/'+menus[_this_module.module_id].module_channel+'/'+menus[_this_module.module_id].module_view+'/'
-						+menus[_this_module.module_id].module_id+'/'+menus[_this_module.module_id].url+'"';
-					let _nav = '<a '+href+'>' + menus[_this_module.module_id].module_name + '</a>';
-					if(nav != "") {
-						nav = nav + ' <i class="fa fa-angle-double-right"></i> ' + _nav;
-					} else {
-						nav = _nav;
-					}
-				} 
-				if(typeof(menus[_this_module.module_father_id]) > 0) {
+				let href = 'href="'+__WEB+'#!/app/'+_this_module.module_channel+'/'+_this_module.module_view+'/'
+							+_this_module.module_id+'/'+_this_module.url+'"';
+				let _nav = '<a '+href+'>' + _this_module.module_name + '</a>';
+				_nav = _this_module.module_name;
+				if(nav != "") {
+					nav = _nav + ' <i class="fa fa-angle-double-right"></i> ' + nav;
+				} else {
+					nav = _nav;
+				}
+				if(typeof(menus[_this_module.module_father_id]) != 'undefined' && _this_module.module_father_id > 0) {
 					getChannelNav(menus[_self_module.module_father_id]);
 				}
 			}
@@ -523,16 +528,21 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common.access) != 'undefined') {
 					if(common.access != null && common.access != '') $scope.getHashAccess(common.access);
 				}
-				if(typeof(common.employee) != 'undefined') {
-					$rootScope.employeeInfo = common.employee;
+				if(typeof(common.companyList) != 'undefined') {
+					$scope.companyList = common.companyList;
 				}
+				if(typeof(common.employee) != 'undefined') {
+					$scope.employee = common.employee;
+				}
+				$rootScope.__ImagesUploadUrl = common.imagesUploadUrl;
+				$rootScope.__ImagesManagerUrl = common.imagesManagerUrl;
 				//未起作用 ? 
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
 					$scope.setActionNavName(common._self_module['module_id']);
 				} else if(typeof($stateParams.id) != 'undefined') {
 					$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
-					$scope.setActionNavName(common._self_module['module_id']);
+					$scope.setActionNavName($rootScope._self_module['module_id']);
 				}//未起作用
 			}
 		};
@@ -638,7 +648,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.confirm = function(param) {//content, confirmCallback, param
 			var content = angular.isDefined(param.content)?param.content : '';var confirmCallback = angular.isDefined(param.callback)?param.callback : null;
 			var callbackParam = angular.isDefined(param.param)?param.param : null;
-			$alert({scope : $scope, title: 'Notice', templateUrl: 'resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {$scope.callback = function() {if(confirmCallback){
+			$alert({scope : $scope, title: 'Notice', templateUrl: __RESOURCE+'views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {$scope.callback = function() {if(confirmCallback){
 				if(callbackParam != null) {confirmCallback(callbackParam);}else{confirmCallback();}};}}});
 		}
 		

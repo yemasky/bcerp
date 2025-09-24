@@ -7,18 +7,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="Responsive Bootstrap 4 Admin &amp; Dashboard Template">
         <meta name="author" content="Bdtask">
-        <title>Bhulua - Bootstrap 4 Admin Template Deshboard</title>
+        <title>${__TITLE}</title>
         <!-- App favicon -->
-        <link rel="shortcut icon" href="${__RESOURCE}assets/dist/img/favicon.png">
+        <link rel="shortcut icon" href="${__RESOURCE}favicon.ico">
         <!--Global Styles(used by all pages)-->
-        <link href="${__RESOURCE}assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="${__RESOURCE}styles/app.min.css" rel="stylesheet">
         <!--Third party Styles(used by this page)--> 
         <%@ include file="test.jsp" %>
         <!--Start Your Custom Style Now-->
-        <link href="${__RESOURCE}assets/dist/css/style.css" rel="stylesheet">
     </head>
     <body class="bg-white">
-    	<p th:text="${__RESOURCE}">默认用户名</p>
+    	<p th:text="${__RESOURCE}"></p>
         <div class="d-flex align-items-center justify-content-center text-center h-100vh">
             <div class="container">
                 <div class="row justify-content-center">

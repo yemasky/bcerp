@@ -11,7 +11,7 @@ public enum ErrorCode {
 	__F_NOT_INCREASE("000005", "不能给自己点"),__F_AUTH("000006", "认证失败"),__F_AUTH_EDU("000007", "学历认证失败，此身份已被人使用"),
 	__F_OUT_STOCk("000008", "超出库存"),__F_LOGIN_OVERTIME("000009", "登录超时"),__F_NO_ENOUGH_CEEDITS("000010", "没有足够的金币"),
 	__F_WRONG_PARAM("000011", "参数错误"),__F_OVER_PRICE("000012", "出价被超过"),__F_WX_INTERFACE("000013", "含有敏感词汇"),
-	__F_NO_ACTIVITY("000014", "没有多余的字条"),
+	__F_NO_ACTIVITY("000014", "没有多余的字条"),__F_UPLOAD("000015", "上传失败"),__F_PERMISSION("000016", "無權限"),
 	;
 	
 	//

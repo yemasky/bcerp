@@ -73,7 +73,7 @@ KindEditor.plugin('insertfile', function(K) {
 				fieldName : filePostName,
 				url : K.addParam(uploadJson, 'dir=file'),
 				extraParams : extraParams,
-				afterUpload : function(data) {
+				afterUpload : function(data) {console.log("===>allowFileUpload",data)
 					dialog.hideLoading();
 					if (data.error === 0) {
 						var url = data.url;

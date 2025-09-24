@@ -188,7 +188,7 @@ KindEditor.plugin('image', function(K) {
 			form : K('.ke-form', div),
 			target : target,
 			width: 60,
-			afterUpload : function(data) {
+			afterUpload : function(data) {console.log(data);
 				dialog.hideLoading();
 				if (data.error === 0) {
 					var url = data.url;
@@ -295,7 +295,7 @@ KindEditor.plugin('image', function(K) {
 				showRemote : allowImageRemote,
 				showLocal : allowImageUpload,
 				tabIndex: img ? 0 : imageTabIndex,
-				clickFn : function(url, title, width, height, border, align) {
+				clickFn : function(url, title, width, height, border, align) {console.log("===?",url);
 					if (img) {
 						img.attr('src', url);
 						img.attr('data-ke-src', url);

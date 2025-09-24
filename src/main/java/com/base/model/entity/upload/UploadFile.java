@@ -11,7 +11,7 @@ public class UploadFile extends FileDTO {
 	private Integer file_id;
 	private Integer category_id;
 	private Integer file_linked_id;
-	private Integer member_id;
+	private Integer employee_id;
 	private Integer file_valid;
 
 	public Integer getFile_id() {
@@ -38,12 +38,12 @@ public class UploadFile extends FileDTO {
 		this.file_linked_id = file_linked_id;
 	}
 
-	public Integer getMember_id() {
-		return member_id;
+	public Integer getEmployee_id() {
+		return employee_id;
 	}
 
-	public void setMember_id(Integer member_id) {
-		this.member_id = member_id;
+	public void setEmployee_id(Integer employee_id) {
+		this.employee_id = employee_id;
 	}
 
 	public Integer getFile_valid() {

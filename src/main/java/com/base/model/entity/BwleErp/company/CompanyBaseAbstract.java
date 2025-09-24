@@ -1,14 +1,10 @@
-package com.base.model.entity.BwleErp;
+package com.base.model.entity.BwleErp.company;
 
-import java.sql.Date;
-
-import core.custom_interface.Table;
-
-@Table(name = "company", isAnnotationField = true)
-public class Company {
-	private Integer company_id;
+public abstract class CompanyBaseAbstract {
+	private String company_code;
 	private String company_name;
 	private String company_enname;
+	private String company_sname;
 	private String company_logo;
 	private String company_address;
 	private String company_enaddress;
@@ -20,22 +16,22 @@ public class Company {
 	private String company_credit_code;
 	private String company_reg_capital;
 	private String company_reg_date;
-	private Date company_effect_date_begin;
-	private Date company_effect_date_end;
+	private String company_reg_date_end;
 	private String company_reg_customs_num;
+	private String company_reg_customs_date_end;
 	private String company_permit_number;
 	private String company_inspection_number;
 	private String company_certificate_number;
-	private Date company_certificate_effect_date;
+	private String company_certificate_effect_date;
 	private String company_trade_code;
 	private String company_introduce;
 	private String company_remind_employee_ids;
-	private String company_valid;
-	public Integer getCompany_id() {
-		return company_id;
+	private Integer company_valid;
+	public String getCompany_code() {
+		return company_code;
 	}
-	public void setCompany_id(Integer company_id) {
-		this.company_id = company_id;
+	public void setCompany_code(String company_code) {
+		this.company_code = company_code;
 	}
 	public String getCompany_name() {
 		return company_name;
@@ -48,6 +44,12 @@ public class Company {
 	}
 	public void setCompany_enname(String company_enname) {
 		this.company_enname = company_enname;
+	}
+	public String getCompany_sname() {
+		return company_sname;
+	}
+	public void setCompany_sname(String company_sname) {
+		this.company_sname = company_sname;
 	}
 	public String getCompany_logo() {
 		return company_logo;
@@ -115,23 +117,23 @@ public class Company {
 	public void setCompany_reg_date(String company_reg_date) {
 		this.company_reg_date = company_reg_date;
 	}
-	public Date getCompany_effect_date_begin() {
-		return company_effect_date_begin;
+	public String getCompany_reg_date_end() {
+		return company_reg_date_end;
 	}
-	public void setCompany_effect_date_begin(Date company_effect_date_begin) {
-		this.company_effect_date_begin = company_effect_date_begin;
-	}
-	public Date getCompany_effect_date_end() {
-		return company_effect_date_end;
-	}
-	public void setCompany_effect_date_end(Date company_effect_date_end) {
-		this.company_effect_date_end = company_effect_date_end;
+	public void setCompany_reg_date_end(String company_reg_date_end) {
+		this.company_reg_date_end = company_reg_date_end;
 	}
 	public String getCompany_reg_customs_num() {
 		return company_reg_customs_num;
 	}
 	public void setCompany_reg_customs_num(String company_reg_customs_num) {
 		this.company_reg_customs_num = company_reg_customs_num;
+	}
+	public String getCompany_reg_customs_date_end() {
+		return company_reg_customs_date_end;
+	}
+	public void setCompany_reg_customs_date_end(String company_reg_customs_date_end) {
+		this.company_reg_customs_date_end = company_reg_customs_date_end;
 	}
 	public String getCompany_permit_number() {
 		return company_permit_number;
@@ -151,10 +153,10 @@ public class Company {
 	public void setCompany_certificate_number(String company_certificate_number) {
 		this.company_certificate_number = company_certificate_number;
 	}
-	public Date getCompany_certificate_effect_date() {
+	public String getCompany_certificate_effect_date() {
 		return company_certificate_effect_date;
 	}
-	public void setCompany_certificate_effect_date(Date company_certificate_effect_date) {
+	public void setCompany_certificate_effect_date(String company_certificate_effect_date) {
 		this.company_certificate_effect_date = company_certificate_effect_date;
 	}
 	public String getCompany_trade_code() {
@@ -175,11 +177,10 @@ public class Company {
 	public void setCompany_remind_employee_ids(String company_remind_employee_ids) {
 		this.company_remind_employee_ids = company_remind_employee_ids;
 	}
-	public String getCompany_valid() {
+	public Integer getCompany_valid() {
 		return company_valid;
 	}
-	public void setCompany_valid(String company_valid) {
+	public void setCompany_valid(Integer company_valid) {
 		this.company_valid = company_valid;
 	}
-
 }

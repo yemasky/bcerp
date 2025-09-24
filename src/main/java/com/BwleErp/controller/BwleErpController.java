@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.BwleErp.service.impl.employee.EmployeeServiceImpl;
 import com.base.controller.AbstractController;
 import com.base.controller.SpringContextInvoke;
+import com.base.model.dto.BwleErp.EmployeePermissionDto;
 import com.base.type.ErrorCode;
 import com.base.type.Success;
 import com.base.util.EncryptUtiliy;
@@ -29,6 +32,9 @@ public class BwleErpController extends AbstractController {
 	private final String thisController = "BwleErp";
 	private int noLogin = 1;
 	private String employeeCookieName = "token";
+	private int employee_id = 0;
+	@Autowired
+	private EmployeeServiceImpl employeeService;
 
 	@Override
 	public void beforeCheck(HttpServletRequest request, HttpServletResponse response) {
@@ -40,6 +46,7 @@ public class BwleErpController extends AbstractController {
 			int employee_id = EncryptUtiliy.instance().myIDDecrypt(eidDecrypt);
 			if (employee_id > 0) {
 				this.noLogin = 0;
+				this.employee_id = employee_id;
 			} else {
 				this.noLogin = 1;
 			}
@@ -56,22 +63,25 @@ public class BwleErpController extends AbstractController {
 	}
 
 	@Override
-	@RequestMapping(value = "/**")
+	@RequestMapping({"/", "/**", "*", ""})//value = "/**"
 	public String defaultAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		model.addAttribute("__WEB", "/erp/");
+		model.addAttribute("__IMGWEB", "http://localhost/xiaoqu/images/");
+		model.addAttribute("__ImagesUploadUrl", EncryptUtiliy.instance().intIDEncrypt(114));
+		model.addAttribute("__ImagesManagerUrl", EncryptUtiliy.instance().intIDEncrypt(115));
 		model.addAttribute("__RESOURCE", "/static/");
 		model.addAttribute("__VERSION", "");
-		model.addAttribute("__TITLE", "博威利尔.ERP v1.0.0");
+		model.addAttribute("__TITLE", "博威利尔.ERP ᵛ¹·⁰·⁰ ");
 		model.addAttribute("thisDateTime", Utiliy.instance().getTodayDate());
 		model.addAttribute("noLogin", this.noLogin);
 		return "BwleErp/default";
 	}
 
-	@RequestMapping({ "*", "/", "", "index", "index.html", "default.html" })
+	@RequestMapping({ "index", "index.html", "default.html" })
 	public String indexAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
-		model.addAttribute("Title", "welcome");
+		model.addAttribute("__TITLE", "welcome");
 		model.addAttribute("__VERSION", "1.20");
-		model.addAttribute("__RESOURCE", "/resource/");
+		model.addAttribute("__RESOURCE", "/static/");
 		Date dateNow = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		model.addAttribute("thisDateTime", dateFormat.format(dateNow));
@@ -80,14 +90,14 @@ public class BwleErpController extends AbstractController {
 
 		return "404";
 	}
-
+	///module/method?action=actionX
 	@RequestMapping(value = "/{module}/{method}")
 	@ResponseBody
 	public Object doGetAndPost(@PathVariable("module") String module, @PathVariable("method") String method,
 			HttpServletRequest request, HttpServletResponse response) {
-		request.setAttribute(POST_MAP_KEY, false);
 		request.setAttribute("module", module);
 		request.setAttribute("method", method);
+		if(request.getHeader("method") != null) request.setAttribute("method", request.getHeader("method"));
 		request.setAttribute("action", request.getParameter("action"));
 		return this.excuteController(request, response);
 	}
@@ -96,9 +106,9 @@ public class BwleErpController extends AbstractController {
 	@ResponseBody // 数据app.do?module=module&method=method&action=action {@RequestBody Map<String, Object> postJsonMap}
 	public Object doPostJson(@RequestBody Map<String, Object> postJsonMap, HttpServletRequest request,
 			HttpServletResponse response) {
-		request.setAttribute(POST_MAP_KEY, true);
 		request.setAttribute("module", request.getParameter("module"));
 		request.setAttribute("method", request.getParameter("method"));
+		if(request.getHeader("method") != null) request.setAttribute("method", request.getHeader("method"));
 		request.setAttribute("action", request.getParameter("action"));
 		for (String key : postJsonMap.keySet()) { //key=>value的value有可能是一组数据模型
 			Object object = postJsonMap.get(key);
@@ -109,16 +119,31 @@ public class BwleErpController extends AbstractController {
 
 	public Object excuteController(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			String actionInvoke = (String) request.getAttribute("action");
-			if (actionInvoke == null || actionInvoke.isEmpty())
-				actionInvoke = "index";
-			String action = Utiliy.instance().ucfirst(actionInvoke) + "Action";
-			String module = (String) request.getAttribute("module");
-			if (module == null || module.isEmpty()) {
-				module = "index";
+			String module = "Index";
+			String actionInvoke = "index";
+			Object method = request.getAttribute("method");
+			if(method == null) method = "";
+			//除去checkLogin\logout\forgetPassword\refresh 都需要檢查權限
+			//檢查權限
+			if(method.equals("logout") || method.equals("checkLogin") || method.equals("refresh")) {
 			} else {
-				module = module.toLowerCase();
+				String channel = request.getParameter("channel");
+				int module_id = EncryptUtiliy.instance().intIDDecrypt(channel);
+				EmployeePermissionDto employeePermission = employeeService.permissionCheck(module_id, this.employee_id);
+				if(!employeePermission.isPermission()) {
+					Success success = new Success();
+					success.setErrorCode(ErrorCode.__F_PERMISSION);
+					return success;
+				}
+				if(employeePermission.getModule_id() > 0) {
+					actionInvoke = employeePermission.getAction();
+					module = employeePermission.getModule();
+				}
 			}
+			//action
+			String action = Utiliy.instance().ucfirst(actionInvoke) + "Action";
+			//module
+			//module = module.toLowerCase();
 
 			Class<?> controllerClass = Class
 					.forName("com." + this.thisController + ".controller." + module + "." + action);
@@ -141,4 +166,6 @@ public class BwleErpController extends AbstractController {
 		return success;
 	}
 
+	
 }
+

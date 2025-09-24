@@ -1,7 +1,9 @@
 package com.base.service.BwleErp;
 
-import com.base.service.BaseService;
+import java.sql.SQLException;
 
-public interface EmployeeService extends BaseService {
+import com.base.model.dto.BwleErp.EmployeePermissionDto;
 
+public interface EmployeeService {
+	EmployeePermissionDto permissionCheck(int module_id, int employee_id)  throws SQLException;
 }

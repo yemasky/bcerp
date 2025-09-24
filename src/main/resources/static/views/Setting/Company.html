@@ -5,43 +5,37 @@
 				Basic
 			</div>
 			<div class="col-md-2">
-				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit()" class="btn btn-rounded btn-info btn-sm">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit(param)" class="btn btn-rounded btn-info btn-sm">
 					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加公司
 				</button>
-				<a ng-if="hashAccess[_self_module.module_id]>1" 
+				<!-- <a ng-if="hashAccess[_self_module.module_id]>1" 
 					ui-sref="app.{{_self_module.module_channel}}({view:_self_module.module_view+'AddEdit',id:_self_module.module_id,channel:_self_module.url})" 
 					class="btn btn-rounded btn-info btn-sm">
 					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加公司
-				</a>
+				</a> -->
 			</div>
 		</div>
 		<table class="table">
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Username</th>
+					<th>公司代码</th>
+					<th>公司名称</th>
+					<th>電話</th>
+					<th>传真</th>
+					<th>网址</th>
+					<th>编辑</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td>1</td>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>Jacob</td>
-					<td>Thornton</td>
-					<td>@fat</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>Larry</td>
-					<td>the Bird</td>
-					<td>@twitter</td>
+				<tr ng-repeat="(i, company) in companyList">
+					<td>{{i+1}}</td>
+					<td>{{company.company_code}}</td>
+					<td>{{company.company_name}}</td>
+					<td>{{company.company_phone}}</td>
+					<td>{{company.company_fax}}</td>
+					<td>{{company.company_website}}</td>
+					<td><a class="pull-right" ng-click="addEdit(company)"><i class="fa fa-edit"></i> 编辑</a></td>
 				</tr>
 			</tbody>
 		</table>

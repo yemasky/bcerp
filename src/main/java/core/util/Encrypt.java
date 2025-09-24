@@ -242,14 +242,14 @@ public class Encrypt {
 	}
 
 	public String base64EncryptString(final String content) {
-		return new String(Base64.getEncoder().encode(content.getBytes())).replaceAll("\\+", "_");
+		return new String(Base64.getEncoder().encode(content.getBytes())).replaceAll("\\+", "_").replaceAll("/", "-");
 	}
 
 	/*
 	 * base64DESEncrypt
 	 */
 	public static String base64DESEncrypt(final String content, final String key) {
-		return new String(Base64.getEncoder().encode(DESEncrypt(content, key))).replaceAll("\\+", "_");
+		return new String(Base64.getEncoder().encode(DESEncrypt(content, key))).replaceAll("\\+", "_").replaceAll("/", "-");
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class Encrypt {
 	}
 
 	public static String base64DecryptString(final String base64EncryptString) {
-		return new String(Base64.getDecoder().decode(base64EncryptString.replaceAll("_", "+").getBytes()));
+		return new String(Base64.getDecoder().decode(base64EncryptString.replaceAll("_", "+").replaceAll("-", "/").getBytes()));
 	}
 
 	/*
@@ -271,7 +271,7 @@ public class Encrypt {
 	 */
 	public static String base64DESDecrypt(final String base64EncryptString, final String key) {
 		return new String(
-				DESDecrypt(Base64.getDecoder().decode(base64EncryptString.replaceAll("_", "+").getBytes()), key));
+				DESDecrypt(Base64.getDecoder().decode(base64EncryptString.replaceAll("_", "+").replaceAll("-", "/").getBytes()), key));
 	}
 
 	/**

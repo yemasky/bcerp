@@ -1,4 +1,4 @@
-package com.base.model.vo.BwleErp.employee;
+package com.base.model.vo.BwleErp;
 
 import com.base.model.entity.BwleErp.employee.EmployeeBaseAbstract;
 

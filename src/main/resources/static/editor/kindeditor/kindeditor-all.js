@@ -7308,10 +7308,10 @@ KindEditor.plugin('image', function(K) {
 			form : K('.ke-form', div),
 			target : target,
 			width: 60,
-			afterUpload : function(data) {
+			afterUpload : function(data) {//console.log(data) 获取返回值 配合springboot已做修改
 				dialog.hideLoading();
-				if (data.error === 0) {
-					var url = data.url;
+				if (data.success) {
+					var url = data.item.images.url;
 					if (formatUploadUrl) {
 						url = K.formatUrl(url, 'absolute');
 					}
@@ -7319,7 +7319,7 @@ KindEditor.plugin('image', function(K) {
 						self.afterUpload.call(self, url, data, name);
 					}
 					if (!fillDescAfterUploadImage) {
-						clickFn.call(self, url, data.title, data.width, data.height, data.border, data.align);
+						clickFn.call(self, url, data.item.images.title, data.item.images.width, data.item.images.height, data.item.images.border, data.item.images.align);
 					} else {
 						K(".ke-dialog-row #remoteUrl", div).val(url);
 						K(".ke-tabs-li", div)[0].click();
