@@ -14,7 +14,6 @@ import com.base.service.BwleErp.UploadService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
 import com.base.type.UseType;
-import com.base.util.EncryptUtiliy;
 
 import core.jdbc.mysql.WhereRelation;
 import core.util.FileUpload;
@@ -23,18 +22,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component("BwleErp.index.UploadAction")
 public class UploadAction extends AbstractAction {
-	private String employeeCookieName = "token";
 	private int employee_id;
 	@Autowired
 	private UploadService uploadService;
 
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		String eidDecryptHeader = request.getHeader(this.employeeCookieName);
-		String eidDecryptCookie = this.getCookie(request, this.employeeCookieName);
-		String eidDecrypt = eidDecryptHeader == null || eidDecryptHeader.equals("") ? eidDecryptCookie : eidDecryptHeader;	    
-		int employee_id = EncryptUtiliy.instance().myIDDecrypt(eidDecrypt);
+		// TODO Auto-generated method stub    
+		int employee_id = (int)request.getAttribute("employee_id");
 		if (employee_id > 0) {
 			this.employee_id = employee_id;
 			return this.status;
@@ -80,7 +75,6 @@ public class UploadAction extends AbstractAction {
 	}
 	
 	public void doUploadCompanyLogo(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		request.setAttribute("employee_id", employee_id);  
 		ArrayList<FileDTO> fileList = FileUpload.instance().multiSpringUpload(request, Config.uploadPath);
 		int size = fileList.size();
 		if (size > 0) {
@@ -114,7 +108,7 @@ public class UploadAction extends AbstractAction {
 		
 		if(delimg != null && !delimg.equals("")) {
 			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("member_id", this.employee_id).EQ("file_url", delimg);
+			whereRelation.EQ("employee_id", this.employee_id).EQ("file_url", delimg);
 			uploadService.deleteFile(whereRelation);
 		}
 		this.success.setSuccessCode(ErrorCode.__T_SUCCESS);

@@ -1,8 +1,6 @@
 package com.BwleErp.controller;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 import org.slf4j.MDC;
@@ -32,7 +30,7 @@ public class BwleErpController extends AbstractController {
 	private final String thisController = "BwleErp";
 	private int noLogin = 1;
 	private String employeeCookieName = "token";
-	private int employee_id = 0;
+	//private 
 	@Autowired
 	private EmployeeServiceImpl employeeService;
 
@@ -41,15 +39,16 @@ public class BwleErpController extends AbstractController {
 		// TODO Auto-generated method stub
 		String eidDecryptHeader = request.getHeader(this.employeeCookieName);
 		String eidDecryptCookie = this.getCookie(request, this.employeeCookieName);
-		String eidDecrypt = eidDecryptHeader == null || eidDecryptHeader.equals("") ? eidDecryptCookie : eidDecryptHeader;	    
+		String eidDecrypt = eidDecryptHeader == null || eidDecryptHeader.equals("") ? eidDecryptCookie : eidDecryptHeader;	
+		int employee_id = 0;//获取登录的用户ID
 		try {
-			int employee_id = EncryptUtiliy.instance().myIDDecrypt(eidDecrypt);
+			employee_id = EncryptUtiliy.instance().myIDDecrypt(eidDecrypt);
 			if (employee_id > 0) {
 				this.noLogin = 0;
-				this.employee_id = employee_id;
 			} else {
 				this.noLogin = 1;
 			}
+			request.setAttribute("employee_id", employee_id);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,7 +62,7 @@ public class BwleErpController extends AbstractController {
 	}
 
 	@Override
-	@RequestMapping({"/", "/**", "*", ""})//value = "/**"
+	@RequestMapping(value = "/")//value = "/**"
 	public String defaultAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		model.addAttribute("__WEB", "/erp/");
 		model.addAttribute("__IMGWEB", "http://localhost/xiaoqu/images/");
@@ -77,7 +76,7 @@ public class BwleErpController extends AbstractController {
 		return "BwleErp/default";
 	}
 
-	@RequestMapping({ "index", "index.html", "default.html" })
+	/*@RequestMapping({ "index", "index.html", "default.html", "/", "/**", "*", "" })
 	public String indexAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		model.addAttribute("__TITLE", "welcome");
 		model.addAttribute("__VERSION", "1.20");
@@ -89,7 +88,7 @@ public class BwleErpController extends AbstractController {
 		model.addAttribute("noLogin", this.noLogin);
 
 		return "404";
-	}
+	}*/
 	///module/method?action=actionX
 	@RequestMapping(value = "/{module}/{method}")
 	@ResponseBody
@@ -120,7 +119,7 @@ public class BwleErpController extends AbstractController {
 	public Object excuteController(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			String module = "Index";
-			String actionInvoke = "index";
+			String actionInvoke = "Index";
 			Object method = request.getAttribute("method");
 			if(method == null) method = "";
 			//除去checkLogin\logout\forgetPassword\refresh 都需要檢查權限
@@ -129,7 +128,7 @@ public class BwleErpController extends AbstractController {
 			} else {
 				String channel = request.getParameter("channel");
 				int module_id = EncryptUtiliy.instance().intIDDecrypt(channel);
-				EmployeePermissionDto employeePermission = employeeService.permissionCheck(module_id, this.employee_id);
+				EmployeePermissionDto employeePermission = employeeService.permissionCheck(module_id, (int)request.getAttribute("employee_id"));
 				if(!employeePermission.isPermission()) {
 					Success success = new Success();
 					success.setErrorCode(ErrorCode.__F_PERMISSION);
@@ -140,6 +139,7 @@ public class BwleErpController extends AbstractController {
 					module = employeePermission.getModule();
 				}
 			}
+			
 			//action
 			String action = Utiliy.instance().ucfirst(actionInvoke) + "Action";
 			//module

@@ -1,0 +1,104 @@
+<div class="p-md" ng-controller="SeaportController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit(param)" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加港口
+				</button>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>电话区号</th>
+					<th>国家简称</th>
+					<th>英文名</th>
+					<th>中文名</th>
+					<th>区域</th>
+					<th>左右驾</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, seaport) in seaportList"> 
+					<td>{{i+1}}</td>
+					<td>{{seaport.area_code}}</td>
+					<td>{{seaport.seaport_name}}</td>
+					<td>{{seaport.seaport_enname}}</td>
+					<td>{{seaport.country_id}}</td>
+					<td>{{seaport.country_id}}</td>
+					<td><a class="pull-right" ng-click="addEdit(seaport)"><i class="fa fa-edit"></i> 编辑</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditSeaport.html">
+	<div class="aside box-shadow aside-m h-6x" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default no-b-b">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body">                    
+							<div class="form-group">
+								<label class="col-sm-3 control-label">英文名</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="seaport.seaport_enname" required >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">中文名</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="seaport.seaport_name" required >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">电话区号</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="seaport.area_code" required >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">所属国家</label>
+								<div class="col-sm-4">
+									<ui-select ng-model="seaport.country" ng-change="selectSeaport()" theme="bootstrap" ng-disabled="disabled" style="min-width: 300px;">
+									  <ui-select-match placeholder="所属国">{{$select.selected.country_name}}</ui-select-match>
+									  <ui-select-choices group-by="someGroupFn" repeat="country in countryList | propsFilter: {country_name: $select.search, country_enname: $select.search}">
+									    <div ng-bind-html="country.country_name | highlight: $select.search"></div>
+									    <small>
+									      英文: {{country.country_enname}}
+									      中文: <span ng-bind-html="''+country.country_name | highlight: $select.search"></span>
+									    </small>
+									  </ui-select-choices>
+									</ui-select> 
+								</div> 
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">英文名</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="seaport.country_enname" required readonly>
+								</div>
+							</div>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+<!-- AddEditCountry.html -->

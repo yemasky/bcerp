@@ -215,9 +215,9 @@ app.filter('propsFilter', function() {
     };
 });
 angular.module("app").constant("MODULE_CONFIG", [
-    {name: "ui.select",module: !0,files: ["${__RESOURCE}vendor/modules/angular-ui-select/select.min.js", "${__RESOURCE}vendor/modules/angular-ui-select/select.min.css"]}, 
-    {name: "easyPieChart",module: !1,files: ["${__RESOURCE}vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]},
-	{name: "angularBootstrapNavTree",module: !0,files: ["${__RESOURCE}vendor/modules/angular-bootstrap-nav-tree/abn_tree_directive.js", "${__RESOURCE}vendor/modules/angular-bootstrap-nav-tree/abn_tree.css"]}
+    {name: "ui.select",module: !0,files: [__RESOURCE+"vendor/modules/angular-ui-select/select.min.js", __RESOURCE+"vendor/modules/angular-ui-select/select.min.css"]}, 
+    {name: "easyPieChart",module: !1,files: [__RESOURCE+"vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]},
+	{name: "angularBootstrapNavTree",module: !0,files: [__RESOURCE+"vendor/modules/angular-bootstrap-nav-tree/abn_tree_directive.js", __RESOURCE+"vendor/modules/angular-bootstrap-nav-tree/abn_tree.css"]}
 ]).config(["$ocLazyLoadProvider", "MODULE_CONFIG", function($ocLazyLoadProvider, MODULE_CONFIG) {
     $ocLazyLoadProvider.config({
         debug: !1,
@@ -246,7 +246,7 @@ angular.module("app").directive("uiFullscreen", ["$ocLazyLoad", "$document", fun
     return {
         restrict: "AC",
         link: function(c, d, e) {
-            d.addClass("hide"), a.load("${__RESOURCE}vendor/libs/screenfull.min.js").then(function() {
+            d.addClass("hide"), a.load(__RESOURCE+"vendor/libs/screenfull.min.js").then(function() {
                 screenfull.enabled && d.removeClass("hide"), d.bind("click", function() {
                     var a;
                     e.target && (a = angular.element(e.target)[0]), screenfull.toggle(a)
@@ -302,7 +302,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state("app.home", {
         url: "/home",
 		templateUrl: function() {
-			return '${__RESOURCE}views/home.html?${__VERSION}';
+			return __RESOURCE+'views/home.html?${__VERSION}';
 		},
         controller: function ($scope) {
         }
@@ -310,19 +310,19 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         url: "/Setting/:view/:id/:channel", //url: "/role/edit?id", 由view的 ui-sref="app.{{module.module_channel}}({view:module.module_view,channel:module.url})" 决定
         templateUrl: function($routeParams, $rootScope, $scope) {
 			var view = $routeParams.view;//有view访问静态文件
-			return __RESOURCE + 'views/Setting/'+$routeParams.view+'.html?${__VERSION}';
+			return __RESOURCE + 'views/Setting/'+$routeParams.view+'.html?'+__VERSION;
         },
         controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
 		resolve: {
             deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
-				return $ocLazyLoad.load([__RESOURCE + "scripts/controllers/Setting/"+$stateParams.view+".js?${__VERSION}"]);
+				return $ocLazyLoad.load([__RESOURCE + "scripts/controllers/Setting/"+$stateParams.view+".js?"+__VERSION]);
             }]
         }
         
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
-            return __RESOURCE + 'views/Test/'+$routeParams.test+'.html?${__VERSION}';
+            return __RESOURCE + 'views/Test/'+$routeParams.test+'.html?'+__VERSION;
         },
 		controller: function() {
 		}
@@ -332,7 +332,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 		templateUrl: "/login.html",
         resolve: {
             deps: ["$ocLazyLoad", function($ocLazyLoad) {
-                return $ocLazyLoad.load(["${__RESOURCE}vendor/libs/md5.min.js"]);
+                return $ocLazyLoad.load([__RESOURCE + "vendor/libs/md5.min.js"]);
             }]
         }
     }).state("app.logout", {
@@ -341,7 +341,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
             return "/login.html";
         },
         controller: function ($httpService, $location) {
-            $httpService.post('${__WEB}index/logout', '', function(response){
+            $httpService.post(__WEB + 'index/logout', '', function(response){
                 $location.path('/login');
             });
         }
@@ -399,8 +399,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         //初始化变量
         $scope.__RESOURCE = __RESOURCE;
-		$scope._resource = '${__RESOURCE}';
-		$scope.__WEB = '${__WEB}';
+		$scope._resource = __RESOURCE;
+		$scope.__WEB = __WEB;
 		$scope.employee = {};
 		$scope.companyList = {};
 		$rootScope.__ImagesUploadUrl = '${__ImagesUploadUrl}';
@@ -410,7 +410,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		let noLogin = "${noLogin}";
 		if (noLogin == "0") {
 			if(typeof($rootScope.employeeMenu) == 'undefined' || $rootScope.employeeMenu == "") {
-				$httpService.post('${__WEB}index/refresh', {}, function(result){
+				$httpService.post(__WEB + 'index/refresh', {}, function(result){
 					if(result.data.success == true) {
 						$scope.setCommonSetting(result.data.item);
 						$httpService.header('token', result.data.item.employee.e_id);
@@ -488,7 +488,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $location.path('/app/home');
 		};
 		$rootScope._self_module = '';
-		$scope.action_nav = "";
+		$scope.action_nav = "";$scope.action_nav_aside = "";
 		$scope.setActionNavName = function(module_id, _self_nav) {//设置导航栏
 			let menus = $scope.hashEmployeeModule, nav = "";
 			let _self_module = menus[module_id];	
@@ -508,11 +508,13 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					getChannelNav(menus[_self_module.module_father_id]);
 				}
 			}
+			$scope.action_nav = '' + nav;
 			if(angular.isDefined(_self_nav) && _self_nav != '') {
 				if(nav != "") nav += ' <i class="fa fa-angle-double-right"></i> ';
 				nav += _self_nav;
+				$scope.action_nav_aside = nav;
 			}
-			$scope.action_nav = '' + nav;
+			
 		};
         $scope.getChannelModule = function(module_id) {
             return $scope.hashEmployeeModule[module_id];
@@ -569,6 +571,11 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		////*********************************////
 		$scope.redirect = function(url) {
 			$location.path(url);
+		};
+		$scope.reload = function($stateParams) {
+			let path = "app/"+$rootScope._self_module.module_channel+'/'+$stateParams.view+'/'+$stateParams.id+'/'+$stateParams.channel;
+			console.log(path);
+			$location.path(path);
 		};
 		$scope._function = function(){};$scope._param = {};
 		$scope.setController = function(_function, _param) {
@@ -662,7 +669,7 @@ app.controller("LoginController",function($rootScope, $scope, $httpService, $mod
 		$scope.beginLoading =! $scope.beginLoading;
 		var password = $scope.param.password;
 		$scope.param.password = md5(md5(password));
-		$httpService.post('${__WEB}app.do?method=checkLogin', $scope, function(result){
+		$httpService.post(__WEB + 'app.do?method=checkLogin', $scope, function(result){
 			$scope.beginLoading =! $scope.beginLoading;
 			if(result.data.success == true) {
                 $location.path('/app/home');

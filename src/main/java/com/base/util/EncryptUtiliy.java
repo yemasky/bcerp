@@ -18,7 +18,7 @@ public class EncryptUtiliy {
 	}
 
 	public String intIDEncrypt(int intId) {
-		return Encrypt.base64DESEncrypt(intId + "|" + Utiliy.instance().getTodayDate(), Config.encryptKey);
+		return Encrypt.base64DESEncrypt(intId + "`" + Utiliy.instance().getTodayDate(), Config.encryptKey);
 	}
 
 	public int intIDDecrypt(String intEncrypt) {
@@ -39,7 +39,7 @@ public class EncryptUtiliy {
 	private String[] dateDecrypt(String strEncrypt) {
 		if (strEncrypt == null || strEncrypt.trim().equals(""))
 			return null;
-		return Encrypt.base64DESDecrypt(strEncrypt, Config.encryptKey).split("|");
+		return Encrypt.base64DESDecrypt(strEncrypt, Config.encryptKey).split("`");
 	}
 	
 	public String myIDEncrypt(int intId) throws Exception {

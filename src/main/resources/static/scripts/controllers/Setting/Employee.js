@@ -1,23 +1,22 @@
 app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [],imagesUploadUrl = '',imagesManagerUrl = '';
-	var _view = $scope.$stateParams.view;
-	var param = 'channel='+_channel+'&view='+_view;
-	$scope.loading.show();$scope.param = {};
+	var _channel = $stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [];
+	var param = 'channel='+_channel;$scope.param = {};//定义变量
+	$scope.loading.show();
+	$httpService.header('method', 'getSector');
 	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
-		if(result.data.success == '0') {
+		$httpService.deleteHeader('method'); 
+		if(result.data.success == false) {
 			return;
-			//var message = $scope.getErrorByCode(result.data.code);
-			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+		} 
+		let hashSectorList = {};
+		let companySectorList = result.data.item.companySectorList;//部门职位
+		for (var index = 0; index < companySectorList.length; index++) {
+			hashSectorList[companySectorList[index].sector_id] = companySectorList[index];
 		}
-		common = result.data.common;
-		$scope.setCommonSetting(common);
-		$scope.setThisChannel('ALL');
-		$scope.channelSectorList = result.data.item.channelSectorList;//部门职位
-		sortChannelSector(result.data.item.channelSectorList);
-		imagesUploadUrl = result.data.item.imagesUploadUrl;
-		imagesManagerUrl = result.data.item.imagesManagerUrl;
+		$scope.companySectorList = hashSectorList;//哈希值
+		sortChannelSector(hashSectorList);
 		var roleList = result.data.item.channelRoleList;
 		var channelRoleList = [], k = 0;
 		if(roleList != '') {
@@ -26,25 +25,25 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			}
 		}
 		$scope.channelRoleList = channelRoleList;
-		function sortChannelSector(channelSectorList) {
+		function sortChannelSector(companySectorList) {
 			var positionList = {}; sectorI = 0,sectorJ = 0, sectorPosition = {}, sectorPositionChildren = {};
-			if(channelSectorList != '') {
-				for(var sector_id in channelSectorList) {
-					var listData = channelSectorList[sector_id];
+			if(companySectorList != '') {
+				for(var sector_id in companySectorList) {
+					var listData = companySectorList[sector_id];
 					var father_id = listData.sector_father_id;
 					if(listData.sector_type == 'sector') {//1级部门//father
 						if(angular.isUndefined(sectorList[father_id])) {
 							sectorChildrenList[father_id] = [];//father
-							sectorList[father_id] = channelSectorList[father_id];//father
-							sectorList[father_id].label = channelSectorList[father_id].sector_name;
+							sectorList[father_id] = companySectorList[father_id];//father
+							sectorList[father_id].label = companySectorList[father_id].sector_name;
                             sectorList[father_id]['children'] = {};
 							//
 							sectorPosition[father_id] = {};
 							sectorPosition[father_id]['father_id'] = sectorI;
 							sectorPosition[father_id]['children_id'] = 0;
 							sectorPositionList[sectorI] = {};
-							sectorPositionList[sectorI].label = channelSectorList[father_id].sector_name;
-							sectorPositionList[sectorI].data = channelSectorList[father_id];
+							sectorPositionList[sectorI].label = companySectorList[father_id].sector_name;
+							sectorPositionList[sectorI].data = companySectorList[father_id];
 							sectorPositionList[sectorI].children = [];
 							sectorI++;
 						}
@@ -67,7 +66,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 							//2级部门children_id++
 							sectorPosition[father_id].children_id++;
 						} else {//职位, 职位的father_id是部门ID
-							if(angular.isUndefined(positionList[father_id])) {
+							/*if(angular.isUndefined(positionList[father_id])) {
 								positionList[father_id] = {};//father
 								positionList[father_id]['children'] = {};
 							} 
@@ -83,7 +82,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 								sectorPosition[father_id].children_id++;
 							}
 							if(angular.isDefined(sectorPositionChildren[father_id])) {//存在第二级部门的职位
-								var sector_father_id = channelSectorList[father_id].sector_father_id;//第一级的sector_id
+								var sector_father_id = companySectorList[father_id].sector_father_id;//第一级的sector_id
 								var sectorIfather_id = sectorPosition[sector_father_id].father_id,children_id = sectorPositionChildren[father_id].father_id;
 								//
 								var positionChildren_id = sectorPositionChildren[father_id].children_id;
@@ -93,7 +92,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 								sectorPositionList[sectorIfather_id].children[children_id].children[positionChildren_id].data = listData;
 								sectorPositionList[sectorIfather_id].children[children_id].children[positionChildren_id].children = [];
 								sectorPositionChildren[father_id].children_id++;
-							}
+							}*/
 						}
 					}                        
 				}
@@ -102,8 +101,8 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		}
 	});
 	//组织架构树
-	var my_data = [];my_data[0] = {};my_data[0].data = {'label':'部门职位'};
-	my_data[0].label = '部门职位';my_data[0].children = sectorPositionList;
+	var my_data = [];my_data[0] = {};my_data[0].data = {'label':'所有部门'};
+	my_data[0].label = '所有部门';my_data[0].children = sectorPositionList;
 	$scope.my_data = my_data;
 //**//Employee////////////////////////////////////////////////////////////////////////////
 	var asideEmployee = '';$scope.this_nav_menu_name = '选择部门';
@@ -113,10 +112,10 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			$scope.newPassword = false;$scope.setPassword = false;
 			$scope.param = angular.copy(_this);
 			$('#main_images').attr('src', _this.photo);
-			var thisSector = $scope.channelSectorList[_this.sector_father_id];//部门
+			var thisSector = $scope.companySectorList[_this.sector_father_id];//部门
 			$scope.this_nav_menu_name = thisSector.sector_name;
 			$scope.selectCommonNavMenu(thisSector, '');
-			var thisPosition = $scope.channelSectorList[_this.sector_id];
+			var thisPosition = $scope.companySectorList[_this.sector_id];
 			$scope.param.position_id = angular.copy(_this.sector_id);//职位ID
 			$scope.param._s_id = angular.copy(thisPosition.s_id);//职位ID
 		} else {
@@ -125,7 +124,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			$('#main_images').attr('src', '/data/images/userimg/user_b.png');
 		}
 		$scope.action = '添加/编辑';
-		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Management/EmployeeAddEdit.tpl.html?'+__VERSION});
+		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Management/EmployeeAddEdit.tpl.html?'+__VERSION});
 		asideEmployee.$promise.then(function() {
 			asideEmployee.show();
 			$(document).ready(function(){
@@ -240,32 +239,8 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$('#commonNavMenu').next().hide();
 	}
 	//
-	//<!--图片上传及操作-->
 	//images
-	var isSetImage = false;
-	$scope.setImage = function() {
-		//if(isSetImage) return;isSetImage = true;
-		var uploadJsonUrl = 'app.do?channel='+imagesUploadUrl+'&channel_config=employee';
-		var fileManagerJsonUrl = 'app.do?channel='+imagesManagerUrl+'&channel_config=employee';
-		window.K = KindEditor;
-		var editor = K.editor({
-			uploadJson : uploadJsonUrl,
-			fileManagerJson : fileManagerJsonUrl,
-			allowFileManager : true
-		});
-		K('.set_image_src').click(function() {
-			editor.loadPlugin('image', function() {
-				editor.plugin.imageDialog({
-					//imageUrl : K('#image_src').val(),
-					clickFn : function(url, title, width, height, border, align) {
-						editor.hideDialog();
-						$('#main_images').attr('src', url);
-						$scope.param.photo = url;
-					}
-				});
-			});
-		});
-	}
+
 //***********	//SectorPosition/////////////////////////////////////////////////////////////////////////////
 	$scope.SectorPosition = function(branch) {
 		console.log(branch);
@@ -277,8 +252,12 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.SectorPositionEditType = 'Add';
 		if(branch_type == 'sector') {
 			title = '部门';$scope.param.sector_type = 'sector';
+			if(branch == null) {
+				$alert({title: 'Error', content: '选择节点，再点击添加！', templateUrl: '/modal-warning.html', show: true});
+				return;
+			}
 			if(branch.level >= 3) {
-				$alert({title: 'Error', content: '部门只能添加2级，职位下面不能添加部门！', templateUrl: '/modal-warning.html', show: true});
+				$alert({title: 'Error', content: '部门只能添加2级！', templateUrl: '/modal-warning.html', show: true});
 				return;
 			}
 			$scope.param.sector_father_id = '';
@@ -302,7 +281,8 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.param["valid"] = "1";
 		//if(branch != null) $scope.param = branch;
 		$scope.action = '添加/编辑'+title;
-		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Management/SectorPositionAddEdit.tpl.html?'+__VERSION});
+		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
+			backdrop:"static",container:'#MainController', templateUrl: __RESOURCE + 'views/Setting/SectorPositionAddEdit.tpl.html?'+__VERSION});
 		asideSectorPosition.$promise.then(function() {
 			asideSectorPosition.show();
 			$(document).ready(function(){

@@ -1,5 +1,8 @@
 package com.BwleErp.controller.SystemSetting;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +13,7 @@ import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;
 
+import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,6 +36,9 @@ public class CompanyAction extends AbstractAction {
 			method = "";
 		//
 		switch (method) {
+		case "getCompany":
+			this.doGetCompany(request, response);
+			break;
 		case "saveCompany":
 			this.doSaveCompany(request, response);
 			break;
@@ -53,6 +60,16 @@ public class CompanyAction extends AbstractAction {
 
 	}
 
+	public void doGetCompany(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(CompanyVo.class);
+		NeedEncrypt needEncrypt = new NeedEncrypt();
+		needEncrypt.setNeedEncrypt(true);
+		needEncrypt.setNeedEncrypt("company_id", NeedEncrypt._ENCRYPT);
+		List<HashMap<String, Object>> companyList = this.generalService.getList(whereRelation, needEncrypt);
+		this.success.setItem("companyList", companyList);
+	}
+	
 	public void doSaveCompany(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String company_edit_id = request.getParameter("company_edit_id");
 		int company_id = 0;

@@ -37,11 +37,8 @@ public class IndexAction extends AbstractAction {
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		System.out.println("action check");
-		String eidDecryptHeader = request.getHeader("token");
-		String eidDecryptCookie = this.getCookie(request, "token");
-		String eidDecrypt = eidDecryptHeader == null || eidDecryptHeader.equals("") ? eidDecryptCookie : eidDecryptHeader;	    
+		int employee_id = (int)request.getAttribute("employee_id");
 		try {
-			int employee_id = EncryptUtiliy.instance().myIDDecrypt(eidDecrypt);
 			if (employee_id > 0) {
 				this.employee_id = employee_id;
 			}
@@ -164,7 +161,7 @@ public class IndexAction extends AbstractAction {
 		int[] iModule_idsList = Utility.instance().hashMapListToIntArray(roleModuleAccessList, "module_id");
 		// 获取菜单
 		whereRelation = new WhereRelation();
-		whereRelation.IN("module_id", iModule_idsList).ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
+		whereRelation.IN("module_id", iModule_idsList).EQ("is_menu", "1").ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
 				.ORDER_DESC("module_order").ORDER_DESC("action_order").setTable_clazz(Modules.class);
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);

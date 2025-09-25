@@ -1,0 +1,96 @@
+app.controller('SeaportController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+	$ocLazyLoad, $alert, $stateParams) {
+	$scope.param = {}; $scope.seaport = {}; $scope.seaportCountry = {}; $scope.seaportList = {};$scope.countryList = {};$scope.edit_id = 0;//定义变量
+	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$ocLazyLoad.load([__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
+					  __RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION]);
+	let aside;
+	$httpService.header('method', 'getSeaport');
+	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
+		$scope.loading.hide();
+		$httpService.deleteHeader('method'); 
+		if(result.data.success == false) { 
+			return;
+		} 
+		$scope.seaportList = result.data.item.seaportList;//
+		$scope.countryList = result.data.item.countryList;//
+	})
+	
+	$scope.addEdit = function(seaport) {
+		if(typeof(seaport) != 'undefined') {
+			$scope.seaport = seaport;
+			$scope.edit_id = angular.copy(seaport.seaport_id);
+		}
+		$scope.setActionNavName($stateParams.id, "添加/编辑");
+		$scope.action = '添加/编辑';
+		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditSeaport.html'+__VERSION});
+		aside.$promise.then(function() {
+			aside.show();
+			$(document).ready(function(){
+				
+			});
+		})
+	}
+
+	$scope.saveData = function() {
+		if(this.seaport == null || this.seaport == '') {
+			$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		if(!angular.isDefined(this.seaport.seaport_name)) {
+			$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		$scope.loading.show();
+		$scope.param.seaport = angular.copy(this.seaport);
+		$httpService.header('method', 'saveSeaport');
+		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
+			$scope.loading.percent();
+		    $httpService.deleteHeader('method');
+			if(result.data.success == '0') { 
+				return; 
+			} 
+			$scope.seaport = {};
+			$scope.edit_id = 0;
+			aside.hide(); 
+			$scope.reload($stateParams);
+		});
+	}
+	
+	//
+	$scope.disabled = undefined;
+    $scope.searchEnabled = undefined;
+
+    $scope.enable = function() {
+    $scope.disabled = false;
+    };
+
+    $scope.disable = function() {
+    $scope.disabled = true;
+    };
+
+    $scope.enableSearch = function() {
+    $scope.searchEnabled = true;
+    }
+
+    $scope.disableSearch = function() {
+    $scope.searchEnabled = false;
+    }
+
+    $scope.clear = function() {
+    $scope.person.selected = undefined;
+    $scope.address.selected = undefined;
+    $scope.country.selected = undefined;
+    };
+	$scope.someGroupFn = function (item){
+        if (item.country_enname[0] >= 'A' && item.country_enname[0] <= 'M')
+            return 'From A - M';
+        if (item.country_enname[0] >= 'N' && item.country_enname[0] <= 'Z') 
+            return 'From N - Z';
+    };
+	$scope.selectSeaport = function() {
+		$scope.seaport.country_enname = $scope.seaport.country.country_enname;
+		console.log($scope.seaport,$scope.seaportCountry);
+	}
+});

@@ -14,15 +14,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 	/////////
 	$scope.people = [
 	{ name: 'Adam',      email: 'adam@email.com',      age: 12, country: 'United States' },
-	{ name: 'Amalie',    email: 'amalie@email.com',    age: 12, country: 'Argentina' },
-	{ name: 'Estefanía', email: 'estefania@email.com', age: 21, country: 'Argentina' },
-	{ name: 'Adrian',    email: 'adrian@email.com',    age: 21, country: 'Ecuador' },
-	{ name: 'Wladimir',  email: 'wladimir@email.com',  age: 30, country: 'Ecuador' },
-	{ name: 'Samantha',  email: 'samantha@email.com',  age: 30, country: 'United States' },
-	{ name: 'Nicole',    email: 'nicole@email.com',    age: 43, country: 'Colombia' },
-	{ name: 'Natasha',   email: 'natasha@email.com',   age: 54, country: 'Ecuador' },
-	{ name: 'Michael',   email: 'michael@email.com',   age: 15, country: 'Colombia' },
-	{ name: 'Nicolás',   email: 'nicolas@email.com',    age: 43, country: 'Colombia' }
+	{ name: 'Amalie',    email: 'amalie@email.com',    age: 12, country: 'Argentina' }
 	];
 	
 	$scope.availableColors = ['Red','Green','Blue','Yellow','Magenta','Maroon','Umbra','Turquoise'];
@@ -33,6 +25,16 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 	$scope.multipleDemo.selectedPeopleWithGroupBy = [$scope.people[8], $scope.people[6]];
 	//////////
 	let asideCompany;
+	$httpService.header('method', 'getCompany');
+	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
+		$scope.loading.hide();
+		$httpService.deleteHeader('method'); 
+		if(result.data.success == false) {
+			return;
+		} 
+		$scope.companyList = result.data.item.companyList;//部门职位
+	})
+	
 	$scope.addEdit = function(company) {
 		if(typeof(company) != 'undefined') {
 			$scope.company_edit_id = angular.copy(company.company_id);
@@ -41,7 +43,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		asideCompany = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-		backdrop:"static",container:'#MainController', templateUrl: __RESOURCE + 'views/Setting/CompanyAddEditAside.html?'+__VERSION});
+				backdrop:"static",container:'#MainController', templateUrl: __RESOURCE + 'views/Setting/CompanyAddEditAside.html?'+__VERSION});
 		asideCompany.$promise.then(function() {
 			asideCompany.show();
 			$(document).ready(function(){
@@ -96,8 +98,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 			asideCompany.hide();
 			let path = '/app/'+$rootScope._self_module.module_channel+'/'+$stateParams.view+'/'
 							+$stateParams.id+'/'+$stateParams.channel;
-			console.log(path);
-			$location.path();
+			$location.path(path);
 		});
 	}
 });
