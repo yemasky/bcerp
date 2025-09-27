@@ -7,7 +7,6 @@ public abstract class CompanySectorBaseAbstract {
 	private Long sector_order;
 	private String sector_type;
 	private Integer sector_valid;
-	private Integer sector_delete;
 	public Integer getCompany_id() {
 		return company_id;
 	}
@@ -43,12 +42,6 @@ public abstract class CompanySectorBaseAbstract {
 	}
 	public void setSector_valid(Integer sector_valid) {
 		this.sector_valid = sector_valid;
-	}
-	public Integer getSector_delete() {
-		return sector_delete;
-	}
-	public void setSector_delete(Integer sector_delete) {
-		this.sector_delete = sector_delete;
 	}
 	
 }

@@ -94,7 +94,7 @@
           </span>
 		</a>
 		<ul class="nav nav-sub bg" ng-if="module.have_children==1">
-			<li ng-repeat="(children_id, children) in module.children">
+			<li ng-repeat="(children_id, children) in module.children" ng-if="children.is_menu==1">
 			  <a ui-sref="app.{{children.module_channel}}({view:children.module_view,id:children.module_id,channel:children.url})" ng-click="setActionNavName(children.module_id);setUiNav($event)">
 				<span class="font-normal">{{children.module_name}}</span>
 				<span class="pull-right text-muted" ng-if="children.have_children==1">

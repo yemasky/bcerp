@@ -71,7 +71,7 @@
 								<div class="col-sm-4">
 									<ui-select ng-model="seaport.country" ng-change="selectSeaport()" theme="bootstrap" ng-disabled="disabled" style="min-width: 300px;">
 									  <ui-select-match placeholder="所属国">{{$select.selected.country_name}}</ui-select-match>
-									  <ui-select-choices group-by="someGroupFn" repeat="country in countryList | propsFilter: {country_name: $select.search, country_enname: $select.search}">
+									  <ui-select-choices group-by="selectGroup" repeat="country in countryList | propsFilter: {country_name: $select.search, country_enname: $select.search}">
 									    <div ng-bind-html="country.country_name | highlight: $select.search"></div>
 									    <small>
 									      英文: {{country.country_enname}}
@@ -101,4 +101,4 @@
 		</div>
 	</div>
 </script>
-<!-- AddEditCountry.html -->
+<!-- AddEditSeaport.html -->

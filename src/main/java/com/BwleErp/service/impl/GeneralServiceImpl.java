@@ -86,4 +86,9 @@ public class GeneralServiceImpl  implements GeneralService{
 		// TODO Auto-generated method stub
 		return this.genernalDao.getEntity(whereRelation);
 	}
+
+	@Override
+	public void closeConnection() throws SQLException {
+		this.genernalDao.closeConnection();
+	}
 }

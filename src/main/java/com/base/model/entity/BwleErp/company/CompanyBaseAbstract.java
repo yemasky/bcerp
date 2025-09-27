@@ -25,7 +25,7 @@ public abstract class CompanyBaseAbstract {
 	private String company_certificate_effect_date;
 	private String company_trade_code;
 	private String company_introduce;
-	private String company_remind_employee_ids;
+	private String company_remind_employee;
 	private Integer company_valid;
 	public String getCompany_code() {
 		return company_code;
@@ -171,11 +171,11 @@ public abstract class CompanyBaseAbstract {
 	public void setCompany_introduce(String company_introduce) {
 		this.company_introduce = company_introduce;
 	}
-	public String getCompany_remind_employee_ids() {
-		return company_remind_employee_ids;
+	public String getCompany_remind_employee() {
+		return company_remind_employee;
 	}
-	public void setCompany_remind_employee_ids(String company_remind_employee_ids) {
-		this.company_remind_employee_ids = company_remind_employee_ids;
+	public void setCompany_remind_employee(String company_remind_employee) {
+		this.company_remind_employee = company_remind_employee;
 	}
 	public Integer getCompany_valid() {
 		return company_valid;

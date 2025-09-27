@@ -83,12 +83,6 @@ app.controller('SeaportController', function($rootScope, $scope, $httpService, $
     $scope.address.selected = undefined;
     $scope.country.selected = undefined;
     };
-	$scope.someGroupFn = function (item){
-        if (item.country_enname[0] >= 'A' && item.country_enname[0] <= 'M')
-            return 'From A - M';
-        if (item.country_enname[0] >= 'N' && item.country_enname[0] <= 'Z') 
-            return 'From N - Z';
-    };
 	$scope.selectSeaport = function() {
 		$scope.seaport.country_enname = $scope.seaport.country.country_enname;
 		console.log($scope.seaport,$scope.seaportCountry);

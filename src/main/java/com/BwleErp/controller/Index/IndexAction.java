@@ -161,7 +161,7 @@ public class IndexAction extends AbstractAction {
 		int[] iModule_idsList = Utility.instance().hashMapListToIntArray(roleModuleAccessList, "module_id");
 		// 获取菜单
 		whereRelation = new WhereRelation();
-		whereRelation.IN("module_id", iModule_idsList).EQ("is_menu", "1").ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
+		whereRelation.IN("module_id", iModule_idsList).ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
 				.ORDER_DESC("module_order").ORDER_DESC("action_order").setTable_clazz(Modules.class);
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);

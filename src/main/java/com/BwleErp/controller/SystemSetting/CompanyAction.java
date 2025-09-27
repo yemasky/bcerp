@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
+import com.base.model.entity.BwleErp.company.Bank;
 import com.base.model.entity.BwleErp.company.Company;
 import com.base.model.vo.BwleErp.CompanyVo;
 import com.base.service.GeneralService;
@@ -42,6 +43,9 @@ public class CompanyAction extends AbstractAction {
 		case "saveCompany":
 			this.doSaveCompany(request, response);
 			break;
+		case "saveBank":
+			this.doSaveBank(request, response);
+			break;
 		default:
 			this.doDefault(request, response);
 			break;
@@ -51,7 +55,7 @@ public class CompanyAction extends AbstractAction {
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-
+		generalService.closeConnection();
 	}
 
 	@Override
@@ -67,7 +71,13 @@ public class CompanyAction extends AbstractAction {
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("company_id", NeedEncrypt._ENCRYPT);
 		List<HashMap<String, Object>> companyList = this.generalService.getList(whereRelation, needEncrypt);
+		//
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(Bank.class);
+		List<Bank> bankList = generalService.getEntityList(whereRelation);
+		//
 		this.success.setItem("companyList", companyList);
+		this.success.setItem("bankList", bankList);
 	}
 	
 	public void doSaveCompany(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -86,6 +96,24 @@ public class CompanyAction extends AbstractAction {
 		} else {
 			generalService.save(companyVo);
 		}
+	}
+	
+	public void doSaveBank(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String _edit_id = request.getParameter("edit_id");
+		int edit = 0;
+		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
+			edit = Integer.parseInt(_edit_id);
+		}
+		// TODO Auto-generated method stub
+		Bank bank = this.modelMapper.map(request.getAttribute("bank"), Bank.class);
+		WhereRelation whereRelation = new WhereRelation();
+		if(edit > 0) {//update
+			whereRelation.EQ("bank_id", bank.getBank_id()).setTable_clazz(Bank.class);
+			generalService.updateEntity(bank, whereRelation);
+		} else {
+			generalService.save(bank);
+		}
+		//
 	}
 
 }

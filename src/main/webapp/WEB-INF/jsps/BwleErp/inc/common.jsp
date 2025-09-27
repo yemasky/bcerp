@@ -90,7 +90,7 @@
 		<p ng-bind-html="content"></p>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">Close</button>
 	  </div>
 	</div>
   </div>
@@ -108,7 +108,7 @@
 		<p ng-bind-html="content"></p>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">Close</button>
 	  </div>
 	</div>
   </div>
@@ -126,7 +126,7 @@
 		<p ng-bind-html="content"></p>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">Close</button>
 	  </div>
 	</div>
   </div>

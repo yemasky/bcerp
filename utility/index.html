@@ -1,18 +1,21 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>${__TITLE}</title>
-<link rel="shortcut icon" href="${__RESOURCE}favicon.ico">
-<script language="javascript">var __VERSION = '${__VERSION}'; var baseDateTime = '${thisDateTime}', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
-<link rel="stylesheet" href="${__RESOURCE}styles/app.min.css?${__VERSION}" type="text/css" />
+<title>博威利尔.ERP ᵛ¹·⁰·⁰ </title>
+<link rel="shortcut icon" href="/static/favicon.ico">
+<script language="javascript">var __VERSION = ''; var baseDateTime = '2025-09-24 18:48:34', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
+<link rel="stylesheet" href="/static/styles/app.min.css?" type="text/css" />
 <!-- commom -->
-<script language="javascript" src="${__RESOURCE}jquery-3.4.1.min.js?${__VERSION}"></script>
+<script language="javascript" src="/static/jquery-3.4.1.min.js?"></script>
 <script language="javascript">
-    var __RESOURCE = '${__RESOURCE}'; var __IMGWEB = '${__IMGWEB}';var __WEB = '${__WEB}';
-    var __ImagesUploadUrl = '${__ImagesUploadUrl}';var __ImagesManagerUrl = '${__ImagesManagerUrl}';
+    var __RESOURCE = '/static/'; var __IMGWEB = 'http://localhost/xiaoqu/images/';var __WEB = '/erp/';
 //jQuery 插件
 (function ($) {
-    $.serializeFormat = function (id) {//取出form的值包括 xxx[yyy]的值
+    $.serializeFormat = function (id) {
 		var serialize = $(id).serializeArray();var serializeFormat = {},n_name='',n_n_name='';//console.log(serialize);
         for(var i in serialize) {
 			var name = serialize[i].name;
@@ -44,11 +47,11 @@
     }
 })(jQuery);
 </script>
-<script language="javascript" src="${__RESOURCE}angular.min.1.6.8.js?${__VERSION}"></script>
-<script language="javascript" src="${__RESOURCE}angular-lib.min.js?${__VERSION}"></script>
-<script language="javascript" src="${__RESOURCE}angular-lib-extend.min.js?${__VERSION}"></script>
-<script language="javascript" src="${__RESOURCE}vendor/modules/angular-strap/angular-strap.min.js?${__VERSION}"></script>
-<script language="javascript" src="${__RESOURCE}vendor/modules/angular-smart-table/smart-table.min.2.1.10.js?${__VERSION}"></script>   
+<script language="javascript" src="/static/angular.min.1.6.8.js?"></script>
+<script language="javascript" src="/static/angular-lib.min.js?"></script>
+<script language="javascript" src="/static/angular-lib-extend.min.js?"></script>
+<script language="javascript" src="/static/vendor/modules/angular-strap/angular-strap.min.js?"></script>
+<script language="javascript" src="/static/vendor/modules/angular-smart-table/smart-table.min.2.1.10.js?"></script>   
 <script language="javascript">//'ui.jp',,'angular-popups', 'ui.select'
 angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar','smart-table'
 ]);
@@ -60,7 +63,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 		app.value      = $provide.value
 }]).config(["$translateProvider", function($translateProvider) {
     $translateProvider.useStaticFilesLoader({
-        prefix: "${__RESOURCE}i18n/langs/",
+        prefix: "/static/i18n/langs/",
         suffix: ".json"
     }), $translateProvider.preferredLanguage("en"), $translateProvider.useLocalStorage(),$translateProvider.useSanitizeValueStrategy('sanitize');
 }]).factory("$httpFactory", function($http, $modal, $translate, $alert, cfpLoadingBar) {
@@ -262,7 +265,7 @@ angular.module("app").directive("uiFullscreen", ["$ocLazyLoad", "$document", fun
 }]);
 app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", function($rootScope, $state, $stateParams, $location, $httpService) {
     $rootScope.$state = $state, $rootScope.$stateParams = $stateParams;
-	var noLogin = "${noLogin}";
+	var noLogin = "1";
 	if (noLogin == "1") {
 		$location.path('/login');//
 	} else {
@@ -286,7 +289,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 	function randomUrl(channel) {
 		if(angular.isDefined($httpProvider.defaults.headers.common.ajaxRequest))
 			delete $httpProvider.defaults.headers.common['ajaxRequest'];
-		return '${__WEB}app.do?channel=' + channel+'&_='+Math.random();
+		return '/erp/app.do?channel=' + channel+'&_='+Math.random();
 	};//console.log($routeParams);
 	$urlRouterProvider.otherwise("/app/home"),
 	$stateProvider.state("app", {
@@ -303,7 +306,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state("app.home", {
         url: "/home",
 		templateUrl: function() {
-			return __RESOURCE+'views/home.html?${__VERSION}';
+			return __RESOURCE+'views/home.html?';
 		},
         controller: function ($scope) {
         }
@@ -359,7 +362,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		isIE && angular.element($window.document.body).addClass("ie"); 
 		matchNavigator($window) && angular.element($window.document.body).addClass("smart");
 		$scope.app = {
-			name: "博威利尔.ERP", version: "${__VERSION}",
+			name: "博威利尔.ERP", version: "",
 			color: {
 				primary: "#155abb",info: "#2772ee",success: "#4bb622",warning: "#f88311",danger: "#e11144",
 				inverse: "#a66bee",light: "#f1f2f3",dark: "#202a3a"
@@ -404,9 +407,11 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.__WEB = __WEB;
 		$scope.employee = {};
 		$scope.companyList = {};
+		$rootScope.__ImagesUploadUrl = 'OGezA4NmqlhwXQnS2d3gfqzT3Mi8OJxS';
+		$rootScope.__ImagesManagerUrl = 'v1XIUuwNkllwXQnS2d3gfqzT3Mi8OJxS';
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
-		let noLogin = "${noLogin}";
+		let noLogin = "1";
 		if (noLogin == "0") {
 			if(typeof($rootScope.employeeMenu) == 'undefined' || $rootScope.employeeMenu == "") {
 				$httpService.post(__WEB + 'index/refresh', {}, function(result){
@@ -487,7 +492,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $location.path('/app/home');
 		};
 		$rootScope._self_module = '';
-		$scope.action_nav = "";$scope.action_nav_aside = "";
+		$scope.action_nav = "";
 		$scope.setActionNavName = function(module_id, _self_nav) {//设置导航栏
 			let menus = $scope.hashEmployeeModule, nav = "";
 			let _self_module = menus[module_id];	
@@ -507,13 +512,11 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					getChannelNav(menus[_self_module.module_father_id]);
 				}
 			}
-			$scope.action_nav = '' + nav;
 			if(angular.isDefined(_self_nav) && _self_nav != '') {
 				if(nav != "") nav += ' <i class="fa fa-angle-double-right"></i> ';
 				nav += _self_nav;
-				$scope.action_nav_aside = nav;
 			}
-			
+			$scope.action_nav = '' + nav;
 		};
         $scope.getChannelModule = function(module_id) {
             return $scope.hashEmployeeModule[module_id];
@@ -571,11 +574,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.redirect = function(url) {
 			$location.path(url);
 		};
-		$scope.reload = function($stateParams) {
-			let path = "app/"+$rootScope._self_module.module_channel+'/'+$stateParams.view+'/'+$stateParams.id+'/'+$stateParams.channel;
-			console.log(path);
-			$location.path(path);
-		};
 		$scope._function = function(){};$scope._param = {};
 		$scope.setController = function(_function, _param) {
 			$scope._function = _function; $scope._param = _param;
@@ -587,12 +585,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			var height = window.screen.height;
 			var newHeight = height * h;
 		}
-		$scope.selectGroup = function (item){
-	        if (item.country_enname[0] >= 'A' && item.country_enname[0] <= 'M')
-	            return 'From A - M';
-	        if (item.country_enname[0] >= 'N' && item.country_enname[0] <= 'Z') 
-	            return 'From N - Z';
-	    };
 		//日历
 		$scope.setCalendar = function (year, month) {
 			var days = {}, k = 0;days[k] = {};
@@ -718,4 +710,494 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
     }
 }]);
 </script>
-<script language="javascript" src="${__RESOURCE}vendor/libs/moment.min.js?${__VERSION}"></script>
+<script language="javascript" src="/static/vendor/libs/moment.min.js?"></script>
+
+</head>
+<body ng-app="app">
+<div class="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-top':app.settings.asideTop}" ui-view ng-controller="MainController" id="MainController"></div>
+<!--<div ui-view="header_menu"></div>-->
+<script type="text/ng-template" id="/app/header/header.html">
+<!-- navbar header -->
+<div class="navbar-header" ng-class="{'box-shadow-inset dk':app.settings.headerShadow}">
+	<button class="pull-right visible-xs" ng-click="app.navbarCollapse = !app.navbarCollapse"><i class="ti-settings"></i></button>
+	<button class="pull-right visible-xs" ng-click="app.asideCollapse = !app.asideCollapse"><i class="ti-menu"></i></button>
+<!-- brand logo -->
+	<a class="navbar-brand text-lt" bs-aside="aside" data-template-url="/app/header/aside.tpl.html" data-placement="top" data-animation="am-slide-top aside-open-backdrop" data-container="body">
+	  <i class="pull-right ti-arrow-circle-down text-sm m-v-xs m-l-xs"></i>
+	  <i class="fas fa-frog text-xl"></i>
+	  <img src="/static/images/logo.png" alt="." class="fab fa-suse hide">
+	  <span class="hidden-folded m-l-xs">{{app.name}}<sup class="text-xs font-thin">{{app.version}}</sup></span>
+	</a>
+<!-- / brand logo -->
+</div>
+<!-- / navbar header -->
+<!-- navbar collapse -->
+<div class="navbar-collapse hidden-xs" ng-class="{'show animated fadeIn' : app.navbarCollapse}">
+<!-- nav -->
+	<ul class="nav navbar-nav navbar-left">
+	  <li ui-sref-active="active" ng-class="">
+		<a bs-dropdown="dropdown" data-animation="am-collapse" data-template-url="/app/header/employeeChannel.html">
+			<span class="text-muted"><i class="ui-icon fa fa-home"></i></span>
+			<span ng-repeat="(i, channel) in employeeChannel" ng-if="channel.default==1">{{channel.channel_name}}</span>
+			<b class="caret m-h-xs hidden-sm"></b>
+		</a>
+	  </li>
+	  <li><a ui-sref="app.home" translate="header.navbar.DASHBOARD">é¦é¡µ</a></li>
+	  <!--<li><a ui-sref="mail.inbox" translate="header.navbar.EMAIL">Email</a></li>
+	  <li><a ui-sref="ui.component.arrow" translate="header.navbar.UIKITS">UI Kits</a></li>
+	  <li><a ui-sref="page.profile" translate="header.navbar.PAGES">Pages</a></li>-->
+	</ul>
+<!-- / nav -->
+<!-- nabar right -->
+	<ul class="nav navbar-nav navbar-right m-r-n">
+	  <li>
+		<a href bs-dropdown="dropdown" data-animation="am-collapse" data-template-url="/app/header/settings.html">
+		  <i class="glyphicon glyphicon-cog"></i>
+		  <span class="visible-xs-inline">Settings</span>
+		</a>
+	  </li>
+	  <!--<li>
+		<a href bs-aside="aside" data-template-url="/app/header/aside.tpl.chat.html" data-placement="right" data-animation="am-slide-right aside-open-inner modal-open" data-container="body">
+		  <i class="glyphicon glyphicon-comment"></i>
+		  <b class="badge badge-xs bg-warning up">3</b>
+		  <span class="visible-xs-inline">Notifications</span>
+		</a>
+	  </li>-->
+	  <li class="hidden-xs">
+		<a href ui-fullscreen><i class="glyphicon glyphicon-resize-vertical"></i></a>
+	  </li>
+	  <li>            
+		<a href class="clear no-padding-h" bs-dropdown="dropdown" data-animation="am-collapse" data-template-url="/app/header/user.html">
+		  <img ng-src="{{employee.avatar}}" onError="this.src='/static/images/userimg/user_h.png'" class="navbar-img pull-right">
+		  <span class="hidden-sm m-l">{{employee.employee_name}}</span>
+		  <b class="caret m-h-xs hidden-sm"></b>
+		</a>
+	  </li>
+	</ul>
+<!-- / navbar right -->
+<!-- search form -->
+	<form class="navbar-form navbar-form-sm navbar-right visible-xs" role="search">
+	  <div class="form-group">
+		<div class="input-group">
+		  <span class="input-group-btn">
+			<button type="submit" class="btn btn-sm no-bg btn-icon no-shadow no-padder"><i class="ti-search"></i></button>
+		  </span>
+		  <input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control input-sm no-bg no-border" placeholder="Search...">              
+		</div>
+	  </div>
+	</form>
+<!-- / search form -->
+</div>
+<!-- / navbar collapse -->
+</script><!-- /app/header/header.html -->
+<script type="text/ng-template" id="/app/header/aside.nav.menu.html">
+<nav ui-nav>
+  <ul class="nav">
+    <li class="nav-header h4 m-v-sm">
+      UI Kits
+    </li>
+	<li ng-repeat="(i, module) in menus" ui-sref-active="active" ng-class="" class="{{module.module_channel}} {{module.hide}} menu">
+		<a ng-if="module.have_children==1" ng-click="setUiNav($event)"> 
+          <i class="icon {{module.ico}} text-lt"></i>
+          <span>{{module.module_name}}</span>
+          <span class="text-muted">
+           <i class="fa fa-caret-down"></i>
+          </span>
+		</a>
+        <a ng-if="module.have_children==0" ui-sref="app.{{module.module_channel}}({view:module.module_view,id:module.module_id,channel:module.url})" ng-click="setActionNavName(module.module_id);setUiNav($event)">
+          <i class="icon {{module.ico}} text-lt"></i>
+          <span>{{module.module_name}}</span>
+          <span class="pull-right text-muted" ng-if="module.have_children==1">
+           <i class="fa fa-caret-down"></i>
+          </span>
+		</a>
+		<ul class="nav nav-sub bg" ng-if="module.have_children==1">
+			<li ng-repeat="(children_id, children) in module.children">
+			  <a ui-sref="app.{{children.module_channel}}({view:children.module_view,id:children.module_id,channel:children.url})" ng-click="setActionNavName(children.module_id);setUiNav($event)">
+				<span class="font-normal">{{children.module_name}}</span>
+				<span class="pull-right text-muted" ng-if="children.have_children==1">
+				  <i class="fa fa-caret-down"></i>
+				</span>
+			  </a>
+			  <ul class="nav nav-sub bg" ng-if="children.have_children==1">
+				<li ng-repeat="(submenu_id, submenu) in children.submenu">
+				  <a ui-sref="app.{{submenu.module_channel}}({view:submenu.module_view,id:submenu.module_id,channel:submenu.url})" ng-click="setActionNavName(submenu.module_id);setUiNav($event)">{{submenu.module_name}}</a>
+				</li>
+			  </ul>
+			</li>        
+        </ul>
+	</li>
+  </ul>
+</nav>
+</script><!-- /app/header/aside.nav.menu.html -->
+<script type="text/ng-template" id="/app/header/aside.tpl.html">
+<div class="aside bg-dark box-shadow-lg" role="menu">
+  <div class="p-lg" ng-click="$hide()">
+    <a ng-repeat="(i, channel) in channels" ng-click="setChannelMenu(channel.module_channel)" class="p-lg bg-info item inline m-xs">
+      <i class="{{channel.ico}} text-2x"></i>
+      <span class="p-xs p-h-sm bottom text-xs hidden-xs text-center">{{channel.module_name}}</span>
+    </a>
+  </div>
+</div>
+</script><!-- /app/header/aside.tpl.html -->
+<script type="text/ng-template" id="/app/header/settings.html">
+<div tabindex="-1" class="p dropdown-menu bg-white bg-inherit no-b-t no-margin w-sm" role="menu">                
+	<p class="clearfix">
+	  <a class="inline {{color}} p-xs m-h-xs m-v-xs pull-left no-borders" ng-repeat="color in options.headerColor" ng-click="setHeaderColor(color)">
+	  </a>
+	</p>
+	<div class="line b-b b-light m-h-xs"></div>
+	<p class="clearfix">
+	  <a class="inline {{color}} p-xs m-h-xs m-v-xs pull-left no-borders" ng-repeat="color in options.asideColor" ng-click="setAsideColor(color)">
+	  </a>
+	</p>
+	<div class="line b-b b-light m-h-xs"></div>                
+	<div class="m-v-xs">
+	  <label class="ui-checks m-h-xs no-margin">
+		<input type="checkbox" ng-model="app.settings.headerFixed"><i></i> Header fixed
+	  </label>
+	</div>
+	<div class="m-v-xs">
+	  <label class="ui-checks m-h-xs no-margin">
+		<input type="checkbox" ng-model="app.settings.headerShadow"><i></i> Header shadow
+	  </label>
+	</div>
+	<div class="m-v-xs">
+	  <label class="ui-checks m-h-xs no-margin">
+		<input type="checkbox" ng-model="app.settings.asideTop"><i></i> Aside top
+	  </label>
+	</div>
+</div>
+</script><!-- /app/header/settings.html -->
+<script type="text/ng-template" id="/app/header/aside.tpl.chat.html">
+<div class="aside w b-l" role="dialog">
+  <div class="box">
+    <div class="p">
+      <a ng-click="$hide()" class="pull-right text-muted"><i class="fa fa-times"></i></a>
+      Chat
+    </div>
+    <div class="box-row">
+      <div class="box-cell">
+        <div class="box-inner">
+          <div class="list-group no-radius no-borders">
+            <a class="list-group-item p-h-md">
+              <img src="/static/images/a1.jpg" class="pull-left w-thumb m-r b-b b-b-2x b-success">
+              <div class="clear">
+                <span class="font-bold block">Jonathan Doe</span>
+                <span class="clear text-ellipsis text-xs">"Hey, What's up"</span>
+              </div>
+            </a>
+            <a class="list-group-item p-h-md">
+              <img src="/static/images/a2.jpg" class="pull-left w-thumb m-r b-b b-b-2x b-success">
+              <div class="clear">
+                <span class="font-bold block">James Pill</span>
+                <span class="clear text-ellipsis text-xs">"Lorem ipsum dolor sit amet onsectetur adipiscing elit"</span>
+              </div>
+            </a>
+            <div class="p-h-md p-v-xs m-t">Work</div>
+            <a class="list-group-item p-h-md p-v-xs">
+                <i class="fa fa-circle text-success text-xs m-r-xs"></i>
+                <span>Jonathan Morina</span>
+            </a>
+            <a class="list-group-item p-h-md p-v-xs">
+                <i class="fa fa-circle text-success text-xs m-r-xs"></i>
+                <span>Mason Yarnell</span>
+            </a>
+            <a class="list-group-item p-h-md p-v-xs">
+                <i class="fa fa-circle text-muted-lt text-xs m-r-xs"></i>
+                <span>Jeff Broderik</span>
+            </a>
+            <div class="p-h-md p-v-xs m-t">Partner</div>            
+            <a class="list-group-item p-h-md p-v-xs">
+                <i class="fa fa-circle text-success text-xs m-r-xs"></i>
+                <span>Mason Yarnell</span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-h-md p-v">
+      <p>Invite People</p>
+      <a href class="text-muted"><i class="fa fa-fw fa-twitter"></i> Twitter</a>
+      <a href class="text-muted"><i class="fa fa-fw fa-facebook"></i> Facebook</a>
+    </div>
+  </div>
+</div>
+</script><!-- /app/header/aside.tpl.chat.html -->
+<script type="text/ng-template" id="/app/header/user.html">
+<ul class="dropdown-menu pull-right no-b-t">
+	<!--<li><a ui-sref="page.profile">Profile</a></li>
+	<li><a ui-sref="page.settings">Settings</a></li>
+	<li class="divider"></li>
+	<li><a ui-sref="lockme">Lock me</a></li>-->
+	<li><a ui-sref="app.logout">Logout</a></li>
+</ul>
+</script><!-- /app/header/user.html -->
+<script type="text/ng-template" id="/app/header/employeeChannel.html">
+<ul class="dropdown-menu pull-left no-b-t" ng-class="{'show animated fadeIn' : app.navbarCollapse}">
+	<li ng-repeat="(i, channel) in employeeChannel" ng-click="switchChannel(channel.channel_id)" ng-if="channel.channel_father_id==channel.channel_id"><a>{{channel.channel_name}}</a></li>
+</ul>
+</script><!-- /app/header/employeeChannel.html -->
+
+
+<!--main content-->
+<script type="text/ng-template" id="/app/layout.html">
+<!-- header -->
+<header id="header" class="app-header navbar {{app.settings.headerColor}}" role="menu" ng-include="'/app/header/header.html'"></header>
+<!-- / header -->
+<!-- aside -->
+<aside id="aside" class="app-aside hidden-xs {{app.settings.asideColor}}" ng-class="{'show animated fadeInLeft' : app.asideCollapse}" ng-include="'/app/header/aside.nav.menu.html'"></aside>
+<!-- / aside -->
+<!-- content -->
+<div id="content" class="app-content" role="main" ui-view></div>
+<div ui-view="header_menu"></div>
+<!-- / content -->
+<!-- footer -->
+<footer id="footer" class="app-footer col-sm-3" role="footer" ng-include="'/app/footer.html'"></footer>
+<!-- / footer -->
+</script><!--main content--><!-- /app/layout.html -->
+<!--common langs-->
+<script type="text/ng-template" id="/langs.html">
+<ul class="dropdown-menu">
+	<li ng-repeat="(langKey, label) in langs">
+	  <a ng-click="setLang(langKey, $event)" href>{{label}}</a>
+	</li>
+</ul>
+</script><!-- /langs.html -->
+<script type="text/ng-template" id="/login.html">
+<div class="container">  
+  <div class="center-block w-xl w-auto-xs m-b-lg">
+    <div class="text-2x m-v-lg text-primary"><i class="fas fa-frog b-danger text-xl"></i> {{app.name}}</div>
+    <div class="m-b text-sm" translate="login.hint.WORD">Sign in with your Account</div>
+    <form name="login_form" class="form-validation" ng-submit="login(login_form.$valid)" ng-controller="LoginController">
+      <div class="form-group m-b-xs">
+        <label class="hide">Email</label>
+		<!--ng-pattern="/[a-zA-Z\.\-_]@[a-zA-Z\.\-_]\.[a-z]{2,7}/"-->
+        <input type="text" id="email" name="email" placeholder="手机号码/some@email.com" ng-model="param.email" required class="form-control" ng-pattern="/(([0-9a-zA-Z\.\-_]+)@([0-9a-zA-Z\.\-_]+)\.[a-z]{2,7})|(1[0-9]{10})/">
+      </div>
+      <div class="form-group m-b-xs">
+        <label class="hide">Password</label>
+        <input type="password" placeholder="Password" class="form-control" ng-model="param.password" required>
+      </div>
+      <!--<div class="checkbox no-margin"><label class="ui-checks"><input type="checkbox"><i></i> Keep me signed in</label></div>-->
+      <button type="submit" class="btn btn-rounded btn-info p-h-md m-v-lg" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading" translate="login.hint.SIGN">Sign in</button>
+      <div class="btn-group m-b">
+        <div class="btn-group dropdown">
+          <button type="button" class="btn btn-link" data-animation="am-fade-and-slide-top" bs-dropdown="dropdown" aria-haspopup="true" aria-expanded="false" data-template-url="/langs.html">{{select_lang}} <span class="caret"></span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<ons-page>
+  <ons-toolbar>
+    <div class="center">{{title}}</div>
+  </ons-toolbar>
+
+  <ons-tabbar swipeable position="auto" ons-prechange="updateTitle($event)">
+    <ons-tab page="tab1.html" label="Tab 1" icon="ion-home, material:md-home" badge="7" active>
+    </ons-tab>
+    <ons-tab page="tab2.html" label="Tab 2" icon="md-settings" active-icon="md-face">
+    </ons-tab>
+  </ons-tabbar>
+</ons-page>
+
+<template id="tab1.html">
+  <ons-page id="Tab1">
+    <p style="text-align: center;">
+      This is the first page.
+    </p>
+  </ons-page>
+</template>
+
+<template id="tab2.html">
+  <ons-page id="Tab2">
+    <p style="text-align: center;">
+      This is the second page.
+    </p>
+  </ons-page>
+</template>
+</script><!-- /login.html -->
+<script type="text/ng-template" id="/modal-warning.html">
+<div class="modal" style="z-index: 104000;" tabindex="-1" role="dialog" id="modal-warning">
+  <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header" ng-show="title">
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+		<h4 class="modal-title"><i class="glyphicon glyphicon-exclamation-sign b-warning text-warning"></i> <span ng-bind-html="title"></span></h4>
+	  </div>
+	  <div class="modal-body" ng-show="content">
+		<p ng-bind-html="content"></p>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+	  </div>
+	</div>
+  </div>
+</div>
+</script><!-- /modal-warning.html -->
+<script type="text/ng-template" id="/modal-notice.html">
+<div class="modal" tabindex="-1" role="dialog" id="modal-warning">
+  <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header" ng-show="title">
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+		<h4 class="modal-title"><i class="glyphicon glyphicon-exclamation-sign b-warning text-warning"></i> <span ng-bind-html="title"></span></h4>
+	  </div>
+	  <div class="modal-body" ng-show="content">
+		<p ng-bind-html="content"></p>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+	  </div>
+	</div>
+  </div>
+</div>
+</script><!-- /modal-notice.html -->
+<script type="text/ng-template" id="/modal-success.html">
+<div class="modal" tabindex="-1" role="dialog" id="modal-success">
+  <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header" ng-show="title">
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+		<h4 class="modal-title"><i class="glyphicon glyphicon-exclamation-sign b-success text-success"></i> <span ng-bind-html="title"></span></h4>
+	  </div>
+	  <div class="modal-body" ng-show="content">
+		<p ng-bind-html="content"></p>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+	  </div>
+	</div>
+  </div>
+</div>
+</script><!-- /modal-success.html -->
+<script type="text/ng-template" id="/app/aside.html">
+<div class="app-aside-inner" bs-affix>
+  <div class="app-aside-body scrollable hover" ui-view="header_menu"></div>
+  <div class="app-aside-footer p text-xs text-center">
+    <span><strong class="text-lt">3.5</strong>GB</span>
+    <div class="progress progress-xs bg no-margin m-h-xs inline w-xs">
+      <div class="progress-bar progress-bar-info" style="width:30%"></div>
+    </div>
+    <span>10GB</span>
+  </div>
+</div>
+</script><!-- /app/aside.html -->
+<script type="text/ng-template" id="/app/footer.html">
+<div class="p bg-white text-xs">
+  <div class="pull-right hidden-xs hidden-sm text-muted">
+    <strong>{{app.name}}</strong> -  &copy; Copyright 2019
+  </div>
+  <ul class="list-inline no-margin text-center-xs">
+    <li>
+      <a bs-dropdown="dropdown" data-placement="top-left" data-animation="am-flip-x" data-template-url="/langs.html">{{select_lang}}</a>
+    </li>
+    <li class="text-muted">-</li>
+  </ul>
+</div>
+</script><!-- /app/footer.html -->
+<script type="text/ng-template" id="/loading.html">
+<div class="modal" tabindex="-1" role="dialog">
+<div class="modal-dialog">
+<div class="progress progress-striped active">
+	<div class="progress-bar progress-bar-info" ng-style="{width: vm.isLoad + '%'}">Loading... {{vm.isLoad}}%</div>
+</div>
+</div>
+</div>
+</script><!-- /loading.html -->
+<script type="text/ng-template" id="/app/accountsMenu.html">
+    <ul class="dropdown-menu">
+      <li><a href ng-click="bookingAccounts('', '')"><i class="fas fa-coins"></i> 收款</a></li>
+      <li><a href ng-click="bookingAccounts('', 'refund')"><i class="fas fa-coins"></i> 退款</a></li>
+      <li class="divider"></li>
+      <li ng-if="bookDetail.receivable_id>0"><a href ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-comments-dollar"></i> 挂账</a></li>
+    </ul>
+</script><!-- /app/accountsMenu.html -->
+<script type="text/ng-template" id="/app/customerMarket.html">
+<aside class="app-aside bg-white lt">
+<nav>
+  <ul class="nav">
+    <li>
+        <a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul" ng-mouseover="showCustomerMarket($event)">
+            <span class="pull-right text-muted">
+              <i class="fa fa-caret-down"></i>
+            </span>
+            <i class="icon fa fa-users text-lt"></i>
+            <span>{{market_name}}</span>
+         </a>
+         <ul class="nav nav-sub bg-white b">
+            <li ng-repeat="(i, father) in marketList">
+              <a class="">
+                <span class="pull-right text-muted" ng-if="father.children!=''">
+                  <i class="fa fa-caret-down"></i>
+                </span>
+                <span class="font-normal">{{father.market_name}}</span>
+              </a>
+              <ul class="nav nav-sub bg-white b" ng-if="father.children!=''">
+                <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
+              </ul>
+            </li>
+         </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+</script><!-- /app/customerMarket.html -->
+<script type="text/ng-template" id="pagination.custom.html">
+<nav ng-if="pages.length >= 2">
+  <ul class="pagination">
+    <li><a ng-click="selectPage(1)">First</a></li>
+    <li><a ng-click="selectPage(currentPage - 1)">&lt;</a></li>
+    <li class=""><a><page-select></page-select> of {{numPages}}</a></li>
+    <li><a ng-click="selectPage(currentPage + 1)">&gt;</a></li>
+    <li><a ng-click="selectPage(numPages)">Last</a></li>
+  </ul>
+</nav>
+</script><!-- pagination.custom.html -->
+<script type="text/ng-template" id="/app/commonNavMenu.html">
+<aside class="app-aside bg-white lt">
+<nav>
+  <ul class="nav">
+    <li>
+        <a class="btn btn-default customer_btn" style="padding:6px !important;" id="commonNavMenu" ng-mouseover="showCommonNavMenu($event)">
+            <span class="pull-right text-muted">
+              <i class="fa fa-caret-down"></i>
+            </span>
+            <i class="icon fa fa-users text-lt"></i>
+            <span>{{this_nav_menu_name}}</span>
+         </a>
+         <ul class="nav nav-sub bg b">
+            <li ng-repeat="(i, father) in ThisNavMenuList">
+              <a ng-click="selectCommonNavMenu(father, 'father')">
+                <span class="pull-right text-muted" ng-if="father.children!=''">
+                  <i class="fa fa-caret-down"></i>
+                </span>
+                <span class="font-normal">{{father.label}}</span>
+              </a>
+              <ul class="nav nav-sub bg b" ng-if="father.children!=''">
+                <li ng-repeat="(j, children) in father.children"><a ng-click="selectCommonNavMenu(children, 'children')">{{children.label}}</a></li>
+              </ul>
+            </li>
+         </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+</script><!-- /app/commonNavMenu.html -->
+<script type="text/ng-template" id="/app/successAlertRound.html">
+<div class="alert" tabindex="-1"><span ng-class="[type ? 'alert-' + type : null]"></span>
+    <div class="text-sm btn btn-rounded btn-success no-margin box-shadow" style="padding-bottom:0px !important;opacity: 0.8;">
+        <i class="fas fa-check-circle pull-left">　</i>
+        <span ng-bind="title"></span>　<span class="font-bold text-lt" ng-bind-html="content"></span>
+        <span class="pull-right"> <button type="button" class="close" ng-click="$hide()">&times;</button></span>
+        <div class="progress progress-xxs no-margin no-radius dk m-t-xs">
+            <div class="progress-bar progress-bar-success" ng-style="{width: vm.value + '%'}"></div>
+        </div>
+    </div>
+</div>
+</script><!-- /app/successAlertRound.html -->
+</body>
+</html>

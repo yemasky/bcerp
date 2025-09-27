@@ -1,73 +1,277 @@
 <div class="p-md" ng-controller="EmployeeController">
 	<form name="SectorPositionForm" class="form-inline" role="form">
-	    <div class="tab-container">
-	        <ul class="nav nav-tabs">
-	            <li class="active">
-	                <a>部门职位</a> 
-	            </li>
-	        </ul> 
-	        <div class="tab-content text-nowrap">
-	            <div>
-	                <div class="table-responsive">
+		<div class="tab-container">
+			<ul class="nav nav-tabs">
+				<li class="active" ng-class="{active:activeTab==1}" ng-click="activeTab=1">
+					<a>部门职位员工</a>
+				</li>
+				<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
+					<a>权限配置</a>
+				</li>
+				<li class="col-md-2 pull-right">
+					<button ng-click="addEditPermission('')" class="btn btn-rounded btn-info btn-sm" ng-show="activeTab==2">
+						<i class="fa fa-fw m-r-xs fa-plus"></i> 添加权限
+					</button>
+				</li>
+			</ul>
+			<div class="tab-content text-nowrap">
+				<div>
+					<div class="table-responsive">
 						<div class="col-md-3 col-sm-6">
-							
+
 						</div>
-	                    <table class="table table-bordered table-striped bg-white">
-	                        <thead>
-	                            <tr>
-	                                <th class="w-xl text-center">
+						<table class="table table-bordered table-striped bg-white" ng-show="activeTab==1">
+							<thead>
+								<tr>
+									<th class="w-xl text-center">
 										<div class="btn-group">
-										  <button ng-click="my_tree.expand_branch()" class="btn btn-default btn-sm btn-rounded">展开</button>
-										  <button ng-click="my_tree.collapse_branch()" class="btn btn-default btn-sm btn-rounded">收起</button>
-										  <button ng-click="my_tree.expand_all()" class="btn btn-default btn-sm btn-rounded">全部展开</button>
-										  <button ng-click="my_tree.collapse_all()" class="btn btn-default btn-sm btn-rounded">全部收起</button>
+											<button ng-click="my_tree.expand_branch()" class="btn btn-default btn-sm btn-rounded">展开</button>
+											<button ng-click="my_tree.collapse_branch()" class="btn btn-default btn-sm btn-rounded">收起</button>
+											<button ng-click="my_tree.expand_all()" class="btn btn-default btn-sm btn-rounded">全部展开</button>
+											<button ng-click="my_tree.collapse_all()" class="btn btn-default btn-sm btn-rounded">全部收起</button>
 										</div>
 									</th>
-	                                <th class="w">职位 <button ng-click="SectorPositionEdit('position')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加职位</button></th>
-	                                <th>员工</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody class="no-b-t">
+									<th class="w">职位 </th>
+									<th>员工</th>
+								</tr>
+							</thead>
+							<tbody class="no-b-t">
 								<tr>
-									<td class="no-padding panel">
+									<th>
 										<div class="text-center">
-											<a ng-click="SectorPositionEdit('sector')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加</a>
-										
-											<a ng-click="SectorPositionEdit('edit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-											<a ng-click="SectorPositionDelete('delete')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+											<a ng-click="sectorPositionEdit('sector')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加</a>
+											<a ng-click="sectorPositionEdit('edit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+											<a ng-click="sectorPositionDelete('delete')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
 										</div>
-										<div>
-										  <span ng-if="doing_async">...loading...</span>
-										  <div lazy-load="angularBootstrapNavTree">
-											<abn-tree 
-											  tree-data         = "my_data" 
-											  tree-control      = "my_tree" 
-											  on-select         = "SectorPosition(branch)" 
-											  expand-level      = "3" 
-											  initial-selection = "Granny Smith"
-											  icon-leaf         = "fa fa-file-o"
-											  icon-expand       = "fa fa-angle-right"
-											  icon-collapse     = "fa fa-angle-down"
-											  >
-											</abn-tree>
-										 </div>
+
+									</th>
+									<td>
+										<div class="text-center">
+											<a ng-click="sectorPositionEdit('position')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加</a>
+											<a ng-click="sectorPositionEdit('editPosition')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+											<a ng-click="sectorPositionDelete('deletePosition')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i>
+												删除</a>
 										</div>
 									</td>
 									<td>
-										
-										<div class="line b-b m-v-md"></div>
-										
-									</td>
-									<td>
-										
+										<div class="text-center">
+											<a ng-click="addEditEmployee()" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加</a>
+											<a ng-click="addEditEmployee('employee')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+											<a ng-click="employeeDelete('employee')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+										</div>
 									</td>
 								</tr>
-	                        </tbody>
-	                    </table>
-	                </div>
-	            </div>
-	
-	        </div>
-	    </div>
+								<tr>
+									<td class="no-padding-h">
+										<div>
+											<span ng-if="doing_async">...loading...</span>
+											<div lazy-load="angularBootstrapNavTree">
+												<abn-tree tree-data="my_data" tree-control="my_tree" on-select="SectorPosition(branch)" expand-level="3"
+													initial-selection="Granny Smith" icon-leaf="fa fa-file-o" icon-expand="fa fa-angle-right"
+													icon-collapse="fa fa-angle-down">
+												</abn-tree>
+											</div>
+										</div>
+									</td>
+									<td class="no-padding-h">
+										<ul class="nav nav-list abn-tree" ng-repeat="(i, sector) in sectorHash" ui-nav>
+											<li class="abn-tree-row" ng-class="{active:activeSector==sector.sector_id}" ng-if="sector.sector_type=='position'">
+												<a ng-click="setActiveSector(sector)">{{sector.sector_name}}</a>
+											</li>
+										</ul>
+									</td>
+									<td class="text-center">
+										<table class="table table-bordered table-hover bg-white">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th>姓名</th>
+													<th>性别</th>
+													<th>部门</th>
+													<th>职位</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>1</td>
+													<td>Mark</td>
+													<td>Mark</td>
+													<td>Otto</td>
+													<td>@mdo</td>
+												</tr>
+											</tbody>
+										</table>
+										<div class="btn-group">
+											<button type="button" class="btn btn-default">1</button>
+											<button type="button" class="btn btn-default">2</button>
+											<button type="button" class="btn btn-default active">3</button>
+											<button type="button" class="btn btn-default">4</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table" ng-show="activeTab==2">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>权限</th>
+									<th></th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="(i, bank) in bankList">
+									<td>{{i+1}}</td>
+									<td>{{bank.bank_sname}}</td>
+									<td></td>
+									<td></td>
+									<td><a class="pull-right" ng-click="addEditBank(bank)"><i class="fa fa-edit"></i> 编辑</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</form>
 </div>
+<script type="text/ng-template" id="AddEditEmployee.html">
+	<div class="aside box-shadow b-r aside-x p" tabindex="-1" role="dialog">
+	<div class="aside-header"><i class="fa fa-building-o"> </i>
+		<span class="no-margin" ng-bind-html="action_nav"></span>
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+	</div>
+	<div class="p-md">
+		<form name="thisForm" id="thisForm" class="form-validation" ng-submit="saveDataEmployee(thisForm)">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading bg-white">
+						<span class="font-bold">添加/编辑员工</span>
+					</div>
+					<div class="row">
+						<div class="panel-body col-sm-8">
+							<div class="form-group ">
+								<div class="col-sm-3">
+									<div class="input-group m-b">
+										<span class="input-group-addon">企业代码</span>
+										<input type="text" class="form-control" placeholder="企业代码" ng-model="company.company_code" required />
+									</div>
+								</div>
+								<div class="col-sm-4"> 
+									<div class="input-group m-b">
+										<span class="input-group-addon">企业简称</span>
+										<input type="text" class="form-control" placeholder="企业简称" ng-model="company.company_sname" required />
+									</div>
+								</div>
+							</div>
+							
+						</div>
+						<div class="panel-body col-sm-4">
+							<div class="form-group m-h-n clearfix">
+								<div class="col-sm-12">
+									<div class="col-sm-12">
+										<label>员工头像</label>
+										<div class="w-xl w-auto-xs">
+											<div class="box bg-white">
+												<div class="box-col w-auto-xs v-m">
+													<img id="company_logo" name="company_logo" ng-src="{{__IMGWEB + company.company_logo}}" width="120" height="120"
+														class="b p-xs" onerror="this.src='/static/images/logo.png'" />
+													<input type="hidden" ng-model="company.company_logo" value="{{company.company_logo}}">
+												</div>
+												<div class="box-col p">
+													<button class="btn btn-addon btn-default set_image_src" id="set_image_src" type="button" isMain="1"><i
+															class="fa fa-upload"></i> 上传图片</button>
+													<label>最大:2M/600x600px</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div> 
+						</div>
+					</div>
+					<footer class="panel-footer aside-footer text-right">
+						<div class="btn-group">
+							<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+							<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+						</div>
+					</footer>
+				</div>
+			</div>
+			<input type="hidden" name="company_id" value="" ng-model="company.company_id">
+		</form>
+	</div>
+</div>
+</script>
+<!-- AddEditPermission -->
+<script type="text/ng-template" id="AddEditPermission.html">
+<div class="aside box-shadow b-r aside-x p" tabindex="-1" role="dialog">
+	<div class="aside-header"><i class="fa fa-building-o"> </i>
+		<span class="no-margin" ng-bind-html="action_nav"></span>
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+	</div>
+	<div class="p-md">
+		<form name="thisPermissionForm" id="thisPermissionForm" class="form-validation form-horizontal" ng-submit="saveDataPermission(thisForm)">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading bg-white">
+						<span class="font-bold">添加/编辑权限</span>
+					</div>
+					<div class="row">
+						<div class="panel-body col-sm-12">
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div class="input-group m-b col-sm-3 p-h">
+										<span class="input-group-addon">权限名称</span>
+										<input type="text" class="form-control" placeholder="权限名称" ng-model="company.company_code" required />
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12">
+								<div class="col-sm-3" ng-repeat="(i, module) in menus">
+									<ul ng-if="module.have_children==1"> 
+										<li class="checkbox text-md font-bold text-black">
+											<input type="checkbox" name="role_module[{{module.module_id}}]" value="{{module.module_id}}" 
+												   ng-model="role_module[module.module_id]" ng-change="checkboxChange(this)"/> 
+											{{module.module_name}}
+										</li>
+									</ul>
+							        <ul ng-if="module.have_children==0">
+										<li class="checkbox"><input type="checkbox" /> {{module.module_name}}</li>
+									</ul>
+									<ul ng-if="module.have_children==1">
+										<li ng-repeat="(children_id, children) in module.children">
+											<span class="font-normal checkbox">
+												<input type="checkbox" name="role_module[{{children.module_id}}]" value="{{children.module_id}}"  
+													   ng-checked="role_module[module.module_id]" ng-model="role_module[children.module_id]" ng-change="checkboxChange(this)"/> 
+												{{children.module_name}}
+											</span>
+											<ul class="nav nav-sub bg" ng-if="children.have_children==1">
+												<li class="checkbox" ng-repeat="(submenu_id, submenu) in children.submenu">
+													<input type="checkbox" /> {{submenu.module_name}}
+												</li>
+											</ul>
+										</li>
+							        </ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<footer class="panel-footer aside-footer text-right">
+						<div class="btn-group">
+							<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+							<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+						</div>
+					</footer>
+				</div>
+			</div>
+			<input type="hidden" name="company_id" value="" ng-model="company.company_id">
+		</form>
+	</div>
+</div>
+</script>
+<!-- AddEditPermission -->

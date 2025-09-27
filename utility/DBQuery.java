@@ -169,6 +169,7 @@ public abstract class DBQuery {
 			if (rs != null)
 				rs.close();
 			this.thisReadConnection().close();
+			//if(this.readConnection != null) this.readConnection.close();
 			return list;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -200,6 +201,7 @@ public abstract class DBQuery {
 			if (rs != null)
 				rs.close();
 			this.thisReadConnection().close();
+			//if(this.readConnection != null) this.readConnection.close();
 			return list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -222,7 +224,8 @@ public abstract class DBQuery {
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, entityClassT, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
+			if(this.readConnection != null) this.readConnection.close();
 			return list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -278,7 +281,8 @@ public abstract class DBQuery {
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
+			if(this.readConnection != null) this.readConnection.close();
 			return (List<T>) list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -301,7 +305,8 @@ public abstract class DBQuery {
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
+			if(this.readConnection != null) this.readConnection.close();
 			return (List<T>) list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -324,6 +329,7 @@ public abstract class DBQuery {
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
+			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -351,6 +357,7 @@ public abstract class DBQuery {
 			}
 			if (rs != null)
 				rs.close();
+			//this.thisReadConnection().close();
 			return result;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -403,7 +410,9 @@ public abstract class DBQuery {
 			// this.resolveUpdateSql(preparedStatement, updateParamtersList.toArray(),
 			// whereRelation.getWhereParamters());
 			// 执行SQL
-			return preparedStatement.executeUpdate();
+			int id = preparedStatement.executeUpdate();
+			//this.thisWriteConnection().close();
+			return id;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
 			logger.error("error sql:" + sql, e);
@@ -426,7 +435,9 @@ public abstract class DBQuery {
 				}
 				logger.info("update whereCondition:" + Arrays.toString(paramters));
 			}
-			return preparedStatement.executeUpdate();
+			int id =  preparedStatement.executeUpdate();
+			//this.thisWriteConnection().close();
+			return id;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
 			logger.error("error sql:" + sql, e);
@@ -486,6 +497,7 @@ public abstract class DBQuery {
 				*/
 				
 			}
+			int id = 0;
 			if (valueObj.size() == 0) {
 				return 0;
 			} else {
@@ -512,12 +524,14 @@ public abstract class DBQuery {
 					logger.info("update whereCondition:" + Arrays.toString(paramters));
 				}
 				logger.debug(sql.toString());
-				return preparedStatement.executeUpdate();
+				id = preparedStatement.executeUpdate();
 				// executeUpdate返回数据库修改行数
 				// preparedStatement.execute();execute只有执行select等带有ResultSet
 				// object返回结果集时它的返回值才是true
 				// executeQuery则返回查询结果
 			}
+			//this.thisWriteConnection().close();
+			return id;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
 			logger.error("error sql", e);
@@ -539,7 +553,9 @@ public abstract class DBQuery {
 					preparedStatement.setObject(i + 1, paramters[i]);
 				}
 			}
-			return preparedStatement.executeUpdate();
+			int id = preparedStatement.executeUpdate();
+			//this.thisWriteConnection().close();
+			return id;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
 			logger.error("error sql:" + sql, e);
@@ -567,6 +583,7 @@ public abstract class DBQuery {
 			result = statement.executeBatch();
 			statement.clearBatch();
 			statement.close();
+			this.thisWriteConnection().close();
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
 			logger.error("error sql", e);
@@ -671,9 +688,13 @@ public abstract class DBQuery {
 				preparedStatement.clearBatch();// 清空batch
 			}
 			ResultSet rs = preparedStatement.getGeneratedKeys();
+			Object object = null;
 			if (rs.next()) {
-				return rs.getObject(1);
+				 object =  rs.getObject(1);
 			}
+			rs.close();
+			//this.thisWriteConnection().close();
+			return object;
 		}
 		return null;
 
@@ -720,6 +741,7 @@ public abstract class DBQuery {
 			}
 			if (rs != null)
 				rs.close();//
+			//this.thisWriteConnection().close();
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
 			logger.error("error sql", e);
@@ -952,22 +974,68 @@ public abstract class DBQuery {
 
 	private Connection thisWriteConnection() throws SQLException {
 		String key = this.dbJdbcDsn + "." + this.write;
-		if (this.writeConnection == null || !this.writeConnection.isValid(1)) {
-			this.writeConnection = DbcpPoolManager.instance().getConnection(key);
-		}
-		this.setCurrentConnHashMap(key, this.writeConnection);
-		return this.writeConnection;
+		return this.currentConnHashMap(key);
 	}
 
 	private Connection thisReadConnection() throws SQLException {
 		String key = this.dbJdbcDsn + "." + this.read;
-		if (this.readConnection == null || !this.readConnection.isValid(1)) {
-			this.readConnection = DbcpPoolManager.instance().getConnection(key);
-		}
-		this.setCurrentConnHashMap(key, this.readConnection);
-		return this.readConnection;
+		return this.currentConnHashMap(key);
 	}
 
+	private Connection currentConnHashMap(String key) throws SQLException {
+		Thread thread = Thread.currentThread();
+		HashMap<String, Connection> jdbcDsnMap = currentConnHashMap.get(thread);
+		Connection connection;
+		if (jdbcDsnMap == null)
+			jdbcDsnMap = new HashMap<>();
+		if (!jdbcDsnMap.containsKey(key)) {
+			connection = DbcpPoolManager.instance().getConnection(key);
+			jdbcDsnMap.put(key, connection);
+			currentConnHashMap.put(thread, jdbcDsnMap);
+			return connection;
+		} 
+		connection = jdbcDsnMap.get(key);
+		if(connection == null || !connection.isValid(1)) {
+			connection = DbcpPoolManager.instance().getConnection(key);
+			currentConnHashMap.put(thread, jdbcDsnMap);
+		} else {
+			System.out.println("=============>currentConnHashMap");
+		}
+		return connection;
+	}
+	//释放链接
+	public void closeConnection() throws SQLException {
+		String readKey = this.dbJdbcDsn + "." + this.read;
+		String writeKey = this.dbJdbcDsn + "." + this.write;
+		Thread thread = Thread.currentThread();
+		HashMap<String, Connection> jdbcDsnMap = currentConnHashMap.get(thread);
+		if (jdbcDsnMap != null) {
+			Connection connection = jdbcDsnMap.get(readKey);
+			if(connection != null && connection.isValid(1)) {
+				connection.close();
+				connection.close();System.out.println("=============>关闭 readKey currentConnHashMap");
+			}
+			connection = jdbcDsnMap.get(writeKey);
+			if(connection != null && connection.isValid(1)) {
+				connection.close();System.out.println("=============>关闭 writeKey currentConnHashMap");
+			}
+		}
+	}
+	// 释放读连接
+	public void closeReadConnection() throws SQLException {
+		if (this.readConnection != null) {
+			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.read, this.readConnection);
+			this.readConnection.close();
+		}
+	}
+
+	// 释放写连接
+	public void closeWriteConnection() throws SQLException {
+		if (this.writeConnection != null) {
+			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.write, this.writeConnection);
+			this.writeConnection.close();
+		}
+	}
 	// 释放连接
 	public void freeConnection() throws SQLException {
 		if (this.readConnection != null) {
@@ -976,17 +1044,6 @@ public abstract class DBQuery {
 
 		if (this.writeConnection != null) {
 			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.write, this.writeConnection);
-		}
-	}
-
-	private void setCurrentConnHashMap(String key, Connection connection) {
-		Thread thread = Thread.currentThread();
-		HashMap<String, Connection> jdbcDsnMap = currentConnHashMap.get(thread);
-		if (jdbcDsnMap == null)
-			jdbcDsnMap = new HashMap<>();
-		if (!jdbcDsnMap.containsKey(key)) {
-			jdbcDsnMap.put(key, connection);
-			currentConnHashMap.put(thread, jdbcDsnMap);
 		}
 	}
 
@@ -1022,19 +1079,6 @@ public abstract class DBQuery {
 		this.rollbackAllConnection();
 		this.freeAllConnection();
 	}*/
-	// 释放读连接
-	public void closeReadConnection() throws SQLException {
-		if (this.readConnection != null) {
-			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.read, this.readConnection);
-		}
-	}
-
-	// 释放写连接
-	public void closeWriteConnection() throws SQLException {
-		if (this.writeConnection != null) {
-			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.write, this.writeConnection);
-		}
-	}
 
 	public void setTransaction(boolean isTransaction) throws SQLException {
 		if (isTransaction) {

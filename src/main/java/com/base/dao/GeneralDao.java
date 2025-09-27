@@ -220,4 +220,8 @@ public class GeneralDao extends BaseDao {
 	public void rollback() throws SQLException {
 		this.dBQueryDao.rollback();
 	}
+	
+	public void closeConnection() throws SQLException {
+		//this.dBQueryDao.closeConnection();
+	}
 }

@@ -193,9 +193,9 @@
 							</div>
 							<div class="col-sm-12 p">
 								<label>证件到期提醒人</label>
-								<ui-select multiple ng-model="multipleDemo.selectedPeopleWithGroupBy" theme="bootstrap" ng-disabled="disabled">
-									<ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
-									<ui-select-choices group-by="someGroupFn" repeat="person in people | propsFilter: {name: $select.search, age: $select.search}">
+								<ui-select multiple ng-model="company.company_remind_employee" theme="bootstrap" ng-disabled="disabled">
+									<ui-select-match placeholder="选择员工...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
+									<ui-select-choices group-by="selectGroup" repeat="person in people | propsFilter: {name: $select.search, age: $select.search}">
 										<div ng-bind-html="person.name | highlight: $select.search"></div>
 										<small>
 											email: {{person.email}}

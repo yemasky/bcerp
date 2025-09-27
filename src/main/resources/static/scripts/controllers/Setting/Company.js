@@ -1,7 +1,7 @@
 app.controller('CompanyController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.company = {}; $scope.param.company = {}, $scope.__IMGWEB = __IMGWEB; 
-	$scope.company_edit_id = "";
+	$scope.param = {}; $scope.company = {}; $scope.param.company = {};$scope.__IMGWEB = __IMGWEB; 
+	$scope.company_edit_id = "";$scope.bank = {};
 	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 	$ocLazyLoad.load([__RESOURCE+"vendor/libs/moment.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION,
@@ -16,7 +16,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 	{ name: 'Adam',      email: 'adam@email.com',      age: 12, country: 'United States' },
 	{ name: 'Amalie',    email: 'amalie@email.com',    age: 12, country: 'Argentina' }
 	];
-	
+
 	$scope.availableColors = ['Red','Green','Blue','Yellow','Magenta','Maroon','Umbra','Turquoise'];
 	
 	$scope.multipleDemo = {};
@@ -32,7 +32,8 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 		if(result.data.success == false) {
 			return;
 		} 
-		$scope.companyList = result.data.item.companyList;//部门职位
+		$scope.companyList = result.data.item.companyList;//公司
+		$scope.bankList = result.data.item.bankList;
 	})
 	
 	$scope.addEdit = function(company) {
@@ -54,9 +55,9 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 	//<!--图片上传及操作-->
 	//images
 	$scope.setImage = function() {
-		//$scope.__WEB+'app.do?method=uploadCompanyLogo&action=Upload&='+$rootScope.__ImagesUploadUrl;
-		var uploadJsonUrl = $scope.__WEB+'index/uploadCompanyLogo?action=Upload&='+$rootScope.__ImagesUploadUrl;
-		var fileManagerJsonUrl = $scope.__WEB+'index/fileManager&action=Upload&='+$rootScope.__ImagesManagerUrl;
+		//$scope.__WEB+'app.do?method=uploadCompanyLogo&channel='+$rootScope.__ImagesUploadUrl;
+		var uploadJsonUrl = $scope.__WEB+'index/uploadCompanyLogo?channel='+__ImagesUploadUrl;
+		var fileManagerJsonUrl = $scope.__WEB+'index/fileManager?channel='+__ImagesManagerUrl;
 		window.K = KindEditor;
 		var editor = K.editor({
 			uploadJson : uploadJsonUrl,fileManagerJson : fileManagerJsonUrl,allowFileManager : true,formatUploadUrl: false
@@ -99,6 +100,48 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 			let path = '/app/'+$rootScope._self_module.module_channel+'/'+$stateParams.view+'/'
 							+$stateParams.id+'/'+$stateParams.channel;
 			$location.path(path);
+		});
+	}
+	$scope.addEditBank = function(bank) {
+		if(typeof(bank) != 'undefined') {
+			$scope.bank = bank;
+			$scope.edit_id = angular.copy(bank.bank_id);
+		}
+		$scope.setActionNavName($stateParams.id, "添加/编辑银行账户");
+		$scope.action = '添加/编辑银行账户';
+		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditBank.html'+__VERSION});
+		aside.$promise.then(function() {
+			aside.show();
+			$(document).ready(function(){
+				
+			});
+		})
+	}
+
+	$scope.saveDataBank = function() {
+		if(this.bank == null || this.bank == '') {
+			$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		if(!angular.isDefined(this.bank.bank_name)) {
+			$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		$scope.loading.show();
+		$scope.param = {};
+		$scope.param.bank = angular.copy(this.bank);
+		$httpService.header('method', 'saveBank');
+		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
+			$scope.loading.percent();
+		    $httpService.deleteHeader('method');
+			if(result.data.success == '0') { 
+				return; 
+			} 
+			$scope.seaport = {};
+			$scope.edit_id = 0;
+			aside.hide(); 
+			$scope.reload($stateParams);
 		});
 	}
 });
