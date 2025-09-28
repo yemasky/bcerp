@@ -89,6 +89,7 @@
 													<th>性别</th>
 													<th>部门</th>
 													<th>职位</th>
+													<th>权限</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -97,6 +98,7 @@
 													<td>Mark</td>
 													<td>Mark</td>
 													<td>Otto</td>
+													<td>@mdo</td>
 													<td>@mdo</td>
 												</tr>
 											</tbody>
@@ -214,7 +216,7 @@
 		<button type="button" class="close" ng-click="$hide()">&times;</button>
 	</div>
 	<div class="p-md">
-		<form name="thisPermissionForm" id="thisPermissionForm" class="form-validation form-horizontal" ng-submit="saveDataPermission(thisForm)">
+		<form name="thisPermissionForm" id="thisPermissionForm" class="form-validation form-horizontal" ng-submit="saveDataPermission()">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
 					<div class="panel-heading bg-white">
@@ -226,7 +228,7 @@
 								<div class="col-sm-12">
 									<div class="input-group m-b col-sm-3 p-h">
 										<span class="input-group-addon">权限名称</span>
-										<input type="text" class="form-control" placeholder="权限名称" ng-model="company.company_code" required />
+										<input type="text" class="form-control" placeholder="权限名称" ng-model="role_module.role_name" required />
 									</div>
 								</div>
 							</div>
@@ -235,7 +237,8 @@
 									<ul ng-if="module.have_children==1"> 
 										<li class="checkbox text-md font-bold text-black">
 											<input type="checkbox" name="role_module[{{module.module_id}}]" value="{{module.module_id}}" 
-												   ng-model="role_module[module.module_id]" ng-change="checkboxChange(this)"/> 
+												   id="role{{module.module_id}}" ng-model="role_module[module.module_id]"
+												   ng-click="checkboxCancel(role_module[module.module_id], module.module_id)"/> 
 											{{module.module_name}}
 										</li>
 									</ul>
@@ -245,8 +248,9 @@
 									<ul ng-if="module.have_children==1">
 										<li ng-repeat="(children_id, children) in module.children">
 											<span class="font-normal checkbox">
-												<input type="checkbox" name="role_module[{{children.module_id}}]" value="{{children.module_id}}"  
-													   ng-checked="role_module[module.module_id]" ng-model="role_module[children.module_id]" ng-change="checkboxChange(this)"/> 
+												<input type="checkbox" role="role{{children.module_father_id}}" name="role_module[{{children.module_id}}]" 
+													   value="{{children.module_id}}" ng-checked="role_module[module.module_id]" ng-model="role_module[children.module_id]" 
+													   ng-click="checkboxChange(role_module[children.module_id], children.module_father_id)"/> 
 												{{children.module_name}}
 											</span>
 											<ul class="nav nav-sub bg" ng-if="children.have_children==1">

@@ -610,9 +610,9 @@ public abstract class DBQuery {
 			StringBuilder sql = new StringBuilder(insertType + tableAnnotation.getTableName() + " (");
 			StringBuilder sqlParamters = new StringBuilder("");
 			HashMap<String, Method> fieldHashMap = new HashMap<>();
+			List<Method> fieldMethodList = new ArrayList<>();
 			for (; i < insertSize; i++) {
 				T objectT = objectList.get(i);
-				valueList = new ArrayList<>();
 				for (; objectClass != Object.class; objectClass = objectClass.getSuperclass()) {
 					// Method[] methods = objectClass.getDeclaredMethods();
 					Field[] fields = objectClass.getDeclaredFields();
@@ -623,25 +623,24 @@ public abstract class DBQuery {
 						if (tableAnnotation.isAnnotationField) {// 如果使用了Annotation的Field
 							columnName = fieldAnnotation.getColumnName();// 得到数据库表的columnName表名
 						}
-						if (i == 0) {
-							if (fieldAnnotation.isIgnore() || fieldAnnotation.isAutoIncrement()) {// 如果是忽略和递增就跳过
-								continue;
-							}
-							String methodNameBegin = fieldName.substring(0, 1).toUpperCase();
-							String methodName = "get" + methodNameBegin + fieldName.substring(1);
-							Method method = objectClass.getDeclaredMethod(methodName);
-							fieldHashMap.put(columnName, method);
-							Object tempObj = method.invoke(objectT);
-							valueList.add(tempObj);
-							sqlParamters.append("?,");
-							sql.append(columnName).append(",");// 用表名构造SQL
-						} else {
-							if (fieldHashMap.containsKey(columnName)) {
-								Object tempObj = fieldHashMap.get(columnName).invoke(objectT);// 获取值
-								valueList.add(tempObj);
-							}
+						if (fieldAnnotation.isIgnore() || fieldAnnotation.isAutoIncrement()) {// 如果是忽略和递增就跳过
+							continue;
 						}
+						String methodNameBegin = fieldName.substring(0, 1).toUpperCase();
+						String methodName = "get" + methodNameBegin + fieldName.substring(1);
+						Method method = objectClass.getDeclaredMethod(methodName);
+						fieldHashMap.put(columnName, method);
+						fieldMethodList.add(method);
+						sqlParamters.append("?,");
+						sql.append(columnName).append(",");// 用表名构造SQL
 					}
+					
+				}
+				valueList = new ArrayList<>();
+				for(Method method : fieldMethodList) {
+					Object tempObj = method.invoke(objectT);// 获取值
+					System.out.println("===tempObj>"+tempObj);
+					valueList.add(tempObj);
 				}
 				valueObjList.add(valueList);
 			}
@@ -651,15 +650,15 @@ public abstract class DBQuery {
 			sql.append(") VALUES (").append(sqlParamters).append(")");
 			PreparedStatement preparedStatement = this.thisWriteConnection().prepareStatement(sql.toString(),
 					PreparedStatement.RETURN_GENERATED_KEYS);
-			int j = 1, k = 0, objSize = 0;
+			int k = 0, objSize = 0;
 			i = 0;
 			for (; i < insertSize; i++) {
 				valueList = valueObjList.get(i);
 				objSize = valueList.size();
-				for (; k < objSize; k++) {
-					preparedStatement.setObject(j, valueList.get(k));
-					j++;
+				for (k = 0; k < objSize; k++) {
+					preparedStatement.setObject(k+1, valueList.get(k));
 				}
+				k = 0;
 				preparedStatement.addBatch();
 				if (i % 100 == 0) {
 					preparedStatement.executeBatch();// 执行batch
@@ -967,8 +966,13 @@ public abstract class DBQuery {
 		this.setCurrentConnHashMap(key, this.readConnection);
 		return this.readConnection;
 	}
-
+	
 	// 释放连接
+	public void closeConnection() throws SQLException { 
+		this.thisWriteConnection().close();
+		this.thisReadConnection().close();
+	}
+	
 	public void freeConnection() throws SQLException {
 		if (this.readConnection != null) {
 			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.read, this.readConnection);

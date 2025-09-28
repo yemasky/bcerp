@@ -188,7 +188,8 @@ public class GeneralDao extends BaseDao {
 	public <T> int batchSave(List<T> objectList) throws Exception {
 		//需转换成long java 默认从mysql int取出来是 BigInteger
 		BigInteger _id = (BigInteger) dBQueryDao.setDsn(this.jdbcDsn).batchInsertObject(objectList);
-		return _id.intValue();
+		if(_id != null) return _id.intValue();
+		return 0;
 	}
 	
 	public int increase(WhereRelation whereRelation) throws SQLException {
@@ -222,6 +223,6 @@ public class GeneralDao extends BaseDao {
 	}
 	
 	public void closeConnection() throws SQLException {
-		//this.dBQueryDao.closeConnection();
+		this.dBQueryDao.closeConnection();
 	}
 }

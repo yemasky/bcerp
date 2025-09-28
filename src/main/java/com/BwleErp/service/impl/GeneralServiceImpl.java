@@ -91,4 +91,28 @@ public class GeneralServiceImpl  implements GeneralService{
 	public void closeConnection() throws SQLException {
 		this.genernalDao.closeConnection();
 	}
+
+	@Override
+	public <T> int batchSave(List<T> objectList) throws Exception {
+		// TODO Auto-generated method stub
+		return this.genernalDao.batchSave(objectList);
+	}
+
+	@Override
+	public void setTransaction(boolean isTransaction) throws SQLException {
+		// TODO Auto-generated method stub
+		this.genernalDao.setTransaction(isTransaction);
+	}
+
+	@Override
+	public void commit() throws SQLException {
+		// TODO Auto-generated method stub
+		this.genernalDao.commit();
+	}
+
+	@Override
+	public void rollback() throws SQLException {
+		// TODO Auto-generated method stub
+		this.genernalDao.rollback();
+	}
 }

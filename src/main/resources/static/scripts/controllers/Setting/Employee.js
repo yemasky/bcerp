@@ -262,13 +262,12 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		});
 	}
 	//权限///////////////////////////////////////////////////////////////////////
-	var edit_permission_id = 0;var asidePermi = {};
-	$scope.role_module = [];
-	$scope.permission = {};
+	$scope.edit_permission_id = 0;let asidePermi = {};
+	$scope.role_module = {};
 	$scope.addEditPermission = function(permission) {
-		if (typeof(permission) != 'undefined') {
-			$scope.permission = permission;
-			edit_permission_id = angular.copy(permission.permission_id);
+		if (typeof(permission) != 'undefined' && typeof(permission.role_id) != 'undefined') {
+			$scope.role_module.role_name = permission.role_name;
+			$scope.edit_permission_id = angular.copy(permission.role_id);
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑权限");
 		$scope.action = '添加/编辑权限';
@@ -283,42 +282,37 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		})
 	}
 	
-	$scope.saveDataPermission = function(thisForm) {
-		//console.log($scope.role_module, thisForm);
-		let i = 0;
-		angular.forEach(thisForm, function(val,key){
-			//data等价于array[index]
-			//console.log(val,key);
-		});
-		var formParam = $.serializeFormat('#thisPermissionForm');
-		angular.forEach(formParam, function(val,key){
-			//data等价于array[index]
-			console.log(val,key);
-		});
-		if (this.permission == null || this.permission == '') {
+	$scope.saveDataPermission = function() {
+		let formParam = $.serializeFormat('#thisPermissionForm');
+		if (this.role_module == null || this.role_module == '') {
 			$alert({title: 'Notice',content: '没有数据保存！',templateUrl: '/modal-warning.html',show: true});
 			return;
 		}
-		if (!angular.isDefined(this.permission.permission_name)) {
+		if (!angular.isDefined(this.role_module.role_name)) {
 			$alert({title: 'Notice',content: '权限名必须填写！',templateUrl: '/modal-warning.html',show: true});
 			return;
 		}
 		$scope.loading.show();
-		$scope.param.permission = angular.copy(this.permission);
+		$scope.param.role_module = angular.copy(formParam);
+		$scope.param.role_module.role_name =this.role_module.role_name;
 		$httpService.header('method', 'savePermission');
-		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_id, $scope, function(result) {
+		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_permission_id, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
 			if (result.data.success == '0') {
 				return;
 			}
-			$scope.permission = {};
+			$scope.role_module = {};
 			$scope.edit_permission_id = 0;
 			asidePermi.hide();
 			$scope.reload($stateParams);
 		});
 	}
-	$scope.checkboxChange = function(evn) {
-		console.log(evn);
+	$scope.checkboxChange = function(evn, module_father_id) {
+		if(evn) $('#role'+module_father_id).prop("checked", true);
+	}
+	$scope.checkboxCancel = function(evn, module_father_id) {
+		console.log(evn, module_father_id);
+		if(!evn) $("[role='role"+module_father_id+"']").prop("checked", false);
 	}
 });
