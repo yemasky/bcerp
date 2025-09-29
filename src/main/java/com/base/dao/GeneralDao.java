@@ -167,7 +167,8 @@ public class GeneralDao extends BaseDao {
 		pageVo.setAllNum(allRows);
 		whereRelation.LIMIT((page - 1) * pageVo.getPerPage(), pageVo.getPerPage());
 		whereRelation.emptyField().setField(field);
-		List<HashMap<String, Object>> objectList = dBQueryDao.getListByEntity(whereRelation.getTable_clazz(), whereRelation);
+		//List<HashMap<String, Object>> objectList = dBQueryDao.getListByEntity(whereRelation.getTable_clazz(), whereRelation);
+		List<HashMap<String, Object>> objectList = dBQueryDao.getList(whereRelation);
 		objectList = this.needEncrypt(objectList, needEncrypt);
 		pageVo.setPageList(objectList);
 		return pageVo;

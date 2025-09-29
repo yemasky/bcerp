@@ -187,16 +187,16 @@
             <span>{{market_name}}</span>
          </a>
          <ul class="nav nav-sub bg-white b">
-            <li ng-repeat="(i, father) in marketList">
-              <a class="">
-                <span class="pull-right text-muted" ng-if="father.children!=''">
-                  <i class="fa fa-caret-down"></i>
-                </span>
-                <span class="font-normal">{{father.market_name}}</span>
-              </a>
-              <ul class="nav nav-sub bg-white b" ng-if="father.children!=''">
-                <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
-              </ul>
+            <li>
+              <div>
+              	<span ng-if="doing_async">...loading...</span>
+              	<div lazy-load="angularBootstrapNavTree">
+              		<abn-tree tree-data="my_data" tree-control="my_tree" expand-level="3"
+              			initial-selection="Granny Smith" icon-leaf="fa fa-file-o" icon-expand="fa fa-angle-right"
+              			icon-collapse="fa fa-angle-down">
+              		</abn-tree>
+              	</div>
+              </div>
             </li>
          </ul>
     </li>

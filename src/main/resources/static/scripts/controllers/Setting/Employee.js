@@ -8,10 +8,10 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		__RESOURCE+"editor/kindeditor/themes/default/default.css",
 		__RESOURCE+"vendor/libs/md5.min.js?"+__VERSION
 	]);
-	var _channel = $stateParams.channel,treeData = [];$scope.__IMGWEB = __IMGWEB; 
-	var urlParam = 'channel=' + _channel;
+	var _channel = $stateParams.channel,treeData = [];$scope.__IMGWEB = __IMGWEB; var urlParam = 'channel=' + _channel;
 	$scope.param = {};$scope.param.sector = {};$scope.sectorHash = {};$scope.companyList = {};$scope.companyHash = {}; //定义变量
 	$scope.company = {};$scope.activeSector = 0;$scope.activeTab = 1;$scope.positionList = [];$scope.roleList = {};$scope.roleHash = {};
+	$scope.employeePage = {};$scope.ePageList = [];$activeEL = 0;
 	var tree;$scope.my_tree = tree = {};
 	$scope.loading.show();
 	//获取页面数据
@@ -41,6 +41,14 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			}
 		}
 		$scope.roleList = roleList;
+		//员工列表
+		//var employeePage = result.data.item.employeePage;
+		//var strEPageList = JSON.stringify(employeePage.pageList);
+		$scope.employeePage = result.data.item.employeePage;
+		console.log($scope.employeePage);
+		//$scope.ePageList = JSON.parse(strEPageList);
+		//console.log(strEPageList,JSON.parse(strEPageList),typeof(result.data.item.employeePage));
+
 		//组织架构树
 		treeData = getTreeData(result.data.item.companySectorList);
 		$scope.my_data = treeData;
@@ -54,7 +62,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 					if (item.sector_father_id != item.sector_id) {
 						parent = sectorHash[item.sector_father_id];
 					} //console.log(parent);
-					item.label = item.sector_name;
+					item.label = item.sector_name; 
 					item.children = [];
 					if (parent) {
 						if (angular.isUndefined(parent.children)) parent.children = [];
@@ -222,12 +230,15 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		}
 	}
 	/////////////员工编辑//////////////////////////////////////////////////////////////////////////////
-	var edit_employee_id = 0;$scope.employees = {};
-	$scope.addEditEmployee = function(employees) { 
-		if (typeof(employees) != 'undefined') {
-			$scope.employees = employees;
-			edit_employee_id = angular.copy(employees.employee_id);
+	$scope.edit_employee_id = 0;$scope.employees = {};
+	$scope.addEditEmployee = function(editType) { 
+		if (editType == 'edit' && typeof($scope.employees) != 'undefined') {
+			//$scope.employees = employees;
+			$scope.edit_employee_id = angular.copy($scope.employees.e_id);
+			$scope.employees.position_id = $scope.sectorHash[$scope.employees.position_id];
+			$scope.employees.role_id = $scope.roleHash[$scope.employees.role_id];
 		} else {
+			$scope.employees = {};
 			let branch = tree.get_selected_branch();
 			if (branch == null) {$alert({title: 'Error',content: '选择左边部门，再点击添加员工！',templateUrl: '/modal-warning.html',show: true});return;}
 			else {$scope.employees.sector_id = branch.sector_id}
@@ -266,7 +277,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.param.employees.position_id = position_id;
 		$scope.param.employees.password = md5(md5(this.employees.password))
 		$httpService.header('method', 'saveEmployee');
-		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + edit_employee_id, $scope, function(result) {
+		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_employee_id, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
 			if (result.data.success == false) {
@@ -275,6 +286,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			$scope.seaport = {};
 			$scope.edit_employee_id = 0;
 			aside.hide();
+			$scope.employeePage.pageList[$scope.activeEL] = $scope.param.employees;
 			//$scope.reload($stateParams);
 		});
 	}
@@ -300,6 +312,59 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			});
 		});
 	} 
+	$scope.setActiveEL = function(i,e) {
+		$scope.activeEL = i;
+		$scope.employees = angular.copy(e);
+		console.log(e);
+	}
+	var asideSector = {};
+	$scope.showSector = function() {
+		asideSector = $aside({scope: $scope,title: $scope.action_nav_name,placement: 'center',animation: 'am-fade-and-slide-top',backdrop: "static",
+			container: '#MainController',templateUrl: 'ShowSector.html' + __VERSION
+		});
+		asideSector.$promise.then(function() {
+			asideSector.show();
+			$(document).ready(function() {
+				$scope.setImage();
+			});
+		})
+	}
+	var branchSetSector = {};
+	$scope.setSector = function(branch) {
+		branchSetSector = branch;
+	}
+	$scope.setSectorOk = function() {
+		if(typeof(branchSetSector.sector_id) != "undefined") $scope.employees.sector_id = branchSetSector.sector_id;
+		asideSector.hide();
+	}
+	$scope.employeeDelete = function() {	
+		var message = '您确定要删除吗？';
+		$scope.confirm({'content': message,'callback': deleteData});
+		function deleteData() {
+			$scope.param.delete_id = $scope.employees.e_id;
+			$httpService.header('method', 'deleteEmployee');
+			$httpService.post('app.do?' + urlParam, $scope, function(result) {
+				$scope.loading.percent();
+				$httpService.deleteHeader('method');
+				if (result.data.success == false) {
+					return;
+				}
+				delete $scope.employeePage.pageList[$scope.activeEL]; 				
+			});
+		}
+	}
+	$scope.employeeNextPage = function(page) {	
+		$scope.param.page = page;
+		$httpService.header('method', 'getEmployee');
+		$httpService.post('app.do?' + urlParam, $scope, function(result) {
+			$scope.loading.percent();
+			$httpService.deleteHeader('method');
+			if (result.data.success == false) {
+				return;
+			}
+			$scope.employeePage = result.data.item.employeePage;		
+		});
+	}
 	//权限///////////////////////////////////////////////////////////////////////
 	$scope.edit_permission_id = 0;let asidePermi = {};
 	$scope.role_module = {};$scope.permission = {};

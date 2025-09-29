@@ -79,10 +79,11 @@ public abstract class AbstractAction {
 			if(checkedStatus.isStatus()) {
 				this.service(request, response);
 				this.release(request, response);
+				this.freeAllConnection();
 			} else {
 				success.setSuccess(checkedStatus.isStatus());
 				success.setErrorCode(checkedStatus.getError());
-				//this.freeAllConnection();
+				//
 				return success;
 			}
 		} catch (Exception e) {

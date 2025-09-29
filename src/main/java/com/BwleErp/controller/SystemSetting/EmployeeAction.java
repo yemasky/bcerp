@@ -19,7 +19,7 @@ import com.base.model.vo.BwleErp.EmployeeSectorVo;
 import com.base.model.vo.BwleErp.EmployeesVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
-import com.google.gson.Gson;
+import com.base.util.EncryptUtiliy;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
@@ -64,6 +64,12 @@ public class EmployeeAction extends AbstractAction {
 		case "saveEmployee":
 			this.doSaveEmployee(request, response);
 			break;	
+		case "getEmployee":
+			this.doGetEmployeeSector(request, response);
+			break;		
+		case "deleteEmployee":
+			this.doDeleteEmployee(request, response);
+			break;		
 		default:
 			this.doDefault(request, response);
 			break;
@@ -85,27 +91,45 @@ public class EmployeeAction extends AbstractAction {
 	public void doGetSector(HttpServletRequest request, HttpServletResponse response) throws Exception { 
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.EQ("sector_valid", 1).setTable_clazz(CompanySector.class);
-		List<CompanySector> companySectorList = generalService.getEntityList(whereRelation);
+		List<CompanySector> companySectorList = this.generalService.getEntityList(whereRelation);
 		//
 		whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(Company.class);
-		List<Company> companyList = generalService.getEntityList(whereRelation);
+		List<Company> companyList = this.generalService.getEntityList(whereRelation);
 		//
 		whereRelation = new WhereRelation();
 		whereRelation.EQ("role_valid", 1).setTable_clazz(Role.class);
-		List<Role> roleList = generalService.getEntityList(whereRelation);
+		List<Role> roleList = this.generalService.getEntityList(whereRelation);
 		//
 		whereRelation = new WhereRelation();//取得所有员工
-		whereRelation.setTable_clazz(EmployeeSectorVo.class);
+		whereRelation.EQ("is_system", 0).setTable_clazz(EmployeeSectorVo.class);
 		PageVo pageVo = new PageVo();
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("e_id", NeedEncrypt._ENCRYPT);
-		generalService.getPageList(whereRelation, pageVo, needEncrypt);
+		pageVo = this.generalService.getPageList(whereRelation, pageVo, needEncrypt);
 		
 		this.success.setItem("companySectorList", companySectorList); 
 		this.success.setItem("companyList", companyList);
 		this.success.setItem("roleList", roleList);
+		this.success.setItem("employeePage", pageVo);
+	}
+	
+	public void doGetEmployeeSector(HttpServletRequest request, HttpServletResponse response) throws Exception { 
+		Object _page = request.getAttribute("page");//post
+		int page = 1;
+		if (_page != null && !_page.equals("")) {
+			page = Integer.parseInt(_page.toString());
+		}
+		PageVo pageVo = new PageVo();
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.EQ("is_system", 0).setTable_clazz(EmployeeSectorVo.class);
+		NeedEncrypt needEncrypt = new NeedEncrypt();
+		needEncrypt.setNeedEncrypt(true);
+		needEncrypt.setNeedEncrypt("e_id", NeedEncrypt._ENCRYPT);
+		pageVo.setCurrentPage(page);
+		pageVo = this.generalService.getPageList(whereRelation, pageVo, needEncrypt);
+		this.success.setItem("employeePage", pageVo);
 	}
 	
 	public void doSaveSectorPosition(HttpServletRequest request, HttpServletResponse response) throws Exception { 
@@ -184,12 +208,41 @@ public class EmployeeAction extends AbstractAction {
 	}
 	//doSaveEmployee
 	public void doSaveEmployee(HttpServletRequest request, HttpServletResponse response) throws Exception { 
-		Integer edit_id = (Integer) request.getAttribute("edit_id");//
+		String _edit_id = request.getParameter("edit_id");//
 		EmployeesVo employees = this.modelMapper.map(request.getAttribute("employees"), EmployeesVo.class);
-		if(edit_id != null && edit_id > 0) {//update
+		int edit_id = 0;
+		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("0")) {
+			edit_id = EncryptUtiliy.instance().intIDDecrypt(_edit_id);
+		}
+		if(edit_id > 0) {//update  
+			this.generalService.setTransaction(true);
+			Employee employee = new Employee();
+			EmployeeSector employeeSector = new EmployeeSector();
+			if(employees.getPassword() != null && !employees.getPassword().equals("")) {
+				String _salt = Encrypt.getRandomUUID();
+				employee.setPassword(Encrypt.md5Encrypt(employees.getPassword() + _salt));
+				employee.setPassword_salt(_salt);
+			}
+			
+			employee.setEmail(employees.getEmail());
+			employee.setMobile(employees.getMobile());
 			WhereRelation whereRelation = new WhereRelation();
-			//whereRelation.EQ("employee", edit_id).setTable_clazz(CompanySector.class);
-			//generalService.updateEntity(employees, whereRelation);
+			whereRelation.EQ("employee_id", edit_id).setTable_clazz(Employee.class);
+			generalService.updateEntity(employee, whereRelation);
+			//
+			whereRelation = new WhereRelation();
+			employeeSector.setMobile(employees.getMobile());
+			employeeSector.setEmail(employees.getEmail());
+			employeeSector.setAvatar(employees.getAvatar());
+			employeeSector.setPosition_id(employees.getPosition_id());
+			employeeSector.setSector_id(employees.getSector_id());
+			employeeSector.setRole_id(employees.getRole_id());
+			employeeSector.setEmployee_name(employees.getEmployee_name());
+			employeeSector.setEmployee_enname(employees.getEmployee_enname());
+			whereRelation.EQ("employee_id", edit_id).setTable_clazz(EmployeeSector.class);
+			generalService.updateEntity(employeeSector, whereRelation);
+			this.generalService.commit();
+			//
 		} else {
 			this.generalService.setTransaction(true);
 			Employee employee = new Employee();
@@ -216,7 +269,28 @@ public class EmployeeAction extends AbstractAction {
 			this.generalService.save(employeeSector);
 			this.generalService.commit();
 		}
-		this.success.setItem("sector_id", edit_id);
+		this.success.setItem("e_id", edit_id);
 		//
+	}
+	
+	public void doDeleteEmployee(HttpServletRequest request, HttpServletResponse response) throws Exception { 
+		Object _edit_id = request.getAttribute("delete_id");//
+		int edit_id = 0;
+		if(_edit_id != null && !_edit_id.equals("")) {
+			edit_id = EncryptUtiliy.instance().intIDDecrypt(_edit_id+"");
+		}
+		if(edit_id > 0) {//update  
+			this.generalService.setTransaction(true);
+			Employee employee = new Employee();
+			EmployeeSector employeeSector = new EmployeeSector();
+			WhereRelation whereRelation = new WhereRelation();
+			whereRelation.EQ("employee_id", edit_id).setTable_clazz(Employee.class);
+			employee.setEmployee_valid(0);
+			generalService.updateEntity(employee, whereRelation);
+			//
+			employeeSector.setEmployee_valid(0);
+			generalService.updateEntity(employeeSector, whereRelation);
+			this.generalService.commit();
+		}
 	}
 }

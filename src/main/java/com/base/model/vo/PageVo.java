@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PageVo {
-	private int perPage = 8;
+	private int perPage = 2;
 	private int allPages = 0;
 	private int currentPage = 1;
 	private int allNum = 0;
