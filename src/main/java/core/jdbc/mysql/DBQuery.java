@@ -60,7 +60,7 @@ public abstract class DBQuery {
 		} else {
 			String temp = clazz.getName();
 			temp = temp.substring(temp.lastIndexOf(".") + 1);
-			String str_regex = "([A-Z]+?)";
+			String str_regex = "([A-Z]+?)";//table 名字用驼峰式构造 AzzzBzzz = azzz_bzzz
 			Pattern pattern = Pattern.compile(str_regex);
 			Matcher table_matcher = pattern.matcher(temp);
 			int i = 0;
@@ -172,9 +172,9 @@ public abstract class DBQuery {
 			return list;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
-			logger.error("error sql:" + sql);
+			logger.error("error sql:" + sql, e);
 			//this.freeAndRollBackAllConnection();
-			throw new SQLException("SQL error." + sql);
+			throw new SQLException("SQL error." + sql, e);
 		}
 	}
 
@@ -530,6 +530,7 @@ public abstract class DBQuery {
 	 * 删除数据
 	 */
 	public int delete(WhereRelation whereRelation) throws SQLException {
+		this.table(whereRelation.getTable_clazz());
 		String sql = "DELETE FROM " + this.table_name + whereRelation.getWhereSQL();
 		try {
 			PreparedStatement preparedStatement = this.thisWriteConnection().prepareStatement(sql);
@@ -539,6 +540,7 @@ public abstract class DBQuery {
 					preparedStatement.setObject(i + 1, paramters[i]);
 				}
 			}
+			logger.info("delete sql:" + sql);
 			return preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -639,7 +641,6 @@ public abstract class DBQuery {
 				valueList = new ArrayList<>();
 				for(Method method : fieldMethodList) {
 					Object tempObj = method.invoke(objectT);// 获取值
-					System.out.println("===tempObj>"+tempObj);
 					valueList.add(tempObj);
 				}
 				valueObjList.add(valueList);
@@ -1012,9 +1013,12 @@ public abstract class DBQuery {
 		HashMap<String, Connection> jdbcDsnMap = currentConnHashMap.remove(thread);
 		if (jdbcDsnMap != null && jdbcDsnMap.size() > 0) {
 			for (String key : jdbcDsnMap.keySet()) {
-				if (key.contains(this.write) && !jdbcDsnMap.get(key).getAutoCommit()) {
-					jdbcDsnMap.get(key).rollback();
-					jdbcDsnMap.get(key).setAutoCommit(true);// 删除事务
+				if (key.contains(this.write)) {
+					Connection conn = jdbcDsnMap.get(key);
+					if(conn != null) {
+						jdbcDsnMap.get(key).rollback();
+						if(!jdbcDsnMap.get(key).getAutoCommit()) jdbcDsnMap.get(key).setAutoCommit(true);// 删除事务
+					}
 				}
 				DbcpPoolManager.instance().freeConnection(key, jdbcDsnMap.get(key));
 			}

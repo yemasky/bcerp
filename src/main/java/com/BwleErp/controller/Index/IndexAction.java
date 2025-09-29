@@ -1,5 +1,6 @@
 package com.BwleErp.controller.Index;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -101,9 +102,9 @@ public class IndexAction extends AbstractAction {
 		WhereRelation whereRelation = new WhereRelation();
 		if (email != null && !email.equals("") && password != null && !password.equals("")) {
 			if (email.contains("@")) {
-				whereRelation.EQ("email", email).EQ("valid", 1).setTable_clazz(Employee.class);
+				whereRelation.EQ("email", email).EQ("employee_valid", 1).setTable_clazz(Employee.class);
 			} else {
-				whereRelation.EQ("mobile", email).EQ("valid", 1).setTable_clazz(Employee.class);
+				whereRelation.EQ("mobile", email).EQ("employee_valid", 1).setTable_clazz(Employee.class);
 			}
 			Employee employee = (Employee) this.generalService.getEntity(whereRelation);
 			if (employee != null) {
@@ -128,7 +129,7 @@ public class IndexAction extends AbstractAction {
 
 	public void doRefresh(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.EQ("employee_id", this.employee_id).EQ("valid", 1).setTable_clazz(Employee.class);
+		whereRelation.EQ("employee_id", this.employee_id).EQ("employee_valid", 1).setTable_clazz(Employee.class);
 		Employee employee = (Employee) this.generalService.getEntity(whereRelation);
 		if (employee != null) {
 			this.setEmployeeInfo(employee, response);
@@ -160,13 +161,16 @@ public class IndexAction extends AbstractAction {
 				new NeedEncrypt());
 		int[] iModule_idsList = Utility.instance().hashMapListToIntArray(roleModuleAccessList, "module_id");
 		// 获取菜单
-		whereRelation = new WhereRelation();
-		whereRelation.IN("module_id", iModule_idsList).ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
-				.ORDER_DESC("module_order").ORDER_DESC("action_order").setTable_clazz(Modules.class);
+		List<HashMap<String, Object>> employeeModuleVoList = new ArrayList<>();
 		NeedEncrypt needEncrypt = new NeedEncrypt();
-		needEncrypt.setNeedEncrypt(true);
-		needEncrypt.setNeedEncrypt("module_id", "url");
-		List<HashMap<String, Object>> employeeModuleVoList = this.generalService.getList(whereRelation, needEncrypt);
+		if(iModule_idsList != null && iModule_idsList.length > 0) {
+			whereRelation = new WhereRelation();
+			whereRelation.IN("module_id", iModule_idsList).ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
+					.ORDER_DESC("module_order").ORDER_DESC("action_order").setTable_clazz(Modules.class);
+			needEncrypt.setNeedEncrypt(true);
+			needEncrypt.setNeedEncrypt("module_id", "url");
+			employeeModuleVoList = this.generalService.getList(whereRelation, needEncrypt);
+		}
 		// 获取公司
 		whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(CompanyVo.class);

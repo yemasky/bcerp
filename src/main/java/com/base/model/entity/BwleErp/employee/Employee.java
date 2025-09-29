@@ -14,7 +14,7 @@ public class Employee extends EmployeeBaseAbstract {
 	private String password_salt;
 	private String wx_openid;
 	private String wx_unionid;
-	private Integer valid;
+	private Integer employee_valid;
 	private Integer is_system;
 	public Integer getE_id() {
 		return e_id;
@@ -58,11 +58,11 @@ public class Employee extends EmployeeBaseAbstract {
 	public void setWx_unionid(String wx_unionid) {
 		this.wx_unionid = wx_unionid;
 	}
-	public Integer getValid() {
-		return valid;
+	public Integer getEmployee_valid() {
+		return employee_valid;
 	}
-	public void setValid(Integer valid) {
-		this.valid = valid;
+	public void setEmployee_valid(Integer employee_valid) {
+		this.employee_valid = employee_valid;
 	}
 	public Integer getIs_system() {
 		return is_system;

@@ -1,10 +1,12 @@
-package com.base.model.entity.BwleErp.employee;
+package com.base.model.vo.BwleErp;
+
+import com.base.model.entity.BwleErp.employee.EmployeeSectorBaseAbstract;
 
 import core.custom_interface.Column;
 import core.custom_interface.Table;
 
 @Table(name = "employee_sector", isAnnotationField = true)
-public class EmployeeSector extends EmployeeSectorBaseAbstract {
+public class EmployeeSectorVo extends EmployeeSectorBaseAbstract {
 	@Column(name = "employee_id", update_ignore = true)
 	private Integer e_id;
 	

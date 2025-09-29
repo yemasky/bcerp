@@ -1,7 +1,6 @@
 package com.BwleErp.controller.Index;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import com.base.model.vo.KEditorUImages;
 import com.base.service.BwleErp.UploadService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
-import com.base.type.UseType;
 
 import core.jdbc.mysql.WhereRelation;
 import core.util.FileUpload;
@@ -48,8 +46,11 @@ public class UploadAction extends AbstractAction {
 		//
 		switch (method) {
 		case "uploadCompanyLogo":
-			this.doUploadCompanyLogo(request, response);
+			this.doUploadImages(request, response);
 			break;	
+		case "uploadEmployeeAvatar":
+			this.doUploadImages(request, response);
+			break;		
 		case "fileManager":
 			this.doFileManager(request, response);
 			break;	
@@ -74,18 +75,16 @@ public class UploadAction extends AbstractAction {
 		
 	}
 	
-	public void doUploadCompanyLogo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void doUploadImages(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ArrayList<FileDTO> fileList = FileUpload.instance().multiSpringUpload(request, Config.uploadPath);
 		int size = fileList.size();
 		if (size > 0) {
-			String images_url = fileList.get(0).getFile_url();
-			HashMap<String, Object> updateData = new HashMap<>();
-			updateData.put("member_avatar", images_url);
 			//
+			String UseType = request.getParameter("UseType");
 			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("employee_id", this.employee_id).EQ("file_use_type", UseType.CompanyLogo).setUpdate("file_valid", 0);
+			whereRelation.EQ("employee_id", this.employee_id).EQ("file_use_type", UseType).setUpdate("file_valid", 0);
 			//uploadService.update(whereRelation);
-			uploadService.saveUploadFileDb(fileList, 0, 0, UseType.CompanyLogo, "", this.employee_id);
+			uploadService.saveUploadFileDb(fileList, 0, 0, UseType, "", this.employee_id);
 			KEditorUImages kImages = new KEditorUImages();
 			kImages.setUrl(fileList.get(0).getFile_url());
 			this.success.setItem("images", kImages);

@@ -12,6 +12,8 @@ public class UploadFile extends FileDTO {
 	private Integer category_id;
 	private Integer file_linked_id;
 	private Integer employee_id;
+	private Integer file_year;
+	private Integer file_month;
 	private Integer file_valid;
 
 	public Integer getFile_id() {
@@ -44,6 +46,38 @@ public class UploadFile extends FileDTO {
 
 	public void setEmployee_id(Integer employee_id) {
 		this.employee_id = employee_id;
+	}
+
+	public Integer getFile_year() {
+		return file_year;
+	}
+
+	public void setFile_year(Integer file_year) {
+		this.file_year = file_year;
+	}
+
+	public Integer getFile_month() {
+		return file_month;
+	}
+
+	public void setFile_month(Integer file_month) {
+		this.file_month = file_month;
+	}
+
+	public void setFile_id(Integer file_id) {
+		this.file_id = file_id;
+	}
+
+	public void setCategory_id(Integer category_id) {
+		this.category_id = category_id;
+	}
+
+	public void setFile_linked_id(Integer file_linked_id) {
+		this.file_linked_id = file_linked_id;
+	}
+
+	public void setFile_valid(Integer file_valid) {
+		this.file_valid = file_valid;
 	}
 
 	public Integer getFile_valid() {

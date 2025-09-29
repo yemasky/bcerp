@@ -210,6 +210,10 @@ public class GeneralDao extends BaseDao {
 		return dBQueryDao.updateObject(object, whereRelation);
 	}
 
+	public int delete(WhereRelation whereRelation) throws Exception {
+		return dBQueryDao.delete(whereRelation);
+	}
+	
 	public void setTransaction(boolean isTransaction) throws SQLException {
 		this.dBQueryDao.setTransaction(isTransaction);
 	}

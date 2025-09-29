@@ -587,7 +587,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			var height = window.screen.height;
 			var newHeight = height * h;
 		}
-		$scope.selectGroup = function (item){
+		$scope.selectCountryGroup = function (item){
 	        if (item.country_enname[0] >= 'A' && item.country_enname[0] <= 'M')
 	            return 'From A - M';
 	        if (item.country_enname[0] >= 'N' && item.country_enname[0] <= 'Z') 

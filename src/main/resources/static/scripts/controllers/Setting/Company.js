@@ -56,7 +56,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 	//images
 	$scope.setImage = function() {
 		//$scope.__WEB+'app.do?method=uploadCompanyLogo&channel='+$rootScope.__ImagesUploadUrl;
-		var uploadJsonUrl = $scope.__WEB+'index/uploadCompanyLogo?channel='+__ImagesUploadUrl;
+		var uploadJsonUrl = $scope.__WEB+'index/uploadCompanyLogo?channel='+__ImagesUploadUrl+"&UseType=CompanyLogo";
 		var fileManagerJsonUrl = $scope.__WEB+'index/fileManager?channel='+__ImagesManagerUrl;
 		window.K = KindEditor;
 		var editor = K.editor({

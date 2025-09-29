@@ -66,7 +66,7 @@
 										<div>
 											<span ng-if="doing_async">...loading...</span>
 											<div lazy-load="angularBootstrapNavTree">
-												<abn-tree tree-data="my_data" tree-control="my_tree" on-select="SectorPosition(branch)" expand-level="3"
+												<abn-tree tree-data="my_data" tree-control="my_tree" on-select="sectorPosition(branch)" expand-level="3"
 													initial-selection="Granny Smith" icon-leaf="fa fa-file-o" icon-expand="fa fa-angle-right"
 													icon-collapse="fa fa-angle-down">
 												</abn-tree>
@@ -116,20 +116,20 @@
 						<table class="table" ng-show="activeTab==2">
 							<thead>
 								<tr>
-									<th>#</th>
-									<th>权限</th>
+									<th class="w-xxs">#</th>
+									<th>权限名称</th>
 									<th></th>
 									<th></th>
 									<th></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="(i, bank) in bankList">
+								<tr ng-repeat="(i, role) in roleList">
 									<td>{{i+1}}</td>
-									<td>{{bank.bank_sname}}</td>
+									<td>{{role.role_name}}</td>
 									<td></td>
 									<td></td>
-									<td><a class="pull-right" ng-click="addEditBank(bank)"><i class="fa fa-edit"></i> 编辑</a></td>
+									<td><a class="pull-right" ng-click="addEditPermission(role)"><i class="fa fa-edit"></i> 修改</a></td>
 								</tr>
 							</tbody>
 						</table>
@@ -140,77 +140,137 @@
 	</form>
 </div>
 <script type="text/ng-template" id="AddEditEmployee.html">
-	<div class="aside box-shadow b-r aside-x p" tabindex="-1" role="dialog">
+<div class="aside box-shadow b-r aside-x p" tabindex="-1" role="dialog">
 	<div class="aside-header"><i class="fa fa-building-o"> </i>
 		<span class="no-margin" ng-bind-html="action_nav"></span>
 		<button type="button" class="close" ng-click="$hide()">&times;</button>
 	</div>
-	<div class="p-md">
-		<form name="thisForm" id="thisForm" class="form-validation" ng-submit="saveDataEmployee(thisForm)">
-			<div class="col-sm-12">
-				<div class="panel panel-default">
-					<div class="panel-heading bg-white">
-						<span class="font-bold">添加/编辑员工</span>
-					</div>
-					<div class="row">
-						<div class="panel-body col-sm-8">
-							<div class="form-group ">
-								<div class="col-sm-3">
-									<div class="input-group m-b">
-										<span class="input-group-addon">企业代码</span>
-										<input type="text" class="form-control" placeholder="企业代码" ng-model="company.company_code" required />
-									</div>
+	<form name="thisForm" id="thisForm" class="form-validation" ng-submit="saveDataEmployee(thisForm)">	
+		<div class="p-md">
+			<div class="panel panel-default">
+				<div class="panel-heading bg-white">
+					<span class="font-bold">添加/编辑员工</span>
+				</div>
+				<div class="row">
+					<div class="panel-body col-sm-8">
+						
+							<div class="form-group clearfix">
+								<div class="col-sm-5">
+									<label for="employee_name">姓名</label>
+									<input class="form-control w" name="employee_name" value="" ng-model="employees.employee_name" required>
 								</div>
-								<div class="col-sm-4"> 
-									<div class="input-group m-b">
-										<span class="input-group-addon">企业简称</span>
-										<input type="text" class="form-control" placeholder="企业简称" ng-model="company.company_sname" required />
+								<div class="col-sm-5">
+									<label for="employee_name">英文名</label>
+									<input class="form-control w" name="employee_enname" value="" ng-model="employees.employee_enname" required>
+								</div>
+							</div>
+							<div class="form-group clearfix">
+								<div class="col-sm-5">
+									<label for="mobile">手机</label>
+									<input class="form-control w" name="mobile" value="" ng-model="employees.mobile" required>
+								</div>
+								<div class="col-sm-5">
+									<label for="id_card">Email</label>
+									<input type="email" class="form-control w" name="id_card" value="" ng-model="employees.email" required>
+								</div>
+							</div>
+							<div class="form-group clearfix">
+								<div class="col-sm-5">
+									<label for="mobile">设置密码</label>
+									<span>
+									<input class="form-control w" name="password" value="" ng-model="employees.password" 
+										ng-pattern="/^(?![A-Za-z]+$)(?![A-Z\d]+$)(?![A-Z\W]+$)(?![a-z\d]+$)(?![a-z\W]+$)(?![\d\W]+$)\S{8,20}$/" required>[包含大小写字母数字8~20位]</span>
+								</div>
+								<div class="col-sm-3">
+									<label>部门</label>
+									<div class="form-inline">
+										<div class="form-group">
+											<input type="hidden" ng-model="employees.sector_id" />
+											<input type="text" class="form-control" value="{{sectorHash[employees.sector_id].sector_name}}" readonly />
+										</div>
 									</div>
 								</div>
 							</div>
-							
-						</div>
-						<div class="panel-body col-sm-4">
-							<div class="form-group m-h-n clearfix">
+							<div class="form-group clearfix">
+								<div class="col-sm-4">
+									<label>职位</label>
+									<div class="form-group">
+										<ui-select class="w-lg" ng-model="employees.position_id" ng-change="selectSeaport()" theme="bootstrap" ng-disabled="disabled">
+										  <ui-select-match placeholder="选择职位">{{$select.selected.sector_name}}</ui-select-match>
+										  <ui-select-choices group-by="'group'" 
+											repeat="position in positionList | propsFilter: {sector_name: $select.search}">
+										    <div ng-bind-html="position.sector_name | highlight: $select.search"></div>
+										  </ui-select-choices>
+										</ui-select> 
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<label>权限</label>
+									<div class="form-group">
+										<ui-select class="w-lg" ng-model="employees.role_id" ng-change="selectRole()" theme="bootstrap" ng-disabled="disabled">
+										  <ui-select-match placeholder="选择权限">{{$select.selected.role_name}}</ui-select-match>
+										  <ui-select-choices group-by="'group'" 
+											repeat="role in roleList | propsFilter: {role_name: $select.search}">
+										    <div ng-bind-html="role.role_name | highlight: $select.search"></div>
+										  </ui-select-choices>
+										</ui-select> 
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3">
+									<label class="radio-inline"> 
+										<input type="radio" value="1" id="valid1" ng-model="employees.employee_valid" name="valid" 
+											ng-checked="employees.employee_valid=='1'" checked> 有效
+									</label>
+									<label class="radio-inline"> 
+										<input type="radio" value="0" id="valid0" ng-model="employees.employee_valid" name="valid" 
+											ng-checked="employees.employee_valid=='0'"> 无效
+									</label>
+								</div>
+							</div>
+							<input type="hidden" name="company_id" value="" ng-model="company.company_id">
+						
+					</div>
+					<div class="panel-body col-sm-4">
+						<div class="form-group m-h-n clearfix">
+							<div class="col-sm-12">
 								<div class="col-sm-12">
-									<div class="col-sm-12">
-										<label>员工头像</label>
-										<div class="w-xl w-auto-xs">
-											<div class="box bg-white">
-												<div class="box-col w-auto-xs v-m">
-													<img id="company_logo" name="company_logo" ng-src="{{__IMGWEB + company.company_logo}}" width="120" height="120"
-														class="b p-xs" onerror="this.src='/static/images/logo.png'" />
-													<input type="hidden" ng-model="company.company_logo" value="{{company.company_logo}}">
-												</div>
-												<div class="box-col p">
-													<button class="btn btn-addon btn-default set_image_src" id="set_image_src" type="button" isMain="1"><i
-															class="fa fa-upload"></i> 上传图片</button>
-													<label>最大:2M/600x600px</label>
-												</div>
+									<label>员工头像</label>
+									<div class="w-xl w-auto-xs">
+										<div class="box bg-white">
+											<div class="box-col w-auto-xs v-m">
+												<img id="avatar" name="avatar" ng-src="{{__IMGWEB + employees.avatar}}" width="120" height="120"
+													class="b p-xs" onerror="this.src='/static/images/userimg/user_b.png'" />
+												<input type="hidden" ng-model="employees.avatar" value="{{employees.avatar}}">
+											</div>
+											<div class="box-col p">
+												<button class="btn btn-addon btn-default set_image_src" id="set_image_src" type="button" isMain="1"><i
+														class="fa fa-upload"></i> 上传图片</button>
+												<label>最大:2M/600x600px</label>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div> 
+							</div>
 						</div>
 					</div>
-					<footer class="panel-footer aside-footer text-right">
-						<div class="btn-group">
-							<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
-							<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
-								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
-						</div>
-					</footer>
 				</div>
+				<footer class="panel-footer aside-footer text-right">
+					<div class="btn-group">
+						<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+						<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+							trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+					</div>
+				</footer>
 			</div>
-			<input type="hidden" name="company_id" value="" ng-model="company.company_id">
-		</form>
-	</div>
+		</div>
+	</form>
 </div>
 </script>
 <!-- AddEditPermission -->
 <script type="text/ng-template" id="AddEditPermission.html">
-<div class="aside box-shadow b-r aside-x p" tabindex="-1" role="dialog">
+	<div class="aside box-shadow b-r aside-x p" tabindex="-1" role="dialog">
 	<div class="aside-header"><i class="fa fa-building-o"> </i>
 		<span class="no-margin" ng-bind-html="action_nav"></span>
 		<button type="button" class="close" ng-click="$hide()">&times;</button>
@@ -260,7 +320,7 @@
 											</ul>
 										</li>
 							        </ul>
-								</div>
+								</div> 
 							</div>
 						</div>
 					</div>

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.BwleErp.config.Config;
 import com.base.dao.GeneralDao;
+import com.base.model.vo.PageVo;
+import com.base.model.vo.PageVoEntity;
 import com.base.service.GeneralService;
 
 import core.jdbc.mysql.NeedEncrypt;
@@ -88,14 +90,32 @@ public class GeneralServiceImpl  implements GeneralService{
 	}
 
 	@Override
-	public void closeConnection() throws SQLException {
-		this.genernalDao.closeConnection();
+	public <T> PageVoEntity<T> getPageEntityList(WhereRelation whereRelation, PageVoEntity<T> pageVo) throws Exception {
+		// TODO Auto-generated method stub
+		return this.genernalDao.getPageEntityList(whereRelation, pageVo);
 	}
 
+	@Override
+	public PageVo getPageList(WhereRelation whereRelation, PageVo pageVo, NeedEncrypt needEncrypt) throws Exception {
+		// TODO Auto-generated method stub
+		return this.genernalDao.getPageList(whereRelation, pageVo, needEncrypt);
+	}
+	
 	@Override
 	public <T> int batchSave(List<T> objectList) throws Exception {
 		// TODO Auto-generated method stub
 		return this.genernalDao.batchSave(objectList);
+	}
+	
+	@Override
+	public void delete(WhereRelation whereRelation) throws Exception {
+		// TODO Auto-generated method stub
+		this.genernalDao.delete(whereRelation);
+	}
+	
+	@Override
+	public void closeConnection() throws SQLException {
+		this.genernalDao.closeConnection();
 	}
 
 	@Override
@@ -115,4 +135,5 @@ public class GeneralServiceImpl  implements GeneralService{
 		// TODO Auto-generated method stub
 		this.genernalDao.rollback();
 	}
+
 }

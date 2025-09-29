@@ -1,12 +1,17 @@
 app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside,
 	$ocLazyLoad, $alert, $stateParams) {
 	$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
-		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION
+		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION,
+		__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
+		__RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION,
+		__RESOURCE+"editor/kindeditor/kindeditor-all.js?"+__VERSION,
+		__RESOURCE+"editor/kindeditor/themes/default/default.css",
+		__RESOURCE+"vendor/libs/md5.min.js?"+__VERSION
 	]);
-	var _channel = $stateParams.channel,treeData = [];
+	var _channel = $stateParams.channel,treeData = [];$scope.__IMGWEB = __IMGWEB; 
 	var urlParam = 'channel=' + _channel;
 	$scope.param = {};$scope.param.sector = {};$scope.sectorHash = {};$scope.companyList = {};$scope.companyHash = {}; //定义变量
-	$scope.company = {};$scope.activeSector = 0;$scope.activeTab = 1;
+	$scope.company = {};$scope.activeSector = 0;$scope.activeTab = 1;$scope.positionList = [];$scope.roleList = {};$scope.roleHash = {};
 	var tree;$scope.my_tree = tree = {};
 	$scope.loading.show();
 	//获取页面数据
@@ -17,34 +22,32 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		if (result.data.success == false) {
 			return;
 		}
-		let sectorHash = {};
-		let _companySectorList = result.data.item.companySectorList; //部门职位
+		let sectorHash = {}; //部门职位
+		let _companySectorList = result.data.item.companySectorList;
 		for (var index = 0; index < _companySectorList.length; index++) {
 			sectorHash[_companySectorList[index].sector_id] = _companySectorList[index]; //哈希值
+			if(_companySectorList[index].sector_type == 'position') $scope.positionList.push(_companySectorList[index]);
 		}
 		$scope.sectorHash = sectorHash;
-		$scope.companyList = result.data.item.companyList;
+		//$scope.sectorList = _companySectorList;
+		$scope.companyList = result.data.item.companyList;//公司列表
 		for (var index = 0; index < $scope.companyList.length; index++) {
 			$scope.companyHash[$scope.companyList[index].company_id] = $scope.companyList[index];
 		}
-		var roleList = result.data.item.channelRoleList;
-		var channelRoleList = [],
-			k = 0;
+		var roleList = result.data.item.roleList;//权限列表
 		if (roleList != '') {
 			for (var i in roleList) {
-				channelRoleList[k] = roleList[i];
-				k++;
+				$scope.roleHash[roleList[i].role_id] = roleList[i];
 			}
 		}
-		//如果有father 自己就是[],
-		$scope.channelRoleList = channelRoleList;
+		$scope.roleList = roleList;
 		//组织架构树
 		treeData = getTreeData(result.data.item.companySectorList);
 		$scope.my_data = treeData;
 
 		function getTreeData(list) {
 			var treeData = [];
-			let my_data = [];my_data[0] = {};my_data[0].company_id = 1;my_data[0].label = '部门职位';
+			let my_data = [];my_data[0] = {};my_data[0].company_id = 1;my_data[0].label = '博威利尔';
 			list.forEach(function(item) {
 				if (item.sector_type == 'sector') {
 					var parent = {};
@@ -67,9 +70,10 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	});
 	$scope.my_data = treeData;
 	//***********添加修改	//SectorPosition/////////////////////////////////////////////////////////////////////////////
-	$scope.SectorPosition = function(branch) {
+	$scope.sectorPosition = function(branch) {
 		console.log(branch);
 		$scope.company.selected = $scope.companyHash[branch.company_id];
+		if(typeof($scope.param.sector) == 'undefined') $scope.param.sector = {};
 		$scope.param.sector.company_id = $scope.company.selected.company_id;
 	}
 	$scope.selectChange = function() {
@@ -183,7 +187,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			$httpService.post('app.do?' + urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
-				if (result.data.success == '0') {
+				if (result.data.success == false) {
 					return;
 				}
 				if(branch_type == 'delete') {
@@ -218,11 +222,17 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		}
 	}
 	/////////////员工编辑//////////////////////////////////////////////////////////////////////////////
-	var edit_employee_id = 0;
-	$scope.addEditEmployee = function(employee) {
-		if (typeof(employee) != 'undefined') {
-			$scope.employee = employee;
-			edit_employee_id = angular.copy(employee.employee_id);
+	var edit_employee_id = 0;$scope.employees = {};
+	$scope.addEditEmployee = function(employees) { 
+		if (typeof(employees) != 'undefined') {
+			$scope.employees = employees;
+			edit_employee_id = angular.copy(employees.employee_id);
+		} else {
+			let branch = tree.get_selected_branch();
+			if (branch == null) {$alert({title: 'Error',content: '选择左边部门，再点击添加员工！',templateUrl: '/modal-warning.html',show: true});return;}
+			else {$scope.employees.sector_id = branch.sector_id}
+			$scope.employees.employee_valid = 1;
+			$scope.employees.company_id = branch.company_id;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑员工");
 		$scope.action = '添加/编辑员工';
@@ -232,42 +242,88 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function() {
-	
+				$scope.setImage();
 			});
 		})
 	}
 	
 	$scope.saveDataEmployee = function() {
-		if (this.employee == null || this.employee == '') {
+		if (this.employees == null || this.employees == '') {
 			$alert({title: 'Notice',content: '没有数据保存！',templateUrl: '/modal-warning.html',show: true});
 			return;
 		}
-		if (!angular.isDefined(this.employee.employee_name)) {
+		if (!angular.isDefined(this.employees.employee_name)) {
 			$alert({title: 'Notice',content: '姓名必须填写！',templateUrl: '/modal-warning.html',show: true});
 			return;
 		}
 		$scope.loading.show();
-		$scope.param.seaport = angular.copy(this.seaport);
+		$scope.param.employees = {};
+		let role_id = this.employees.role_id.role_id;
+		let position_id = this.employees.position_id.sector_id;
+		$scope.param.employees = angular.copy(this.employees);
+		//$scope.param.employees.company_id = $scope.param.sector.company_id;
+		$scope.param.employees.role_id = role_id;
+		$scope.param.employees.position_id = position_id;
+		$scope.param.employees.password = md5(md5(this.employees.password))
 		$httpService.header('method', 'saveEmployee');
-		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_id, $scope, function(result) {
+		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + edit_employee_id, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
-			if (result.data.success == '0') {
+			if (result.data.success == false) {
 				return;
 			}
 			$scope.seaport = {};
 			$scope.edit_employee_id = 0;
 			aside.hide();
-			$scope.reload($stateParams);
+			//$scope.reload($stateParams);
 		});
 	}
+	//<!--图片上传及操作-->
+	//images
+	$scope.setImage = function() {
+		var uploadJsonUrl = $scope.__WEB+'index/uploadEmployeeAvatar?channel='+__ImagesUploadUrl+"&UseType=avatar";
+		var fileManagerJsonUrl = $scope.__WEB+'index/fileManager?channel='+__ImagesManagerUrl;
+		window.K = KindEditor;
+		var editor = K.editor({
+			uploadJson : uploadJsonUrl,fileManagerJson : fileManagerJsonUrl,allowFileManager : true,formatUploadUrl: false
+		});
+		K('.set_image_src').click(function() {
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					//clickFn : function(url, title, width, height, border, align) {
+					clickFn : function(url) {
+						editor.hideDialog();
+						$scope.employees.avatar = url;
+						$scope.$apply();//刷新数据
+					}
+				});
+			});
+		});
+	} 
 	//权限///////////////////////////////////////////////////////////////////////
 	$scope.edit_permission_id = 0;let asidePermi = {};
-	$scope.role_module = {};
+	$scope.role_module = {};$scope.permission = {};
 	$scope.addEditPermission = function(permission) {
 		if (typeof(permission) != 'undefined' && typeof(permission.role_id) != 'undefined') {
 			$scope.role_module.role_name = permission.role_name;
 			$scope.edit_permission_id = angular.copy(permission.role_id);
+			$scope.permission = permission;
+			$scope.loading.show();
+			$httpService.header('method', 'getPermission');
+			$scope.param = {};$scope.param.role_id = permission.role_id;
+			$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel, $scope, function(result) {
+				$scope.loading.percent();
+				$httpService.deleteHeader('method');
+				if (result.data.success == false) {
+					return;
+				}
+				let roleModuleList = result.data.item.roleModuleList;
+				if(roleModuleList != null && roleModuleList != "") {
+					for (var i in roleModuleList) {//role_module[{{module.module_id}}]
+						$("input[name='role_module["+roleModuleList[i].module_id+"]']").prop("checked", true);
+					}
+				}
+			});
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑权限");
 		$scope.action = '添加/编辑权限';
@@ -299,11 +355,11 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_permission_id, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
-			if (result.data.success == '0') {
+			if (result.data.success == false) {
 				return;
 			}
+			$scope.permission.role_name = $scope.param.role_module.role_name;
 			$scope.role_module = {};
-			$scope.edit_permission_id = 0;
 			asidePermi.hide();
 			$scope.reload($stateParams);
 		});

@@ -13,10 +13,10 @@ import com.base.model.dto.FileDTO;
 import com.base.model.entity.upload.UploadFile;
 import com.base.model.vo.upload.UploadFileVo;
 import com.base.service.BwleErp.UploadService;
-import com.base.type.UseType;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
+import core.util.Utiliy;
 
 @Service("xiaoqu.UploadServiceImpl")
 public class UploadServiceImpl implements UploadService {
@@ -71,12 +71,12 @@ public class UploadServiceImpl implements UploadService {
 				uploadFile.setCategory_id(category_id);
 				uploadFile.setFile_linked_id(linked_id);
 				uploadFile.setFile_type(fileDTO.getFile_type());
-				uploadFile.setFile_use_type(UseType.normal);
-				if (use_type!= null && !use_type.equals(""))
-					uploadFile.setFile_use_type(UseType.getFileUseType(use_type));
+				uploadFile.setFile_use_type(use_type);
 				uploadFile.setFile_url(fileDTO.getFile_url());
 				uploadFile.setFile_size(fileDTO.getFile_size());
 				uploadFile.setFile_extend(fileDTO.getFile_extend());
+				uploadFile.setFile_year(Integer.parseInt(Utiliy.instance().getYear()));
+				uploadFile.setFile_month(Integer.parseInt(Utiliy.instance().getMonth()));
 				uploadFile.setFile_datetime(fileDTO.getFile_datetime());
 				uploadFile.setFile_valid(1);
 				if(privacy != null && privacy.equals("private")) uploadFile.setFile_valid(2);

@@ -12,11 +12,19 @@ import com.base.model.entity.BwleErp.Role;
 import com.base.model.entity.BwleErp.RoleModule;
 import com.base.model.entity.BwleErp.company.Company;
 import com.base.model.entity.BwleErp.company.CompanySector;
+import com.base.model.entity.BwleErp.employee.Employee;
+import com.base.model.entity.BwleErp.employee.EmployeeSector;
+import com.base.model.vo.PageVo;
+import com.base.model.vo.BwleErp.EmployeeSectorVo;
+import com.base.model.vo.BwleErp.EmployeesVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.google.gson.Gson;
 
+import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
+import core.util.Encrypt;
+import core.util.Utiliy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -49,6 +57,12 @@ public class EmployeeAction extends AbstractAction {
 			break;		
 		case "savePermission":
 			this.doSavePermission(request, response);
+			break;
+		case "getPermission":
+			this.doGetPermission(request, response);
+			break;		
+		case "saveEmployee":
+			this.doSaveEmployee(request, response);
 			break;	
 		default:
 			this.doDefault(request, response);
@@ -65,7 +79,7 @@ public class EmployeeAction extends AbstractAction {
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		//this.generalService.rollback();
+		this.generalService.rollback();
 	}
 	
 	public void doGetSector(HttpServletRequest request, HttpServletResponse response) throws Exception { 
@@ -77,8 +91,21 @@ public class EmployeeAction extends AbstractAction {
 		whereRelation.setTable_clazz(Company.class);
 		List<Company> companyList = generalService.getEntityList(whereRelation);
 		//
+		whereRelation = new WhereRelation();
+		whereRelation.EQ("role_valid", 1).setTable_clazz(Role.class);
+		List<Role> roleList = generalService.getEntityList(whereRelation);
+		//
+		whereRelation = new WhereRelation();//取得所有员工
+		whereRelation.setTable_clazz(EmployeeSectorVo.class);
+		PageVo pageVo = new PageVo();
+		NeedEncrypt needEncrypt = new NeedEncrypt();
+		needEncrypt.setNeedEncrypt(true);
+		needEncrypt.setNeedEncrypt("e_id", NeedEncrypt._ENCRYPT);
+		generalService.getPageList(whereRelation, pageVo, needEncrypt);
+		
 		this.success.setItem("companySectorList", companySectorList); 
 		this.success.setItem("companyList", companyList);
+		this.success.setItem("roleList", roleList);
 	}
 	
 	public void doSaveSectorPosition(HttpServletRequest request, HttpServletResponse response) throws Exception { 
@@ -108,36 +135,88 @@ public class EmployeeAction extends AbstractAction {
 	}
 	////doSavePermission
 	public void doSavePermission(HttpServletRequest request, HttpServletResponse response) throws Exception { 
-		Integer edit_id = (Integer) request.getAttribute("edit_id");
+		String _edit_id = request.getParameter("edit_id");
+		int edit_id = 0;
+		if(_edit_id != null && !_edit_id.equals("")) edit_id = Integer.parseInt(_edit_id);
 		RoleModuleDTO role_module = this.modelMapper.map(request.getAttribute("role_module"), RoleModuleDTO.class);;
-		System.out.println(new Gson().toJson(role_module));
 		WhereRelation whereRelation = new WhereRelation();
-		if(edit_id != null && edit_id > 0) {//update
-			//whereRelation.EQ("sector_id", edit_id).setTable_clazz(CompanySector.class);
-			//generalService.updateEntity(sector, whereRelation);
+		this.generalService.setTransaction(true);
+		if(edit_id > 0) {//update
+			Role role = new Role();//更新名字
+			role.setRole_name(role_module.getRole_name());
+			whereRelation.EQ("role_id", edit_id).setTable_clazz(Role.class);
+			generalService.updateEntity(role, whereRelation);
+			//
+			whereRelation = new WhereRelation();
+			whereRelation.EQ("role_id", edit_id).setTable_clazz(RoleModule.class);
+			generalService.delete(whereRelation);
+			
 		} else {
 			Role role = new Role();
 			role.setCompany_id(1);
 			role.setRole_name(role_module.getRole_name());
-			//this.generalService.setTransaction(true);
 			edit_id = this.generalService.save(role);
-			List<RoleModule> roleModuleList = new ArrayList<>();
-			for (String key : role_module.getRole_module().keySet()) {
-			    int module_id = Integer.parseInt(role_module.getRole_module().get(key));
-			    System.out.println("====>"+module_id);
-			    RoleModule roleModule = new RoleModule();
-			    roleModule.setAccess(3);
-			    roleModule.setModule_id(module_id);
-			    roleModule.setRole_id(edit_id);
-			    roleModuleList.add(roleModule);
-			}
-			this.generalService.batchSave(roleModuleList);
-			//this.generalService.commit();
 		}
+		//更新权限
+		List<RoleModule> roleModuleList = new ArrayList<>();
+		for (String key : role_module.getRole_module().keySet()) {
+		    int module_id = Integer.parseInt(role_module.getRole_module().get(key));
+		    RoleModule roleModule = new RoleModule();
+		    roleModule.setAccess(3);
+		    roleModule.setModule_id(module_id);
+		    roleModule.setRole_id(edit_id);
+		    roleModuleList.add(roleModule);
+		}
+		this.generalService.batchSave(roleModuleList);
+		this.generalService.commit();
+		//
 		this.success.setItem("role_id", edit_id);
 		//
 	}
 	
-	
-	
+	public void doGetPermission(HttpServletRequest request, HttpServletResponse response) throws Exception { 
+		int role_id = (int) request.getAttribute("role_id");
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.EQ("role_id", role_id).setTable_clazz(RoleModule.class);
+		List<RoleModule> roleModuleList = this.generalService.getEntityList(whereRelation);
+		//
+		this.success.setItem("roleModuleList", roleModuleList); 
+	}
+	//doSaveEmployee
+	public void doSaveEmployee(HttpServletRequest request, HttpServletResponse response) throws Exception { 
+		Integer edit_id = (Integer) request.getAttribute("edit_id");//
+		EmployeesVo employees = this.modelMapper.map(request.getAttribute("employees"), EmployeesVo.class);
+		if(edit_id != null && edit_id > 0) {//update
+			WhereRelation whereRelation = new WhereRelation();
+			//whereRelation.EQ("employee", edit_id).setTable_clazz(CompanySector.class);
+			//generalService.updateEntity(employees, whereRelation);
+		} else {
+			this.generalService.setTransaction(true);
+			Employee employee = new Employee();
+			EmployeeSector employeeSector = new EmployeeSector();
+			String _salt = Encrypt.getRandomUUID();
+			employee.setPassword(Encrypt.md5Encrypt(employees.getPassword() + _salt));
+			employee.setPassword_salt(_salt);
+			employee.setEmail(employees.getEmail());
+			employee.setMobile(employees.getMobile());
+			employee.setAdd_datetime(Utiliy.instance().getTodayDate());
+			employee.setCompany_id(employees.getCompany_id());
+			edit_id = this.generalService.save(employee);
+			//
+			employeeSector.setMobile(employees.getMobile());
+			employeeSector.setEmail(employees.getEmail());
+			employeeSector.setAvatar(employees.getAvatar());
+			employeeSector.setPosition_id(employees.getPosition_id());
+			employeeSector.setSector_id(employees.getSector_id());
+			employeeSector.setRole_id(employees.getRole_id());
+			employeeSector.setEmployee_name(employees.getEmployee_name());
+			employeeSector.setEmployee_enname(employees.getEmployee_enname());
+			employeeSector.setE_id(edit_id);
+			employeeSector.setCompany_id(employees.getCompany_id());
+			this.generalService.save(employeeSector);
+			this.generalService.commit();
+		}
+		this.success.setItem("sector_id", edit_id);
+		//
+	}
 }

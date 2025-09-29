@@ -42,6 +42,14 @@ public class Utiliy {
         return this.formatDate("yyyy-MM-dd HH:mm:ss");
     }
     
+    public String getYear() {
+        return this.formatDate("yyyy");
+    }
+    
+    public String getMonth() {
+        return this.formatDate("MM");
+    }
+    
     public Date strToSqlDate(String date_string) {
     	return java.sql.Date.valueOf(date_string);
     }
