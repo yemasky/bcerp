@@ -91,7 +91,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&company_edit_id="+$scope.company_edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
-			if(result.data.success == '0') { 
+			if(result.data.success == false) { 
 				return;
 			} 
 			$scope.dataList = result.data.item;
@@ -135,7 +135,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
-			if(result.data.success == '0') { 
+			if(result.data.success == false) { 
 				return; 
 			} 
 			$scope.seaport = {};

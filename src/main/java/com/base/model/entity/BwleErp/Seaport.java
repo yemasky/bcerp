@@ -8,7 +8,7 @@ public class Seaport {
 	private String seaport_name;
 	private String seaport_enname;
 	private String area_code;
-	private String country_id;
+	private Integer country_id;
 	private Integer seaport_valid;
 	public Integer getSeaport_id() {
 		return seaport_id;
@@ -34,10 +34,10 @@ public class Seaport {
 	public void setArea_code(String area_code) {
 		this.area_code = area_code;
 	}
-	public String getCountry_id() {
+	public Integer getCountry_id() {
 		return country_id;
 	}
-	public void setCountry_id(String country_id) {
+	public void setCountry_id(Integer country_id) {
 		this.country_id = country_id;
 	}
 	public Integer getSeaport_valid() {

@@ -4,7 +4,7 @@ app.controller('SeaportController', function($rootScope, $scope, $httpService, $
 	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 	$ocLazyLoad.load([__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION]);
-	let aside;
+	let aside;$scope.countryHash = {};
 	$httpService.header('method', 'getSeaport');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
 		$scope.loading.hide();
@@ -14,6 +14,9 @@ app.controller('SeaportController', function($rootScope, $scope, $httpService, $
 		} 
 		$scope.seaportList = result.data.item.seaportList;//
 		$scope.countryList = result.data.item.countryList;//
+		for(i in $scope.countryList) {
+			$scope.countryHash[$scope.countryList[i].country_id] = $scope.countryList[i];
+		}
 	})
 	
 	$scope.addEdit = function(seaport) {
@@ -48,7 +51,7 @@ app.controller('SeaportController', function($rootScope, $scope, $httpService, $
 		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
-			if(result.data.success == '0') { 
+			if(result.data.success == false) { 
 				return; 
 			} 
 			$scope.seaport = {};

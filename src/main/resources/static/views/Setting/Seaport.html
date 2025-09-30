@@ -14,23 +14,28 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>电话区号</th>
-					<th>国家简称</th>
+					<th>港口名称</th>
 					<th>英文名</th>
-					<th>中文名</th>
-					<th>区域</th>
-					<th>左右驾</th>
+					<th>电话区号</th>
+					<th>所属国家</th>
+					<th>所属国[英文]</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="(i, seaport) in seaportList"> 
 					<td>{{i+1}}</td>
-					<td>{{seaport.area_code}}</td>
 					<td>{{seaport.seaport_name}}</td>
 					<td>{{seaport.seaport_enname}}</td>
-					<td>{{seaport.country_id}}</td>
-					<td>{{seaport.country_id}}</td>
-					<td><a class="pull-right" ng-click="addEdit(seaport)"><i class="fa fa-edit"></i> 编辑</a></td>
+					<td>{{seaport.area_code}}</td>
+					<td>{{countryHash[seaport.country_id].country_name}}</td>
+					<td>{{countryHash[seaport.country_id].country_enname}}</td>
+					<td>
+						<div class="text-center">
+							<a ng-click="addEdit(seaport)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete('delete')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>

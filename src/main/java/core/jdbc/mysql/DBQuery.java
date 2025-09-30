@@ -302,7 +302,7 @@ public abstract class DBQuery {
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -1044,8 +1044,8 @@ public abstract class DBQuery {
 				if (key.contains(this.write)) {
 					Connection conn = jdbcDsnMap.get(key);
 					if(conn != null) {
-						jdbcDsnMap.get(key).rollback();
-						if(!jdbcDsnMap.get(key).getAutoCommit()) jdbcDsnMap.get(key).setAutoCommit(true);// 删除事务
+						conn.rollback();
+						if(!conn.getAutoCommit()) conn.setAutoCommit(true);// 删除事务
 					}
 				}
 				DbcpPoolManager.instance().freeConnection(key, jdbcDsnMap.get(key));

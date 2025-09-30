@@ -44,7 +44,12 @@
 						<td>{{company.company_phone}}</td>
 						<td>{{company.company_fax}}</td>
 						<td>{{company.company_website}}</td>
-						<td><a class="pull-right" ng-click="addEdit(company)"><i class="fa fa-edit"></i> 修改</a></td>
+						<td>
+							<div class="text-center">
+								<a ng-click="addEdit(company)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+								<a ng-click="delete('delete')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+							</div>
+						</td>
 					</tr>
 				</tbody>
 			</table>

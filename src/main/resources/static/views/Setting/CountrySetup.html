@@ -32,7 +32,12 @@
 					<td>{{country.country_name}}</td>
 					<td>{{country.area}}</td>
 					<td>{{country.wheel_direction}}</td>
-					<td><a class="pull-right" ng-click="addEdit(country)"><i class="fa fa-edit"></i> 修改</a></td>
+					<td>
+						<div class="text-center">
+							<a ng-click="addEdit(country)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete('delete')" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
