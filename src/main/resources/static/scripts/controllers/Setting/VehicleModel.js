@@ -30,7 +30,7 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditVehicleModel.html'+__VERSION});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditVehicleModel.html'});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){

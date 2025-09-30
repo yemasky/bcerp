@@ -23,6 +23,7 @@ public class Config {
 	private String dbPassword = "root"; // 密码
 	private int maxConnection = 100; // 最大连接数
 	private int minConnection = 1; // 最小连接数
+	private String drive = ""; 
 
 	public Config() {
 	}
@@ -89,5 +90,12 @@ public class Config {
 		this.dbPassword = dbPassword;
 	}
 
+	public String getDrive() {
+		return drive;
+	}
+
+	public void setDrive(String drive) {
+		this.drive = drive;
+	}
 	
 }

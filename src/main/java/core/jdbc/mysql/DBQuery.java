@@ -169,7 +169,7 @@ public abstract class DBQuery {
 			logger.info("查询耗时：" + (System.currentTimeMillis() - start) + " ms" + ",SQL:"+sql);
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return list;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -200,7 +200,7 @@ public abstract class DBQuery {
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, objectClass, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -223,7 +223,7 @@ public abstract class DBQuery {
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, entityClassT, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -279,7 +279,7 @@ public abstract class DBQuery {
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -325,7 +325,7 @@ public abstract class DBQuery {
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
 			MDC.put("APP_NAME", "mysql_error");
@@ -353,7 +353,7 @@ public abstract class DBQuery {
 			}
 			if (rs != null)
 				rs.close();
-			this.thisReadConnection().close();
+			//this.thisReadConnection().close();
 			return result;
 		} catch (SQLException e) {
 			MDC.put("APP_NAME", "mysql_error");

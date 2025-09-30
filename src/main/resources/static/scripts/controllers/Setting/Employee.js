@@ -8,7 +8,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		__RESOURCE+"editor/kindeditor/themes/default/default.css",
 		__RESOURCE+"vendor/libs/md5.min.js?"+__VERSION
 	]);
-	var _channel = $stateParams.channel,treeData = [];$scope.__IMGWEB = __IMGWEB; var urlParam = 'channel=' + _channel;
+	var _channel = $stateParams.channel,treeData = [];var urlParam = 'channel=' + _channel; $scope.__IMGWEB = __IMGWEB;
 	$scope.param = {};$scope.param.sector = {};$scope.sectorHash = {};$scope.companyList = {};$scope.companyHash = {}; //定义变量
 	$scope.company = {};$scope.activeSector = 0;$scope.activeTab = 1;$scope.positionList = [];$scope.roleList = {};$scope.roleHash = {};
 	$scope.employeePage = {};$scope.ePageList = [];$activeEL = 0;

@@ -63,15 +63,6 @@ public class CategoryUtilAction extends AbstractAction {
 		case "deleteVehicleModel":
 			this.doDeleteVehicleModel(request, response);
 			break;
-		case "getClassify":
-			this.doGetClassify(request, response);
-			break;	
-		case "saveClassify":
-			this.doSaveClassify(request, response);
-			break;	
-		case "deleteClassify":
-			this.doDeleteClassify(request, response);
-			break;
 		default:
 			this.doDefault(request, response);
 			break;
@@ -186,56 +177,4 @@ public class CategoryUtilAction extends AbstractAction {
 		}
 	}
 	////////////////
-	public void doGetClassify(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.EQ("country_valid", 1).setTable_clazz(Country.class);
-		List<Country> countryList = this.generalService.getEntityList(whereRelation);
-		//
-		whereRelation = new WhereRelation();
-		whereRelation.EQ("category_valid", 1).setTable_clazz(Category.class);
-		List<Category> categoryList = this.generalService.getEntityList(whereRelation);
-		//
-		whereRelation = new WhereRelation();
-		whereRelation.EQ("classify_valid", 1).setTable_clazz(CategoryClassifyVo.class);
-		NeedEncrypt needEncrypt = new NeedEncrypt();
-		needEncrypt.setNeedEncrypt(true);
-		needEncrypt.setNeedEncrypt("classify_id", NeedEncrypt._ENCRYPT);
-		List<HashMap<String, Object>> classifyList = this.generalService.getList(whereRelation, needEncrypt);
-		//
-		this.success.setItem("countryList", countryList);
-		this.success.setItem("categoryList", categoryList);
-		this.success.setItem("classifyList", classifyList);
-	}
-
-	public void doSaveClassify(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String edit_id = request.getParameter("edit_id");
-		int classify_id = 0;
-		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
-			classify_id = EncryptUtiliy.instance().intIDDecrypt(edit_id);
-		}
-		CategoryClassifyVo classifyVo = this.modelMapper.map(request.getAttribute("classify"), CategoryClassifyVo.class);
-		classifyVo.setClassify_id(null);
-		if(classify_id > 0) {//update
-			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("classify_id", classify_id).setTable_clazz(CategoryClassify.class);
-			generalService.updateEntity(classifyVo, whereRelation);
-		} else {
-			int id = generalService.save(classifyVo);
-			edit_id = EncryptUtiliy.instance().intIDEncrypt(id);
-		}
-		this.success.setItem("classify_id", edit_id);
-	}
-	
-	public void doDeleteClassify(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String delete_id = (String) request.getAttribute("delete_id");
-		int classify_id = 0;
-		if(delete_id != null && !delete_id.equals("") && !delete_id.equals("undefined") && !delete_id.equals("0")) {
-			classify_id = EncryptUtiliy.instance().intIDDecrypt(delete_id);
-		}
-		if(classify_id > 0) {//update
-			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("classify_id", classify_id).setUpdate("classify_valid", 0).setTable_clazz(CategoryClassify.class);
-			generalService.update(whereRelation);
-		}
-	}
 }

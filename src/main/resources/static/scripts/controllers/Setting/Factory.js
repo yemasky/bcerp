@@ -37,7 +37,7 @@ app.controller('FactoryController', function($rootScope, $scope, $httpService, $
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditFactory.html'+__VERSION});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditFactory.html'});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){

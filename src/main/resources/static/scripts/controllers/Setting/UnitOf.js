@@ -1,6 +1,6 @@
 app.controller('UnitOfController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.unit = {};$scope.unitList = [];$scope.edit_id = 0;//定义变量
+	$scope.param = {};$scope.edit_id = 0; $scope.unit = {};$scope.unitList = [];//定义变量
 	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
 	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 	let aside;
@@ -25,7 +25,7 @@ app.controller('UnitOfController', function($rootScope, $scope, $httpService, $l
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditUnit.html'+__VERSION});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditUnit.html'});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){
