@@ -397,6 +397,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             if(angular.isUndefined(format)) format = "yyyy-MM-dd";
 			if(format == 'w') return new Date($scope._baseDateTime()).getDay();
             return $filter("date")($scope._baseDateTime(), format, 'UTC +8');
+        };
+        $scope.show = function(_id, id) {
+            $("#"+_id).hide();$("#"+id).show();
         }
         //初始化变量
         $scope.__RESOURCE = __RESOURCE;

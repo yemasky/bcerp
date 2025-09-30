@@ -1,31 +1,31 @@
-app.controller('SysTypeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+app.controller('UnitOfController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.systype = {};$scope.systypeList = [];$scope.edit_id = 0;//定义变量
+	$scope.param = {}; $scope.unit = {};$scope.unitList = [];$scope.edit_id = 0;//定义变量
 	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
 	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 	let aside;
-	$httpService.header('method', 'getSystype');
+	$httpService.header('method', 'getUnit');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
 			return;
 		} 
-		$scope.systypeList = result.data.item.systypeList;//部门职位
+		$scope.unitList = result.data.item.unitList;//部门职位
 		//$scope.$apply();//刷新数据
 	})
 	
-	$scope.addEdit = function(editType, systype, i) {
+	$scope.addEdit = function(editType, unit, i) {
 		$scope.editType = editType;
-		if(typeof(systype) != 'undefined') {
-			$scope.systype = systype;
-			$scope.edit_id = angular.copy(systype.systype_id);
+		if(typeof(unit) != 'undefined') {
+			$scope.unit = angular.copy(unit);
+			$scope.edit_id = angular.copy(unit.unit_id);
 			$scope.edit_index = i;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditSystype.html'+__VERSION});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditUnit.html'+__VERSION});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){
@@ -35,17 +35,17 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 	}
 
 	$scope.saveData = function() {
-		if(this.systype == null || this.systype == '') {
+		if(this.unit == null || this.unit == '') {
 			$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
-		if(!angular.isDefined(this.systype.systype_name)) {
+		if(!angular.isDefined(this.unit.unit_name)) {
 			$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
-		$scope.param.systype = angular.copy(this.systype);
-		$httpService.header('method', 'saveSystype');
+		$scope.param.unit = angular.copy(this.unit);
+		$httpService.header('method', 'saveUnit');
 		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
@@ -54,13 +54,13 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 			} 
 			
 			if($scope.editType == "add") {
-				$scope.param.systype.systype_id = result.data.item.systype_id;
-				$scope.systypeList.push(angular.copy($scope.param.systype));
+				$scope.param.unit.unit_id = result.data.item.unit_id;
+				$scope.unitList.push(angular.copy($scope.param.unit));
 			}
 			if($scope.editType == "edit") {
-				$scope.systypeList[$scope.edit_index] = angular.copy($scope.param.systype);
+				$scope.unitList[$scope.edit_index] = angular.copy($scope.param.unit);
 			}
-			$scope.systype = {};
+			$scope.unit = {};
 			$scope.edit_id = 0;
 			aside.hide(); 
 		});
@@ -71,14 +71,14 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 		function deleteData() {
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteSystype');
+			$httpService.header('method', 'deleteUnit');
 			$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {
 					return;
 				}
-				delete $scope.systypeList[i]; 				
+				delete $scope.unitList[i]; 				
 			});
 		}
 	}

@@ -1,0 +1,144 @@
+<div class="p-md" ng-controller="FactoryController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加车厂分类
+				</button>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>车种</th>
+					<th>车厂</th>
+					<th>国别</th>
+					<th>中文名称</th>
+					<th>创立时间</th>
+					<th>经营状态</th>
+					<th>隶属公司</th>
+					<th>品牌介绍</th>
+					<th>发展历史</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, classify) in classifyList"> 
+					<td>{{i+1}}</td>
+					<td>{{categoryHash[classify.category_id].category_name}}</td>
+					<td>{{classify.classify_enname}}</td>
+					<td>{{countryHash[classify.country_id].country_name}}</td>
+					<td>{{classify.classify_name}}</td>
+					<td>{{classify.classify_found}}</td>
+					<td>{{classify.classify_operating}}</td>
+					<td>{{classify.classify_belong_company}}</td>
+					<td>{{classify.classify_introduce}}</td>
+					<td>{{classify.classify_history}}</td>
+					<td>
+						<div class="text-center">
+							<a ng-click="addEdit('edit', classify, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete(classify.classify_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditFactory.html">
+	<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body">                    
+							<div class="form-group">
+								<label class="col-sm-3 control-label">车种</label>
+								<div class="col-sm-4">
+									<select class="form-control w-sm" name="category_id" id="category_id"  ng-init="classify.category_id = 1" 
+										ng-model="classify.category_id" required>
+										<option class="form-control w-sm" ng-repeat="(i, category) in categoryList" value="{{category.category_id}}"
+											ng-selected="classify.category_id==category.category_id">
+											{{category.category_name}}
+										</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">车厂</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_enname" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">国别</label>
+								<div class="col-sm-4">
+									<select class="form-control w-sm" name="country_id" id="country_id" ng-model="classify.country_id" required>
+										<option class="form-control w-sm" ng-repeat="(i, country) in countryList" value="{{country.country_id}}" 
+											 ng-selected="classify.country_id==country.country_id">
+											{{country.country_name}}-{{country.country_enname}}
+										</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">中文名称</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_name" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">创立时间</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control w" placeholder="创立时间" ng-model="classify.classify_found" value="{{getDay('yyyy-mm-dd')}}"
+											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">经营状态</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_operating" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">隶属公司</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_belong_company" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">品牌介绍</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_introduce" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">发展历史</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_history" />
+								</div>
+							</div>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+<!-- AddEditFactory.html -->

@@ -1,4 +1,4 @@
-<div class="p-md" ng-controller="SysTypeController">
+<div class="p-md" ng-controller="UnitOfController">
 	<div class="panel panel-default">
 		<div class="panel-heading row">
 			<div class="col-md-10">
@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-md-2">
 				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
-					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加系统分类
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加计量单位
 				</button>
 			</div>
 		</div>
@@ -14,28 +14,28 @@
 			<thead>
 				<tr>
 					<th>序号</th>
-					<th>系统所属(中文)</th>
-					<th>系统所属(英文)</th>
-					<th>系统名称(中文)</th>
-					<th>系统名称(英文)</th>
-					<th>编码</th>
+					<th>单位</th>
+					<th>英文</th>
+					<th>与基准单位的比率</th>
+					<th>英文复数</th>
+					<th></th>
 					<th></th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, systype) in systypeList"> 
+				<tr ng-repeat="(i, unit) in unitList"> 
 					<td>{{i+1}}</td>
-					<td>{{systype.systype_belong}}</td>
-					<td>{{systype.systype_belong_en}}</td>
-					<td>{{systype.systype_name}}</td>
-					<td>{{systype.systype_enname}}</td>
-					<td>{{systype.systype_code}}</td>
+					<td>{{unit.unit_name}}</td>
+					<td>{{unit.unit_enname}}</td>
+					<td>{{unit.unit_rate}}</td>
+					<td>{{unit.unit_ensname}}</td>
+					<td></td>
 					<td></td>
 					<td>
 						<div class="text-center">
-							<a ng-click="addEdit('edit', systype, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-							<a ng-click="delete(systype.systype_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+							<a ng-click="addEdit('edit', unit, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete(unit.unit_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
 						</div>
 					</td>
 				</tr>
@@ -43,7 +43,7 @@
 		</table>
 	</div>
 </div>
-<script type="text/ng-template" id="AddEditSystype.html">
+<script type="text/ng-template" id="AddEditUnit.html">
 	<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
 		<div class="aside-dialog">
 			<div class="aside-content">
@@ -56,33 +56,27 @@
 						</div>
 						<div class="panel-body">                    
 							<div class="form-group">
-								<label class="col-sm-3 control-label">系统所属(中文)</label>
+								<label class="col-sm-3 control-label">单位</label>
 								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="systype.systype_belong" />
+									<input type="text" class="form-control" ng-model="unit.unit_name" />
 								</div>
 							</div>
-<div class="form-group">
-								<label class="col-sm-3 control-label">系统所属(英文)</label>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">英文</label>
 								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="systype.systype_belong_en" />
+									<input type="text" class="form-control" ng-model="unit.unit_enname" />
 								</div>
 							</div>
-<div class="form-group">
-								<label class="col-sm-3 control-label">系统名称(中文)</label>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">与基准单位的比率</label>
 								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="systype.systype_name" />
+									<input type="text" class="form-control" ng-model="unit.unit_rate" />
 								</div>
 							</div>
-<div class="form-group">
-								<label class="col-sm-3 control-label">系统名称(英文)</label>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">英文复数</label>
 								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="systype.systype_enname" />
-								</div>
-							</div>
-<div class="form-group">
-								<label class="col-sm-3 control-label">编码</label>
-								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="systype.systype_code" />
+									<input type="text" class="form-control" ng-model="unit.unit_ensname" />
 								</div>
 							</div>
 						</div>

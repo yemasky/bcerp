@@ -1,31 +1,36 @@
-app.controller('SysTypeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+app.controller('VehicleModelController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.systype = {};$scope.systypeList = [];$scope.edit_id = 0;//定义变量
+	$scope.param = {}; $scope.vehicleModel = {};$scope.vehicleModelList = [];$scope.edit_id = 0;//定义变量
+	$scope.classifyHash = {};$scope.classifyList = [];
 	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+	$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
 	let aside;
-	$httpService.header('method', 'getSystype');
+	$httpService.header('method', 'getVehicleModel');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
 			return;
 		} 
-		$scope.systypeList = result.data.item.systypeList;//部门职位
+		$scope.vehicleModelList = result.data.item.vehicleModelList;//
+		$scope.classifyList = result.data.item.classifyList;//
+		for(i in $scope.classifyList) {
+			$scope.classifyHash[$scope.classifyList[i].classify_id] = $scope.classifyList[i];
+		}
 		//$scope.$apply();//刷新数据
 	})
 	
-	$scope.addEdit = function(editType, systype, i) {
+	$scope.addEdit = function(editType, vehicleModel, i) {
 		$scope.editType = editType;
-		if(typeof(systype) != 'undefined') {
-			$scope.systype = systype;
-			$scope.edit_id = angular.copy(systype.systype_id);
+		if(typeof(vehicleModel) != 'undefined') {
+			$scope.vehicleModel = angular.copy(vehicleModel);
+			$scope.edit_id = angular.copy(vehicleModel.vehicle_model_id);
 			$scope.edit_index = i;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditSystype.html'+__VERSION});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditVehicleModel.html'+__VERSION});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){
@@ -35,17 +40,17 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 	}
 
 	$scope.saveData = function() {
-		if(this.systype == null || this.systype == '') {
+		if(this.vehicleModel == null || this.vehicleModel == '') {
 			$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
-		if(!angular.isDefined(this.systype.systype_name)) {
+		if(!angular.isDefined(this.vehicleModel.vehicle_model)) {
 			$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
-		$scope.param.systype = angular.copy(this.systype);
-		$httpService.header('method', 'saveSystype');
+		$scope.param.vehicleModel = angular.copy(this.vehicleModel);
+		$httpService.header('method', 'saveVehicleModel');
 		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
@@ -54,13 +59,13 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 			} 
 			
 			if($scope.editType == "add") {
-				$scope.param.systype.systype_id = result.data.item.systype_id;
-				$scope.systypeList.push(angular.copy($scope.param.systype));
+				$scope.param.vehicleModel.vehicle_model_id = result.data.item.vehicle_model_id;
+				$scope.vehicleModelList.push(angular.copy($scope.param.vehicleModel));
 			}
 			if($scope.editType == "edit") {
-				$scope.systypeList[$scope.edit_index] = angular.copy($scope.param.systype);
+				$scope.vehicleModelList[$scope.edit_index] = angular.copy($scope.param.vehicleModel);
 			}
-			$scope.systype = {};
+			$scope.vehicleModel = {};
 			$scope.edit_id = 0;
 			aside.hide(); 
 		});
@@ -71,14 +76,14 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 		function deleteData() {
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteSystype');
+			$httpService.header('method', 'deleteVehicleModel');
 			$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {
 					return;
 				}
-				delete $scope.systypeList[i]; 				
+				delete $scope.vehicleModelList[i]; 				
 			});
 		}
 	}

@@ -1044,8 +1044,10 @@ public abstract class DBQuery {
 				if (key.contains(this.write)) {
 					Connection conn = jdbcDsnMap.get(key);
 					if(conn != null) {
-						conn.rollback();
-						if(!conn.getAutoCommit()) conn.setAutoCommit(true);// 删除事务
+						if(!conn.getAutoCommit()) {
+							conn.rollback();
+							conn.setAutoCommit(true);// 删除事务
+						}
 					}
 				}
 				DbcpPoolManager.instance().freeConnection(key, jdbcDsnMap.get(key));

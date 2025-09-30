@@ -1,0 +1,125 @@
+<div class="p-md" ng-controller="VehicleModelController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加车型
+				</button>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>车厂</th>
+					<th>系列</th>
+					<th>车型</th>
+					<th>马力(HP)</th>
+					<th>引擎型号</th>
+					<th>开始生产年份</th>
+					<th>结束生产年份</th>
+					<th>修改时间</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, vehicleModel) in vehicleModelList"> 
+					<td>{{i+1}}</td>
+					<td>{{classifyHash[vehicleModel.classify_id].classify_enname}} {{classifyHash[vehicleModel.classify_id].classify_name}}</td>
+					<td>{{vehicleModel.vehicle_series}}</td>
+					<td>{{vehicleModel.vehicle_model}}</td>
+					<td>{{vehicleModel.vehicle_motor}}</td>
+					<td>{{vehicleModel.vehicle_engine}}</td>
+					<td>{{vehicleModel.vehicle_begin_date}}</td>
+					<td>{{vehicleModel.vehicle_end_date}}</td>
+					<td>{{vehicleModel.vehicle_add_date}}</td>
+					<td>
+						<div class="text-center">
+							<a ng-click="addEdit('edit', vehicleModel, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete(vehicleModel.vehicle_model_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditVehicleModel.html">
+	<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body">                    
+							<div class="form-group">
+								<label class="col-sm-3 control-label">车厂</label>
+								<div class="col-sm-4">
+									<select class="form-control w-sm" name="classify_id" id="classify_id" ng-model="vehicleModel.classify_id" required>
+										<option class="form-control w-sm" ng-repeat="(i, classify) in classifyList" value="{{classify.classify_id}}"
+											ng-selected="vehicleModel.classify_id==classify.classify_id">
+											{{classify.classify_name}} {{classify.classify_enname}}
+										</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">系列</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="vehicleModel.vehicle_series" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">车型</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="vehicleModel.vehicle_model" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">马力</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="vehicleModel.vehicle_motor" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">引擎型号</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="vehicleModel.vehicle_engine" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">开始生产年份</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control w" placeholder="开始生产年份" ng-model="vehicleModel.vehicle_begin_date" value="{{getDay('yyyy-mm-dd')}}"
+											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">结束生产年份</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control w" placeholder="结束生产年份" ng-model="vehicleModel.vehicle_end_date" value="{{getDay('yyyy-mm-dd')}}"
+											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
+								</div>
+							</div>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+<!-- AddEditVehicleModel.html -->
