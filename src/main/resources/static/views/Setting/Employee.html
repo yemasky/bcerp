@@ -341,38 +341,3 @@
 </div>
 </script>
 <!-- AddEditPermission -->
-<!-- ShowSector -->
-<script type="text/ng-template" id="ShowSector.html">
-<div class="aside box-shadow b-r aside-m p" tabindex="-1" role="dialog">
-	<div class="aside-header"><i class="fa fa-building-o"> </i>
-		<span class="no-margin">选择部门</span>
-		<button type="button" class="close" ng-click="$hide()">&times;</button>
-	</div>
-	<div class="p-md">
-		<div class="panel panel-default">
-			<div class="panel-heading bg-white">
-				<span class="font-bold">所有部门</span>
-			</div>
-			<div class="row">
-				<div class="panel-body col-sm-12">
-				<span ng-if="doing_async">...loading...</span>
-				<div lazy-load="angularBootstrapNavTree">
-					<abn-tree tree-data="my_data" tree-control="my_tree" on-select="setSector(branch)" expand-level="3"
-						initial-selection="Granny Smith" icon-leaf="fa fa-file-o" icon-expand="fa fa-angle-right"
-						icon-collapse="fa fa-angle-down">
-					</abn-tree>
-				</div>
-				</div>
-			</div>
-		</div>
-		<footer class="panel-footer aside-footer text-right">
-			<div class="btn-group">
-				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
-				<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
-					ng-click="setSectorOk()" trigger-loading="beginLoading"><i class="fa fa-save"> </i> 确定</button>
-			</div>
-		</footer>
-	</div>
-</div>
-</script>
-<!-- AddEditSector -->

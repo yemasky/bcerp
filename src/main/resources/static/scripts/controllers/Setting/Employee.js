@@ -2,17 +2,15 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	$ocLazyLoad, $alert, $stateParams) {
 	$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
 		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION,
-		__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
-		__RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION,
 		__RESOURCE+"editor/kindeditor/kindeditor-all.js?"+__VERSION,
 		__RESOURCE+"editor/kindeditor/themes/default/default.css",
 		__RESOURCE+"vendor/libs/md5.min.js?"+__VERSION
 	]);
-	var _channel = $stateParams.channel,treeData = [];var urlParam = 'channel=' + _channel; $scope.__IMGWEB = __IMGWEB;
+	var _channel = $stateParams.channel;var urlParam = 'channel=' + _channel; $scope.__IMGWEB = __IMGWEB;
 	$scope.param = {};$scope.param.sector = {};$scope.sectorHash = {};$scope.companyList = {};$scope.companyHash = {}; //定义变量
 	$scope.company = {};$scope.activeSector = 0;$scope.activeTab = 1;$scope.positionList = [];$scope.roleList = {};$scope.roleHash = {};
 	$scope.employeePage = {};$scope.ePageList = [];$activeEL = 0;
-	var tree;$scope.my_tree = tree = {};
+	var tree,treeData = [];$scope.my_tree = tree = {};
 	$scope.loading.show();
 	//获取页面数据
 	$httpService.header('method', 'getSector');

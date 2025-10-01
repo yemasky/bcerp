@@ -3,10 +3,9 @@ package com.base.model.entity.BwleErp.BaseAbstract;
 public abstract class AuditingBaseAbstract {
 	private String auditing_name;
 	private Integer module_id;
-	private String examine;
 	private Integer employee_id;
 	private String add_datetime;
-	private Integer unit_valid;
+	private Integer auditing_valid;
 	public String getAuditing_name() {
 		return auditing_name;
 	}
@@ -18,12 +17,6 @@ public abstract class AuditingBaseAbstract {
 	}
 	public void setModule_id(Integer module_id) {
 		this.module_id = module_id;
-	}
-	public String getExamine() {
-		return examine;
-	}
-	public void setExamine(String examine) {
-		this.examine = examine;
 	}
 	public Integer getEmployee_id() {
 		return employee_id;
@@ -37,12 +30,12 @@ public abstract class AuditingBaseAbstract {
 	public void setAdd_datetime(String add_datetime) {
 		this.add_datetime = add_datetime;
 	}
-	public Integer getUnit_valid() {
-		return unit_valid;
+	public Integer getAuditing_valid() {
+		return auditing_valid;
 	}
-	public void setUnit_valid(Integer unit_valid) {
-		this.unit_valid = unit_valid;
+	public void setAuditing_valid(Integer auditing_valid) {
+		this.auditing_valid = auditing_valid;
 	}
-	
+		
 	
 }
