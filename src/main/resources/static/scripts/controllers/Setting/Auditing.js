@@ -62,23 +62,26 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 	
 	$scope.addEdit = function(editType, auditing, i) {
 		$scope.editType = editType;
-		if(typeof(auditing) != 'undefined') {
-			$scope.auditing = angular.copy(auditing);
-			if(typeof($scope.auditing.module_id) != 'object')
-				$scope.auditing.module_id = angular.copy($scope.auditingModuleHash[$scope.auditing.module_id]);
-			for(j in $scope.auditing.examine) {
-				if(typeof($scope.auditing.examine[j].position_id) == 'object') continue;
-				let position_id =  angular.copy($scope.auditing.examine[j].position_id);
-				let sector_id = angular.copy($scope.auditing.examine[j].sector_id);
-				$scope.auditing.examine[j].position_id = angular.copy($scope.sectorHash[$scope.auditing.examine[j].sector_id]);
+		$scope.auditing = {};
+		if(editType == 'edit' && typeof(auditing) != 'undefined') {
+			$scope.auditing = angular.copy(auditing);//编辑开始
+			$scope.auditing.module_id = angular.copy($scope.auditingModuleHash[auditing.module_id]);//模块
+			for(j in $scope.auditing.examine) {//解析examine
+				let examine = $scope.auditing.examine[j];
+				let position_id =  examine.position_id;
+				let sector_id = examine.sector_id;
+				$scope.auditing.examine[j].position_id = angular.copy($scope.sectorHash[position_id]);
 				if(typeof($scope.auditingEmployeeList[i]) == "undefined") {
 					$scope.auditingEmployeeList[i] = [];
+				} else {
+					$scope.auditingEmployeeList[i] = [];//清空之前的数据
 				}
 				for(e in $scope.employeeList) {
 					let employee = $scope.employeeList[e];
-					if(employee.position_id == position_id && employee.sector_id == sector_id) $scope.auditingEmployeeList[i].push(employee);
+					if(employee.position_id == position_id && employee.sector_id == sector_id) 
+						$scope.auditingEmployeeList[i].push(employee);
 				}
-				$scope.auditing.examine[j].employee_id = angular.copy($scope.employeeHash[$scope.auditing.examine[j].employee_id]);
+				$scope.auditing.examine[j].employee_id = angular.copy($scope.employeeHash[examine.employee_id]);
 			}
 			$scope.edit_id = angular.copy(auditing.auditing_id);
 			$scope.edit_index = i;
@@ -142,14 +145,14 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 		function deleteData() {
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteUnit');
+			$httpService.header('method', 'deleteAuditing');
 			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {
 					return;
 				}
-				delete $scope.unitList[i]; 				
+				delete $scope.auditingList[i]; 				
 			});
 		}
 	}

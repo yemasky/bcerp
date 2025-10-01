@@ -102,6 +102,7 @@ public class AuditingAction extends AbstractAction {
 		for(Auditing auditing : auditingList) {
 			AuditingVo auditingVo = new AuditingVo();
 			BeanUtils.copyProperties(auditing, auditingVo);
+			auditingVo.setAuditing_id(EncryptUtiliy.instance().intIDEncrypt(auditing.getAuditing_id()));
 			//Type type = new TypeToken<List<AuditingExamine>>(){}.getType();
 			HashMap<Integer, AuditingExamine> examineList = new Gson().fromJson(auditing.getExamine(), type);
 			//auditingVoList.add(auditing);
