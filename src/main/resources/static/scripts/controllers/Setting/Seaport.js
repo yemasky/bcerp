@@ -1,9 +1,11 @@
 app.controller('SeaportController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.seaport = {}; $scope.seaportCountry = {}; $scope.seaportList = {};$scope.countryList = {};$scope.edit_id = 0;//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
-	$ocLazyLoad.load([__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
+		$ocLazyLoad.load([__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {}; $scope.edit_id = 0;
+	$scope.seaport = {}; $scope.seaportCountry = {}; $scope.seaportList = {};$scope.countryList = {};
+	//定义变量
 	let aside;$scope.countryHash = {};
 	$httpService.header('method', 'getSeaport');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){

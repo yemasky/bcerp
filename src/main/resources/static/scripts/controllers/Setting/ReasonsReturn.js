@@ -1,9 +1,10 @@
 app.controller('ReasonsReturntroller', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.edit_id = "";//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/moment.min.js?"+__VERSION,
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/moment.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {}; $scope.edit_id = "";
+	//定义变量
 	let aside;
 	$httpService.header('method', 'getCountry');
 	$httpService.post('app.do?'+param, $scope, function(result){

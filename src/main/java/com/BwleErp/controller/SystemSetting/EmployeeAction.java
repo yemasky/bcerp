@@ -128,6 +128,7 @@ public class EmployeeAction extends AbstractAction {
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("e_id", NeedEncrypt._ENCRYPT);
 		pageVo.setCurrentPage(page);
+		//pageVo.setPerPage(perPage);
 		pageVo = this.generalService.getPageList(whereRelation, pageVo, needEncrypt);
 		this.success.setItem("employeePage", pageVo);
 	}

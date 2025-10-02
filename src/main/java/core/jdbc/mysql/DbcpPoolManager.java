@@ -132,8 +132,8 @@ public class DbcpPoolManager {
 		Config config = this.getConfigByDsn(jdbcDsn);
 		String connectionName = config.getConnectionName();
 		DbcpPool pool = dbcpPool.get(connectionName);// 从名字中获取连接池
-		//pool.close(connection);
-		pool.close();
+		pool.close(connection);
+		//pool.close();
 		logger.info("close. ActiveConnectionNum: " + pool.getActiveConnectionNum());
 	}
 
@@ -164,7 +164,7 @@ public class DbcpPoolManager {
 				config.setConnectionName(key);
 				config.setDbDsn(value);
 				for (int i = 0; i < valueArray.length; i++) {
-					System.out.println("=======>"+valueArray[i]);
+					//System.out.println("=======>"+valueArray[i]);
 					String[] resuleArray = valueArray[i].split("=");
 					if (resuleArray.length == 2) {
 						if (resuleArray[0].equals("user"))

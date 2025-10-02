@@ -1,9 +1,12 @@
 app.controller('VehicleModelController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.vehicleModel = {};$scope.vehicleModelList = [];$scope.edit_id = 0;//定义变量
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {}; $scope.edit_id = 0;
+	//定义变量
+	$scope.vehicleModel = {};$scope.vehicleModelList = [];
 	$scope.classifyHash = {};$scope.classifyList = [];
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
+	$scope.edit_index = 0;$scope.editType = "";
 	let aside;
 	$httpService.header('method', 'getVehicleModel');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){

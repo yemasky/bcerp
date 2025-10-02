@@ -1,9 +1,12 @@
 app.controller('FactoryController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.classify = {};$scope.classifyList = [];$scope.edit_id = 0;//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION,]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {}; $scope.edit_id = 0;
+	//定义变量
+	$scope.classify = {};$scope.classifyList = [];
+	$scope.edit_index = 0;$scope.editType = "";
 	$scope.categoryHash = {};$scope.countryHash = {};
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION,]);
 	let aside;
 	$httpService.header('method', 'getClassify');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){

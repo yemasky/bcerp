@@ -6,7 +6,7 @@ import core.custom_interface.Column;
 import core.custom_interface.Table;
 
 @Table(name = "category_systype", isAnnotationField = true)
-public class SategorySystypeVo extends SystypeBaseAbstract{
+public class CategorySystypeVo extends SystypeBaseAbstract{
 	@Column(name = "systype_id", primary_key = true, auto_increment = true)
 	private String systype_id;
 

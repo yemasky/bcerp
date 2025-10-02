@@ -115,7 +115,7 @@ public class AuditingAction extends AbstractAction {
 		this.success.setItem("companySectorList", companySectorList); 
 		this.success.setItem("auditingModuleList", auditingModuleList);
 		this.success.setItem("employeeList", employeeList);
-		this.success.setItem("auditingList", auditingList);
+		//this.success.setItem("auditingList", auditingList);
 		this.success.setItem("auditingVoList", auditingVoList);
 	}
 	

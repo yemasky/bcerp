@@ -18,8 +18,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,17 +58,28 @@ public abstract class DBQuery {
 		} else {
 			String temp = clazz.getName();
 			temp = temp.substring(temp.lastIndexOf(".") + 1);
-			String str_regex = "([A-Z]+?)";//table 名字用驼峰式构造 AzzzBzzz = azzz_bzzz
+			/*String str_regex = "([A-Z]+?)";//table 名字用驼峰式构造 AzzzBzzz = azzz_bzzz
 			Pattern pattern = Pattern.compile(str_regex);
 			Matcher table_matcher = pattern.matcher(temp);
 			int i = 0;
 			while (table_matcher.find()) {
 				if (i > 0) {
+					System.out.println(table_matcher.group()+ "_" + table_matcher.group().toLowerCase());
 					temp = temp.replace(table_matcher.group(), "_" + table_matcher.group().toLowerCase());
 				}
 				i++;
-			}
-			this.table_name = temp.toLowerCase();
+			}*/
+			StringBuilder myString = new StringBuilder(temp);
+			char[] charArray = temp.toCharArray();
+			int j = 1;
+			for (int i = 1; i < charArray.length; i++) {
+				if (Character.isUpperCase(charArray[i])) {
+					myString.replace(j, j+1, "_"+charArray[i]);
+					j++;
+				}
+				j++;
+	        }
+			this.table_name = myString.toString().toLowerCase();
 			tableMap.put(clazz, this.table_name);
 		}
 		this.parseEntityClass(clazz);
@@ -617,78 +626,88 @@ public abstract class DBQuery {
 	private <T> Object excuteBatchInsertObject(List<T> objectList, String insertType) throws Exception {
 		int insertSize = objectList.size(), i = 0;
 		if (insertSize > 0) {
-			Class<?> objectClass = objectList.get(0).getClass();
-			TableAnnotation tableAnnotation = getTableAnnotation(objectClass);// 取得entityClassT table的Annotation
-			List<List<Object>> valueObjList = new ArrayList<>();
-			List<Object> valueList = new ArrayList<>();
-			StringBuilder sql = new StringBuilder(insertType + tableAnnotation.getTableName() + " (");
-			StringBuilder sqlParamters = new StringBuilder("");
-			HashMap<String, Method> fieldHashMap = new HashMap<>();
-			List<Method> fieldMethodList = new ArrayList<>();
-			for (; i < insertSize; i++) {
-				T objectT = objectList.get(i);
-				for (; objectClass != Object.class; objectClass = objectClass.getSuperclass()) {
-					// Method[] methods = objectClass.getDeclaredMethods();
-					Field[] fields = objectClass.getDeclaredFields();
-					for (Field field : fields) {
-						String fieldName = field.getName();
-						String columnName = fieldName;
-						FieldAnnotation fieldAnnotation = this.getFieldAnnotation(field);
-						if (tableAnnotation.isAnnotationField) {// 如果使用了Annotation的Field
-							columnName = fieldAnnotation.getColumnName();// 得到数据库表的columnName表名
+			StringBuilder sql = null;
+			try {
+				Class<?> objectClass = objectList.get(0).getClass();
+				TableAnnotation tableAnnotation = getTableAnnotation(objectClass);// 取得entityClassT table的Annotation
+				List<List<Object>> valueObjList = new ArrayList<>();
+				List<Object> valueList = new ArrayList<>();
+				sql = new StringBuilder(insertType + tableAnnotation.getTableName() + " (");
+				StringBuilder sqlParamters = new StringBuilder("");
+				HashMap<String, Method> fieldHashMap = new HashMap<>();
+				List<Method> fieldMethodList = new ArrayList<>();
+				for (; i < insertSize; i++) {
+					T objectT = objectList.get(i);
+					for (; objectClass != Object.class; objectClass = objectClass.getSuperclass()) {
+						// Method[] methods = objectClass.getDeclaredMethods();
+						Field[] fields = objectClass.getDeclaredFields();
+						for (Field field : fields) {
+							String fieldName = field.getName();
+							String columnName = fieldName;
+							FieldAnnotation fieldAnnotation = this.getFieldAnnotation(field);
+							if (tableAnnotation.isAnnotationField) {// 如果使用了Annotation的Field
+								columnName = fieldAnnotation.getColumnName();// 得到数据库表的columnName表名
+							}
+							if (fieldAnnotation.isIgnore() || fieldAnnotation.isAutoIncrement()) {// 如果是忽略和递增就跳过
+								continue;
+							}
+							String methodNameBegin = fieldName.substring(0, 1).toUpperCase();
+							String methodName = "get" + methodNameBegin + fieldName.substring(1);
+							Method method = objectClass.getDeclaredMethod(methodName);
+							//System.out.println("===>/"+methodName+",=>"+columnName);
+							fieldHashMap.put(columnName, method);
+							fieldMethodList.add(method);
+							sqlParamters.append("?,");
+							sql.append(columnName).append(",");// 用表名构造SQL
 						}
-						if (fieldAnnotation.isIgnore() || fieldAnnotation.isAutoIncrement()) {// 如果是忽略和递增就跳过
-							continue;
-						}
-						String methodNameBegin = fieldName.substring(0, 1).toUpperCase();
-						String methodName = "get" + methodNameBegin + fieldName.substring(1);
-						Method method = objectClass.getDeclaredMethod(methodName);
-						fieldHashMap.put(columnName, method);
-						fieldMethodList.add(method);
-						sqlParamters.append("?,");
-						sql.append(columnName).append(",");// 用表名构造SQL
+						
 					}
-					
+					valueList = new ArrayList<>();
+					for(Method method : fieldMethodList) {
+						Object tempObj = method.invoke(objectT);// 获取值
+						valueList.add(tempObj);
+					}
+					valueObjList.add(valueList);
 				}
-				valueList = new ArrayList<>();
-				for(Method method : fieldMethodList) {
-					Object tempObj = method.invoke(objectT);// 获取值
-					valueList.add(tempObj);
+				// 最后一位为,，去除
+				sql = this.trimChar(sql);
+				sqlParamters = this.trimChar(sqlParamters);
+				sql.append(") VALUES (").append(sqlParamters).append(")");
+				PreparedStatement preparedStatement = this.thisWriteConnection().prepareStatement(sql.toString(),
+						PreparedStatement.RETURN_GENERATED_KEYS);
+				logger.info(sql.toString());
+				int k = 0, objSize = 0;
+				i = 0;
+				for (; i < insertSize; i++) {
+					valueList = valueObjList.get(i);
+					objSize = valueList.size();
+					for (k = 0; k < objSize; k++) {
+						preparedStatement.setObject(k+1, valueList.get(k));
+					}
+					k = 0;
+					preparedStatement.addBatch();
+					if (i % 100 == 0) {
+						preparedStatement.executeBatch();// 执行batch
+						preparedStatement.clearBatch();// 清空batch
+					}
 				}
-				valueObjList.add(valueList);
-			}
-			// 最后一位为,，去除
-			sql = this.trimChar(sql);
-			sqlParamters = this.trimChar(sqlParamters);
-			sql.append(") VALUES (").append(sqlParamters).append(")");
-			PreparedStatement preparedStatement = this.thisWriteConnection().prepareStatement(sql.toString(),
-					PreparedStatement.RETURN_GENERATED_KEYS);
-			int k = 0, objSize = 0;
-			i = 0;
-			for (; i < insertSize; i++) {
-				valueList = valueObjList.get(i);
-				objSize = valueList.size();
-				for (k = 0; k < objSize; k++) {
-					preparedStatement.setObject(k+1, valueList.get(k));
-				}
-				k = 0;
-				preparedStatement.addBatch();
-				if (i % 100 == 0) {
-					preparedStatement.executeBatch();// 执行batch
+				if ((i - 1) % 100 != 0) {
+					preparedStatement.executeBatch();// 执行最后batch
 					preparedStatement.clearBatch();// 清空batch
 				}
+				ResultSet rs = preparedStatement.getGeneratedKeys();
+				Object object = null;
+				if (rs.next()) {
+					object = rs.getObject(1);
+				}
+				//this.thisWriteConnection().close();
+				return object;
+			} catch (SQLException e) {
+				MDC.put("APP_NAME", "mysql_error");
+				logger.error("error sql", e, sql);
+				//this.freeAndRollBackAllConnection();
+				throw new SQLException("SQL error."+sql.toString());
 			}
-			if ((i - 1) % 100 != 0) {
-				preparedStatement.executeBatch();// 执行最后batch
-				preparedStatement.clearBatch();// 清空batch
-			}
-			ResultSet rs = preparedStatement.getGeneratedKeys();
-			Object object = null;
-			if (rs.next()) {
-				object = rs.getObject(1);
-			}
-			//this.thisWriteConnection().close();
-			return object;
 		}
 		return null;
 
@@ -1028,12 +1047,14 @@ public abstract class DBQuery {
 				Connection c = jdbcDsnMap.get(k);
 				if (c != null) {
 					//DbcpPoolManager.instance().freeConnection(k, jdbcDsnMap.get(k));
-					System.out.println("=====>"+c.isValid(0));
+					System.out.println("jdbcDsnMap=====currentConnHashMap>"+c.isValid(0));
+					if(c.isValid(0) == false) c.close();
 				}
 			}
 		}
-		if(this.readConnection != null && this.writeConnection != null) 
-			System.out.println("=====>"+this.readConnection.isValid(0)+",=====>"+this.writeConnection.isValid(0));
+		if(this.readConnection != null && this.writeConnection != null) {
+			System.out.println("=====currentConnHashMap>"+this.readConnection.isValid(0)+",=====>"+this.writeConnection.isValid(0));
+		}
 	}
 
 	protected void rollbackAllConnection() throws SQLException {

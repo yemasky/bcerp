@@ -1,4 +1,4 @@
-<div class="p-md" ng-controller="AuditingController">
+<div class="p-md" ng-controller="CommodityController">
 	<div class="panel panel-default">
 		<div class="panel-heading row">
 			<div class="col-md-10">
@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-md-2">
 				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit(param)" class="btn btn-rounded btn-info btn-sm">
-					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加审核
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加品名
 				</button>
 			</div>
 		</div>
@@ -14,40 +14,47 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>名称</th>
-					<th>模块</th>
-					<th>部门</th>
-					<th>职位</th>
-					<th>审核人</th>
-					<th></th>
+					<th>所属系统</th>
+					<th>产品系统</th>
+					<th>报关品名</th>
+					<th>品名</th>
+					<th>品名[英文]</th>
+					<th>单位</th>
+					<th>单位[英文]</th>
+					<th>报关度量</th>
+					<th>HS编码</th>
+					<th>HS编码来源</th>
+					<th>产品提交人</th>
+					<th>提交时间</th>
+					<th>流转步骤</th>
+					<th>审核</th>
+					<th>审核时间</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="(i, auditing) in auditingList">
 					<td>{{i+1}}</td>
-					<td>{{auditing.auditing_name}}</td>
-					<td>{{auditingModuleHash[auditing.module_id].module_name}}</td>
-					<td colspan="3">
-						<table class="table no-b-t">
-							<tr ng-repeat="(j, examine) in auditing.examine">
-								<td>{{sectorHash[examine.sector_id].sector_name}}</td>
-								<td>{{sectorHash[examine.position_id].sector_name}}</td>
-								<td>{{employeeHash[examine.employee_id].employee_name}}</td>
-							<tr>
-						</table>
-					</td>
-					<td>
-						<div class="text-center">
-							<a ng-click="addEdit('edit', auditing, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-							<a ng-click="delete(auditing.auditing_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
-						</div>
-					</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
+					<td>{{i+1}}</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
-<script type="text/ng-template" id="AddEditAuditing.html">
+<script type="text/ng-template" id="AddEditCommodity.html">
 	<div class="aside box-shadow aside-x" tabindex="-1" role="dialog">
 		<div class="aside-dialog">
 			<div class="aside-content">
@@ -60,17 +67,17 @@
 						</div>
 						<div class="panel-body">                    
 							<div class="form-group">
-								<label class="col-sm-2 control-label">名称</label>
+								<label class="col-sm-2 control-label">审核名称</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" ng-model="auditing.auditing_name" />
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-2 control-label">模块</label>
+								<label class="col-sm-2 control-label">审核模块</label>
 								<div class="col-sm-4">
 										<ui-select class="w-lg" ng-model="auditing.module_id" ng-change="selectModule(i)" theme="bootstrap" 
 											ng-disabled="disabled">
-										  <ui-select-match placeholder="选择模块">{{$select.selected.module_name}}</ui-select-match>
+										  <ui-select-match placeholder="选择审核模块">{{$select.selected.module_name}}</ui-select-match>
 										  <ui-select-choices group-by="'group'" 
 											repeat="module in auditingModuleList | propsFilter: {module_name: $select.search}">
 										    <div ng-bind-html="module.module_name | highlight: $select.search"></div>
@@ -79,7 +86,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-2 control-label">步骤</label>
+								<label class="col-sm-2 control-label">审核步骤</label>
 								<div class="col-sm-3">
 									<div class="text-center">
 										<a ng-click="addStep()" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加审核</a>
@@ -88,7 +95,7 @@
 								</div>
 							</div>
 							<div class="form-group" ng-repeat="i in step" >
-								<label class="col-sm-2 control-label">部门</label>
+								<label class="col-sm-2 control-label">审核部门</label>
 								<div class="col-sm-10">
 									<div class="row">
 										<div class="col-sm-2">
@@ -96,7 +103,7 @@
 											<input type="text" class="form-control" value="{{sectorHash[auditing.examine[i].sector_id].sector_name}}"
 											 ng-click="showSector(i)" />
 										</div>
-										<label class="col-sm-1 control-label">职位</label>
+										<label class="col-sm-1 control-label">审核职位</label>
 										<div class="col-sm-3">
 										<ui-select class="w-lg" ng-model="auditing.examine[i].position_id" ng-change="selectPosition(i)" theme="bootstrap" 
 											ng-disabled="disabled">
@@ -135,4 +142,12 @@
 		</div>
 	</div>
 </script>
-<!-- AddEditAuditing.html -->
+<!-- AddEditCommodity.html -->
+<!-- CommodityNameSources.html -->
+<script type="text/ng-template" id="CommodityNameSources.html">
+<ul class="dropdown-menu">
+ 	<li><a ng-click="commodity.commodity_name_sources='知名经销商'">知名经销商</a></li>
+	<li><a ng-click="commodity.commodity_name_sources='专业书籍'">专业书籍</a></li>
+	<li><a ng-click="commodity.commodity_name_sources='网络'">网络</a></li>
+</ul>
+</script>

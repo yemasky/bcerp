@@ -1,8 +1,11 @@
 app.controller('UnitOfController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {};$scope.edit_id = 0; $scope.unit = {};$scope.unitList = [];//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {};$scope.edit_id = 0; 
+	//定义变量
+	$scope.unit = {};$scope.unitList = [];
+	$scope.edit_index = 0;$scope.editType = "";
 	let aside;
 	$httpService.header('method', 'getUnit');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){

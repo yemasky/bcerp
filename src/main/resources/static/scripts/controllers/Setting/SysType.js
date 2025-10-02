@@ -1,8 +1,12 @@
 app.controller('SysTypeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.systype = {};$scope.systypeList = [];$scope.edit_id = 0;//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {};$scope.edit_id = 0;
+	//定义变量
+	$scope.systype = {};$scope.systypeList = [];//系统分类
+	$scope.edit_index = 0;$scope.editType = "";
+	
 	let aside;
 	$httpService.header('method', 'getSystype');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
@@ -11,7 +15,7 @@ app.controller('SysTypeController', function($rootScope, $scope, $httpService, $
 		if(result.data.success == false) {
 			return;
 		} 
-		$scope.systypeList = result.data.item.systypeList;//部门职位
+		$scope.systypeList = result.data.item.systypeList;//
 		//$scope.$apply();//刷新数据
 	})
 	

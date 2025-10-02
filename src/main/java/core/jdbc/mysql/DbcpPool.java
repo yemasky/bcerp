@@ -12,6 +12,7 @@ public class DbcpPool {
 	private final String dirverClassName = "com.mysql.cj.jdbc.Driver";
 	private Config config = null;
 	private Connection connection;
+	private int close_num = 0;
 	/**
 	 * 数据库连接池（dbcp连接池）对象引用
 	 */
@@ -30,9 +31,11 @@ public class DbcpPool {
 	}
 
 	public Connection getConnection() throws SQLException {
+		if(this.connection != null && this.connection.isValid(0)) {
+			return this.connection;
+		}
+		if(this.connection != null) this.connection.close();
 		if (this.config.getDrive().equals("HikariCP")) {
-			if(this.connection != null && this.connection.isValid(0)) return this.connection;
-			if(this.connection != null)this.connection.close();
 			this.connection = this.hikariCPdataSource.getConnection();
 			if(this.connection.isValid(0)) {
 				return this.connection;
@@ -42,8 +45,6 @@ public class DbcpPool {
 			}
 			
 		}
-		if(this.connection != null && this.connection.isValid(0)) return this.connection;
-		if(this.connection != null) this.connection.close();
 		this.connection = this.dbcpDataSource.getConnection();
 		return this.connection;
 	}
@@ -56,7 +57,7 @@ public class DbcpPool {
 	}
 
 	public void init() {
-		System.out.println("=================>"+this.config.getDrive());
+		//System.out.println("=================>"+this.config.getDrive());
 		if (this.config.getDrive().equals("HikariCP")) {
 			System.out.println("=================>HikariCP==========>");
 			HikariConfig config = new HikariConfig();
@@ -87,8 +88,11 @@ public class DbcpPool {
 		connection.close();
 	}*/
 	
-	public void close() throws SQLException {
+	public void close(Connection conn) throws SQLException {
+		this.close_num++;
+		System.out.println("-------=======>关闭链接："+this.close_num);
 		this.connection.close();
+		conn.close();
 		//if (this.config.getDrive().equals("HikariCP")) this.hikariCPdataSource.close();
 	}
 

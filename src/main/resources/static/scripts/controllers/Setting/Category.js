@@ -1,8 +1,10 @@
 app.controller('CategoryController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.category = {};$scope.categoryList = {};$scope.edit_id = 0;//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.edit_index = 0;$scope.editType = "";
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {}; $scope.edit_id = 0;
+	//定义变量
+	$scope.edit_index = 0;$scope.editType = "";$scope.category = {};$scope.categoryList = {};
 	let aside;
 	$httpService.header('method', 'getCategory');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){

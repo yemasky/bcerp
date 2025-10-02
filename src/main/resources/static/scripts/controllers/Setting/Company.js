@@ -1,9 +1,6 @@
 app.controller('CompanyController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.company = {}; $scope.param.company = {};$scope.__IMGWEB = __IMGWEB; 
-	$scope.company_edit_id = "";$scope.bank = {};
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/moment.min.js?"+__VERSION,
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/moment.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION,
 					  __RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION,
@@ -11,6 +8,11 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 					  //__RESOURCE+"editor/kindeditor/kindeditor-all-min.js?"+__VERSION,
 					  __RESOURCE+"editor/kindeditor/themes/default/default.css",
 					  __RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB; 
+	$scope.param = {}; $scope.company_edit_id = "";
+	//定义变量
+	$scope.company = {}; $scope.param.company = {};
+	$scope.bank = {};
 	/////////
 	$scope.people = [
 	{ name: 'Adam',      email: 'adam@email.com',      age: 12, country: 'United States' },

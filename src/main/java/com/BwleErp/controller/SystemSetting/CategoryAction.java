@@ -12,8 +12,8 @@ import com.base.model.entity.BwleErp.CategoryClassify;
 import com.base.model.entity.BwleErp.CategorySystype;
 import com.base.model.entity.BwleErp.Country;
 import com.base.model.vo.BwleErp.CategoryClassifyVo;
+import com.base.model.vo.BwleErp.CategorySystypeVo;
 import com.base.model.vo.BwleErp.CategoryVo;
-import com.base.model.vo.BwleErp.SategorySystypeVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;
@@ -132,7 +132,7 @@ public class CategoryAction extends AbstractAction {
 	///////////////////////
 	public void doGetSystype(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.EQ("systype_valid", 1).setTable_clazz(SategorySystypeVo.class);
+		whereRelation.EQ("systype_valid", 1).setTable_clazz(CategorySystypeVo.class);
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("systype_id", NeedEncrypt._ENCRYPT);
@@ -147,7 +147,7 @@ public class CategoryAction extends AbstractAction {
 		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
 			category_id = EncryptUtiliy.instance().intIDDecrypt(edit_id);
 		}
-		SategorySystypeVo systypeVo = this.modelMapper.map(request.getAttribute("systype"), SategorySystypeVo.class);
+		CategorySystypeVo systypeVo = this.modelMapper.map(request.getAttribute("systype"), CategorySystypeVo.class);
 		systypeVo.setSystype_id(null);
 		if(category_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();

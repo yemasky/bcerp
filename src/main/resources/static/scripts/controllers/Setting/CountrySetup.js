@@ -1,8 +1,10 @@
 app.controller('CountrySetupController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-	$scope.param = {}; $scope.country = {};$scope.countryList = {};$scope.edit_id = 0;//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
-	$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+	$scope.param = {}; $scope.edit_id = 0;
+	//定义变量
+	$scope.country = {};$scope.countryList = {};
 	let aside;
 	$httpService.header('method', 'getCountry');
 	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){

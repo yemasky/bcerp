@@ -2,10 +2,11 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 	$ocLazyLoad, $alert, $stateParams) {
 		$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
 		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION,]);
-	$scope.param = {}; $scope.edit_id = "";$scope.step = "0";$scope.step_length = 0;//定义变量
-	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
-	var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
-	var tree,treeData = [];$scope.my_tree = tree = {};
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
+		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
+	$scope.param = {}; $scope.edit_id = "";
+	//定义变量
+	var tree,treeData = [];$scope.my_tree = tree = {};$scope.step = "0";$scope.step_length = 0;
 	$scope.auditingList = [];$scope.auditing = {};$scope.auditing.examine = {};$scope.sectorHash = {};$scope.positionList = [];
 	$scope.auditingModuleList = {};$scope.auditingModuleHash = {};$scope.employeeList = {};$scope.employeeHash = {};$scope.auditingEmployeeList = [];
 	let aside;
@@ -23,7 +24,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 		$scope.auditingList = result.data.item.auditingVoList;//
 		$scope.employeeList = result.data.item.employeeList;
 		for (var index = 0; index < $scope.employeeList.length; index++) {
-			$scope.employeeHash[$scope.employeeList[index].module_id] = $scope.employeeList[index]; //哈希值
+			$scope.employeeHash[$scope.employeeList[index].e_id] = $scope.employeeList[index]; //哈希值
 		}
 		let sectorHash = {}; //部门职位
 		let _companySectorList = result.data.item.companySectorList;
@@ -176,6 +177,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 	$scope.setSectorOk = function() {
 		if(typeof(branchSetSector.sector_id) != "undefined") {
 			//angular.extend({}, $scope.auditing.examine, { examine_index: branchSetSector.sector_id });
+			if(typeof($scope.auditing.examine)== 'undefined') $scope.auditing.examine = {};
 			if(typeof($scope.auditing.examine[examine_index])== 'undefined') $scope.auditing.examine[examine_index] = {};
 			$scope.auditing.examine[examine_index].sector_id = branchSetSector.sector_id;
 		}
@@ -201,7 +203,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 	}
 	$scope.addStep = function() {
 		if($scope.step_length > 4) {
-			$alert({title: 'Notice', content: '最多允许5个审核步骤', templateUrl: '/modal-warning.html', show: true});
+			$alert({title: 'Notice', content: '最多允许6个审核步骤', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.step_length++;
