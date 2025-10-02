@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
+import com.base.model.entity.BwleErp.Auditing;
 import com.base.model.entity.BwleErp.Country;
 import com.base.model.entity.BwleErp.Seaport;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
+import com.base.util.EncryptUtiliy;
 import com.google.gson.Gson;
 
 import core.jdbc.mysql.WhereRelation;
@@ -46,6 +48,15 @@ public class CountrySetupAction extends AbstractAction {
 			break;
 		case "saveSeaport"://海港
 			this.doSaveSeaport(request, response);
+			break;	
+		case "getCurrencyRate"://海港
+			this.doGetCurrencyRate(request, response);
+			break;
+		case "saveCurrencyRate"://海港
+			this.doSaveCurrencyRate(request, response);
+			break;	
+		case "deleteCurrencyRate"://海港
+			this.doDeleteCurrencyRate(request, response);
 			break;	
 		default:
 			this.doDefault(request, response);
@@ -126,6 +137,51 @@ public class CountrySetupAction extends AbstractAction {
 			generalService.save(seaport);
 		}
 		//
+	}
+	
+	public void doGetCurrencyRate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		//
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.ORDER_ASC("country_enname").setTable_clazz(Country.class);
+		List<Country> countryList = generalService.getEntityList(whereRelation);
+		//
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(Seaport.class);
+		List<Seaport> seaportList = generalService.getEntityList(whereRelation);
+		this.success.setItem("seaportList", seaportList);
+		this.success.setItem("countryList", countryList);
+	}
+	
+	public void doSaveCurrencyRate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String _edit_id = request.getParameter("edit_id");
+		int edit = 0;
+		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
+			edit = Integer.parseInt(_edit_id);
+		}
+		// TODO Auto-generated method stub
+		Seaport seaport = this.modelMapper.map(request.getAttribute("seaport"), Seaport.class);
+		WhereRelation whereRelation = new WhereRelation();
+		if(edit > 0) {//update
+			whereRelation.EQ("country_id", seaport.getSeaport_id()).setTable_clazz(Country.class);
+			generalService.updateEntity(seaport, whereRelation);
+		} else {
+			generalService.save(seaport);
+		}
+		//
+	}
+	
+	public void doDeleteCurrencyRate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String delete_id = (String) request.getAttribute("delete_id");
+		int auditing_id = 0;
+		if(delete_id != null && !delete_id.equals("") && !delete_id.equals("undefined") && !delete_id.equals("0")) {
+			auditing_id = EncryptUtiliy.instance().intIDDecrypt(delete_id);
+		}
+		if(auditing_id > 0) {//update
+			WhereRelation whereRelation = new WhereRelation();
+			whereRelation.EQ("auditing_id", auditing_id).setUpdate("auditing_valid", 0).setTable_clazz(Auditing.class);
+			generalService.update(whereRelation);
+		}
 	}
 
 }
