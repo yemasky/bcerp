@@ -29,10 +29,20 @@
 					<th>流转步骤</th>
 					<th>审核</th>
 					<th>审核时间</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, auditing) in auditingList">
+				<tr ng-repeat="(i, commodity) in commodityPage.pageList">
+					<td>{{i+1}}</td>
+					<td>{{systypeHash[commodity.systype_id].systype_belong}}</td>
+					<td>{{systypeHash[commodity.systype_id].systype_name}}</td>
+					<td>{{commodity.commodity_hs_name}}</td>
+					<td>{{commodity.commodity_name}}</td>
+					<td>{{commodity.commodity_enname}}</td>
+					<td>{{commodity.commodity_unit}}</td>
+					<td>{{commodity.commodity_unit_en}}</td>
+					<td>{{commodity.commodity_unit_seaport}}</td>
 					<td>{{i+1}}</td>
 					<td>{{i+1}}</td>
 					<td>{{i+1}}</td>
@@ -40,15 +50,23 @@
 					<td>{{i+1}}</td>
 					<td>{{i+1}}</td>
 					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
+					<td>
+						<div class="text-center">
+							<a ng-click="addEdit('edit', commodity, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i></a>
+							<a ng-click="delete(commodity.commodity_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i></a>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="17" class="text-center">
+						<div class="btn-group">
+							<button type="button" class="btn btn-default"
+								ng-repeat="n in [].constructor(commodityPage.allPages) track by $index" 
+								ng-class="{active:$index+1==commodityPage.currentPage}" ng-click="nextPage($index+1)">
+								{{$index+1}}
+							</button>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>

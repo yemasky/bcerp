@@ -15,6 +15,7 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 	$scope.step['hs'].step = "0";$scope.step['hs'].length = 0;
 	$scope.images = {};$scope.attribute = {};$scope.hs = {};
 	$scope.systypeList = [];$scope.systypeHash = {};//系统分类
+	$scope.commodityPage = {};
 	let aside;
 	$httpService.header('method', 'getCommodity');
 	$httpService.post(urlParam, $scope, function(result){
@@ -25,32 +26,16 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 		} 
 		$scope.systypeList = result.data.item.systypeList;//
 		for (var key in $scope.systypeList) {$scope.systypeHash[$scope.systypeList[key].systype_id] = $scope.systypeList[key];}
+		//page列表
+		$scope.commodityPage = result.data.item.commodityPage;
 	})
 	
-	$scope.addEdit = function(editType, auditing, i) {
+	$scope.addEdit = function(editType, commodity, i) {
 		$scope.editType = editType;
-		$scope.auditing = {};
-		if(editType == 'edit' && typeof(auditing) != 'undefined') {
-			$scope.auditing = angular.copy(auditing);//编辑开始
-			$scope.auditing.module_id = angular.copy($scope.auditingModuleHash[auditing.module_id]);//模块
-			for(j in $scope.auditing.examine) {//解析examine
-				let examine = $scope.auditing.examine[j];
-				let position_id =  examine.position_id;
-				let sector_id = examine.sector_id;
-				$scope.auditing.examine[j].position_id = angular.copy($scope.sectorHash[position_id]);
-				if(typeof($scope.auditingEmployeeList[i]) == "undefined") {
-					$scope.auditingEmployeeList[i] = [];
-				} else {
-					$scope.auditingEmployeeList[i] = [];//清空之前的数据
-				}
-				for(e in $scope.employeeList) {
-					let employee = $scope.employeeList[e];
-					if(employee.position_id == position_id && employee.sector_id == sector_id) 
-						$scope.auditingEmployeeList[i].push(employee);
-				}
-				$scope.auditing.examine[j].employee_id = angular.copy($scope.employeeHash[examine.employee_id]);
-			}
-			$scope.edit_id = angular.copy(auditing.auditing_id);
+		$scope.commodity = {};
+		if(editType == 'edit' && typeof(commodity) != 'undefined') {
+			$scope.commodity = angular.copy(commodity);//编辑开始
+			$scope.edit_id = angular.copy(commodity.commodity_id);
 			$scope.edit_index = i;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
@@ -157,5 +142,17 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 		if($scope.step[key].length < 1) {$alert({title: 'Notice', content: '最少需要1个', templateUrl: '/modal-warning.html', show: true});return;}
 		$scope.step[key].step=$scope.step[key].step.substring(0,$scope.step[key].step.length-1);
 		$scope.step[key].length--;
+	}
+	$scope.nextPage = function(page) {	
+		$scope.param.page = page;
+		$httpService.header('method', 'getCommodity');
+		$httpService.post(urlParam, $scope, function(result) {
+			$scope.loading.percent();
+			$httpService.deleteHeader('method');
+			if (result.data.success == false) {
+				return;
+			}
+			$scope.commodityPage = result.data.item.commodityPage;		
+		});
 	}
 });

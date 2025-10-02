@@ -105,7 +105,7 @@
 										</table>
 										<div class="btn-group">
 											<button type="button" class="btn btn-default"
-												ng-repeat="n in [].constructor(employeePage.perPage) track by $index" 
+												ng-repeat="n in [].constructor(employeePage.allPages) track by $index" 
 												ng-class="{active:$index+1==employeePage.currentPage}" ng-click="employeeNextPage($index+1)">
 												{{$index+1}}
 											</button>
