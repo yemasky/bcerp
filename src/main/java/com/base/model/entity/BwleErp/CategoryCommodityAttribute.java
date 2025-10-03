@@ -4,7 +4,6 @@ import core.custom_interface.Table;
 
 @Table(name = "category_commodity_attribute", isAnnotationField = false)//未使用 FieldAnnotation 
 public class CategoryCommodityAttribute {
-	private Integer attribute_id;
 	private Integer commodity_id;
 	private String attribute_type;
 	private Integer attribute_check;
@@ -13,12 +12,6 @@ public class CategoryCommodityAttribute {
 	private String attribute_val;
 	private String attribute_enval;
 	private String attribute_mark;
-	public Integer getAttribute_id() {
-		return attribute_id;
-	}
-	public void setAttribute_id(Integer attribute_id) {
-		this.attribute_id = attribute_id;
-	}
 	public Integer getCommodity_id() {
 		return commodity_id;
 	}

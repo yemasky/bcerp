@@ -1,35 +1,68 @@
-app.controller('CommodityController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
-	$ocLazyLoad, $alert, $stateParams) {
+<div class="p-md" ng-controller="CategoryAuditingController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin">工作流审核</span>
+			</div>
+			<div class="col-md-2">
+				
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>名称</th>
+					<th>模块</th>
+					<th>部门</th>
+					<th>职位</th>
+					<th>审核人</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, auditing) in auditingList">
+					<td>{{i+1}}</td>
+					<td>{{auditing.auditing_name}}</td>
+					<td>{{auditingModuleHash[auditing.module_id].module_name}}</td>
+					<td colspan="3">
+						<table class="table no-b-t">
+							<tr ng-repeat="(j, examine) in auditing.examine">
+								<td>{{sectorHash[examine.sector_id].sector_name}}</td>
+								<td>{{sectorHash[examine.position_id].sector_name}}</td>
+								<td>{{employeeHash[examine.employee_id].employee_name}}</td>
+							<tr>
+						</table>
+					</td>
+					<td>
+						<div class="text-center">
+							<a ng-click="addEdit('edit', auditing, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete(auditing.auditing_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script language="javascript">
+app.controller('CategoryAuditingController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+	$ocLazyLoad, $alert, $stateParams, $routeParams) {
 		$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
-		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION,
-		__RESOURCE+"editor/kindeditor/kindeditor-all.js?"+__VERSION,__RESOURCE+"editor/kindeditor/themes/default/default.css"]);
+		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
-	$scope.param = {}; $scope.edit_id = "";$scope.commodity = {};
-	$scope.commodity_name_sources = [{'id':'1','name':'知名经销商'},{'id':'2','name':'专业书籍'},{'id':'3','name':'网络'}];
+	$scope.param = {}; $scope.edit_id = "";
 	//定义变量
-	$scope.step = {};$scope.step['spare'] = {};$scope.step['attr'] = {};$scope.step['images'] = {}; $scope.step['hs'] = {};
-	$scope.step['spare'].step = "0";$scope.step['spare'].length = 0;
-	$scope.step['attr'].step = "0";$scope.step['attr'].length = 0;
-	$scope.step['images'].step = "0";$scope.step['images'].length = 0;
-	$scope.step['hs'].step = "0";$scope.step['hs'].length = 0;
-	$scope.images = {};$scope.attribute = {};$scope.hs = {};
-	$scope.systypeList = [];$scope.systypeHash = {};//系统分类
-	$scope.commodityPage = {};$scope.unitList = {};$scope.unitHash = {};
+	console.log("routeParams",$rootScope, $scope,$routeParams,$stateParams);
 	let aside;
-	$httpService.header('method', 'getCommodity');
+	$httpService.header('method', 'getAuditing');
 	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
 			return;
 		} 
-		$scope.systypeList = result.data.item.systypeList;//
-		for (var key in $scope.systypeList) {$scope.systypeHash[$scope.systypeList[key].systype_id] = $scope.systypeList[key];}
-		$scope.unitHash = {};$scope.unitList = result.data.item.unitList;
-		for (var key in $scope.unitList) {$scope.unitHash[$scope.unitList[key].unit_id] = $scope.unitList[key];}
-		//page列表
-		$scope.commodityPage = result.data.item.commodityPage;
 	})
 	
 	$scope.addEdit = function(editType, commodity, i) {
@@ -206,3 +239,4 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 		});
 	}
 });
+</script>

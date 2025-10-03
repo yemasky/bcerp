@@ -12,9 +12,7 @@ import com.base.controller.AbstractAction;
 import com.base.model.entity.BwleErp.Category;
 import com.base.model.entity.BwleErp.CategoryClassify;
 import com.base.model.entity.BwleErp.CategoryUnit;
-import com.base.model.entity.BwleErp.Country;
 import com.base.model.entity.BwleErp.VehicleModel;
-import com.base.model.vo.BwleErp.CategoryClassifyVo;
 import com.base.model.vo.BwleErp.CategoryUnitVo;
 import com.base.model.vo.BwleErp.VehicleModelVo;
 import com.base.service.GeneralService;
@@ -23,7 +21,6 @@ import com.base.util.EncryptUtiliy;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
-import core.util.Utiliy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

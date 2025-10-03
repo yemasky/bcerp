@@ -7,15 +7,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>博威利尔.ERP ᵛ¹·⁰·⁰ </title>
 <link rel="shortcut icon" href="/static/favicon.ico">
-<script language="javascript">var __VERSION = ''; var baseDateTime = '2025-09-24 18:48:34', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
+<script language="javascript">var __VERSION = ''; var baseDateTime = '2025-10-03 00:47:31', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
 <link rel="stylesheet" href="/static/styles/app.min.css?" type="text/css" />
 <!-- commom -->
 <script language="javascript" src="/static/jquery-3.4.1.min.js?"></script>
 <script language="javascript">
-    var __RESOURCE = '/static/'; var __IMGWEB = 'http://localhost/xiaoqu/images/';var __WEB = '/erp/';
+    var __RESOURCE = '/static/'; var __IMGWEB = 'http://www.xiaoqu.love/xiaoqu/images/';var __WEB = '/erp/';
+    var __ImagesUploadUrl = '9t8_e1HtIvlFp80mcxJ2Tz6yu_6UOPd1';var __ImagesManagerUrl = 'wXyXTSl-qztFp80mcxJ2Tz6yu_6UOPd1';
 //jQuery 插件
 (function ($) {
-    $.serializeFormat = function (id) {
+    $.serializeFormat = function (id) {//取出form的值包括 xxx[yyy]的值
 		var serialize = $(id).serializeArray();var serializeFormat = {},n_name='',n_n_name='';//console.log(serialize);
         for(var i in serialize) {
 			var name = serialize[i].name;
@@ -400,6 +401,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             if(angular.isUndefined(format)) format = "yyyy-MM-dd";
 			if(format == 'w') return new Date($scope._baseDateTime()).getDay();
             return $filter("date")($scope._baseDateTime(), format, 'UTC +8');
+        };
+        $scope.show = function(_id, id) {
+            $("#"+_id).hide();$("#"+id).show();
         }
         //初始化变量
         $scope.__RESOURCE = __RESOURCE;
@@ -407,8 +411,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.__WEB = __WEB;
 		$scope.employee = {};
 		$scope.companyList = {};
-		$rootScope.__ImagesUploadUrl = 'OGezA4NmqlhwXQnS2d3gfqzT3Mi8OJxS';
-		$rootScope.__ImagesManagerUrl = 'v1XIUuwNkllwXQnS2d3gfqzT3Mi8OJxS';
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "1";
@@ -492,7 +494,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $location.path('/app/home');
 		};
 		$rootScope._self_module = '';
-		$scope.action_nav = "";
+		$scope.action_nav = "";$scope.action_nav_aside = "";
 		$scope.setActionNavName = function(module_id, _self_nav) {//设置导航栏
 			let menus = $scope.hashEmployeeModule, nav = "";
 			let _self_module = menus[module_id];	
@@ -512,11 +514,13 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					getChannelNav(menus[_self_module.module_father_id]);
 				}
 			}
+			$scope.action_nav = '' + nav;
 			if(angular.isDefined(_self_nav) && _self_nav != '') {
 				if(nav != "") nav += ' <i class="fa fa-angle-double-right"></i> ';
 				nav += _self_nav;
+				$scope.action_nav_aside = nav;
 			}
-			$scope.action_nav = '' + nav;
+			
 		};
         $scope.getChannelModule = function(module_id) {
             return $scope.hashEmployeeModule[module_id];
@@ -574,6 +578,11 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.redirect = function(url) {
 			$location.path(url);
 		};
+		$scope.reload = function($stateParams) {
+			let path = "app/"+$rootScope._self_module.module_channel+'/'+$stateParams.view+'/'+$stateParams.id+'/'+$stateParams.channel;
+			console.log(path);
+			$location.path(path);
+		};
 		$scope._function = function(){};$scope._param = {};
 		$scope.setController = function(_function, _param) {
 			$scope._function = _function; $scope._param = _param;
@@ -585,6 +594,12 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			var height = window.screen.height;
 			var newHeight = height * h;
 		}
+		$scope.selectCountryGroup = function (item){
+	        if (item.country_enname[0] >= 'A' && item.country_enname[0] <= 'M')
+	            return 'From A - M';
+	        if (item.country_enname[0] >= 'N' && item.country_enname[0] <= 'Z') 
+	            return 'From N - Z';
+	    };
 		//日历
 		$scope.setCalendar = function (year, month) {
 			var days = {}, k = 0;days[k] = {};
@@ -812,7 +827,7 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
           </span>
 		</a>
 		<ul class="nav nav-sub bg" ng-if="module.have_children==1">
-			<li ng-repeat="(children_id, children) in module.children">
+			<li ng-repeat="(children_id, children) in module.children" ng-if="children.is_menu==1">
 			  <a ui-sref="app.{{children.module_channel}}({view:children.module_view,id:children.module_id,channel:children.url})" ng-click="setActionNavName(children.module_id);setUiNav($event)">
 				<span class="font-normal">{{children.module_name}}</span>
 				<span class="pull-right text-muted" ng-if="children.have_children==1">
@@ -1032,7 +1047,7 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
 		<p ng-bind-html="content"></p>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">Close</button>
 	  </div>
 	</div>
   </div>
@@ -1050,7 +1065,7 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
 		<p ng-bind-html="content"></p>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">Close</button>
 	  </div>
 	</div>
   </div>
@@ -1068,7 +1083,7 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
 		<p ng-bind-html="content"></p>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">Close</button>
 	  </div>
 	</div>
   </div>
@@ -1129,16 +1144,16 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
             <span>{{market_name}}</span>
          </a>
          <ul class="nav nav-sub bg-white b">
-            <li ng-repeat="(i, father) in marketList">
-              <a class="">
-                <span class="pull-right text-muted" ng-if="father.children!=''">
-                  <i class="fa fa-caret-down"></i>
-                </span>
-                <span class="font-normal">{{father.market_name}}</span>
-              </a>
-              <ul class="nav nav-sub bg-white b" ng-if="father.children!=''">
-                <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
-              </ul>
+            <li>
+              <div>
+              	<span ng-if="doing_async">...loading...</span>
+              	<div lazy-load="angularBootstrapNavTree">
+              		<abn-tree tree-data="my_data" tree-control="my_tree" expand-level="3"
+              			initial-selection="Granny Smith" icon-leaf="fa fa-file-o" icon-expand="fa fa-angle-right"
+              			icon-collapse="fa fa-angle-down">
+              		</abn-tree>
+              	</div>
+              </div>
             </li>
          </ul>
     </li>
@@ -1199,5 +1214,40 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
     </div>
 </div>
 </script><!-- /app/successAlertRound.html -->
+<!-- ShowSector -->
+<script type="text/ng-template" id="ShowSector.html">
+<div class="aside box-shadow b-r aside-m p" tabindex="-1" role="dialog">
+	<div class="aside-header"><i class="fa fa-building-o"> </i>
+		<span class="no-margin">选择部门</span>
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+	</div>
+	<div class="p-md">
+		<div class="panel panel-default">
+			<div class="panel-heading bg-white">
+				<span class="font-bold">所有部门</span>
+			</div>
+			<div class="row">
+				<div class="panel-body col-sm-12 pre-scrollable">
+				<span ng-if="doing_async">...loading...</span>
+				<div lazy-load="angularBootstrapNavTree">
+					<abn-tree tree-data="my_data" tree-control="my_tree" on-select="setSector(branch)" expand-level="3"
+						initial-selection="Granny Smith" icon-leaf="fa fa-file-o" icon-expand="fa fa-angle-right"
+						icon-collapse="fa fa-angle-down">
+					</abn-tree>
+				</div>
+				</div>
+			</div>
+		</div>
+		<footer class="panel-footer aside-footer text-right">
+			<div class="btn-group">
+				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+				<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+					ng-click="setSectorOk()" trigger-loading="beginLoading"><i class="fa fa-save"> </i> 确定</button>
+			</div>
+		</footer>
+	</div>
+</div>
+</script>
+<!-- AddEditSector -->
 </body>
 </html>

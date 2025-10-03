@@ -4,6 +4,7 @@ public class AuditingExamine {
 	private Integer employee_id;
 	private Integer sector_id;
 	private Integer position_id;
+	private String proviso;//限制条件
 	public Integer getEmployee_id() {
 		return employee_id;
 	}
@@ -21,6 +22,12 @@ public class AuditingExamine {
 	}
 	public void setPosition_id(Integer position_id) {
 		this.position_id = position_id;
+	}
+	public String getProviso() {
+		return proviso;
+	}
+	public void setProviso(String proviso) {
+		this.proviso = proviso;
 	}
 	
 }

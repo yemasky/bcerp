@@ -14,6 +14,7 @@ import com.base.model.entity.BwleErp.Auditing;
 import com.base.model.entity.BwleErp.CategoryCommodity;
 import com.base.model.entity.BwleErp.CategoryCommodityAttribute;
 import com.base.model.entity.BwleErp.CategorySystype;
+import com.base.model.entity.BwleErp.CategoryUnit;
 import com.base.model.entity.BwleErp.BaseAbstract.CommoditySpare;
 import com.base.model.vo.PageVoEntity;
 import com.base.model.vo.BwleErp.CategoryCommodityVo;
@@ -56,6 +57,9 @@ public class CommodityAction extends AbstractAction {
 		case "deleteAuditing":
 			this.doDeleteAuditing(request, response);
 			break;
+		case "getAttribute":
+			this.doGetAttribute(request, response);
+			break;	
 		default:
 			this.doDefault(request, response);
 			break;
@@ -85,6 +89,10 @@ public class CommodityAction extends AbstractAction {
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.EQ("systype_valid", 1).setTable_clazz(CategorySystype.class);
 		List<CategorySystype> systypeList = this.generalService.getEntityList(whereRelation);
+		//单位
+		whereRelation = new WhereRelation();
+		whereRelation.EQ("unit_valid", 1).setTable_clazz(CategoryUnit.class);
+		List<CategoryUnit> unitList = this.generalService.getEntityList(whereRelation);
 		//
 		PageVoEntity<CategoryCommodity> commodityPage = new PageVoEntity<>();
 		if(perPage == null) {
@@ -105,7 +113,7 @@ public class CommodityAction extends AbstractAction {
 			CategoryCommodityVo commodityVo = new CategoryCommodityVo();
 			BeanUtils.copyProperties(commodity, commodityVo);
 			commodityVo.setCommodity_id(EncryptUtiliy.instance().intIDEncrypt(commodity.getCommodity_id()));
-			HashMap<Integer, CommoditySpare> spareList = new Gson().fromJson(commodity.getCommodity_spare(), type);
+			HashMap<String, CommoditySpare> spareList = new Gson().fromJson(commodity.getCommodity_spare(), type);
 			commodityVo.setCommodity_spare(spareList);
 			commodityVoList.add(commodityVo);
 			commodityIdList.add(commodity.getCommodity_id());
@@ -113,12 +121,15 @@ public class CommodityAction extends AbstractAction {
 		PageVoEntity<CategoryCommodityVo> commodityVoPage = new PageVoEntity<>();
 		BeanUtils.copyProperties(commodityPage, commodityVoPage);
 		commodityVoPage.setPageList(commodityVoList);
+		//判断工作流
+		String channel = request.getParameter("channel");
+		int module_id = EncryptUtiliy.instance().intIDDecrypt(channel);
 		whereRelation = new WhereRelation();
-		whereRelation.setTable_clazz(CategoryCommodityAttribute.class).IN("commodity_id", commodityIdList);
-		List<CategoryCommodityAttribute> attributeyList = this.generalService.getEntityList(whereRelation);
+		whereRelation.EQ("module_id", module_id).EQ("auditing_valid", 1).setTable_clazz(Auditing.class);
+		Auditing auditing = (Auditing) this.generalService.getEntity(whereRelation);
 		//
 		this.success.setItem("systypeList", systypeList);
-		this.success.setItem("attributeyList", attributeyList);
+		this.success.setItem("unitList", unitList);
 		this.success.setItem("commodityPage", commodityVoPage);
 	}
 
@@ -163,7 +174,7 @@ public class CommodityAction extends AbstractAction {
 				for (String k : hsList.keySet()) {
 					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
 					BeanUtils.copyProperties(hsList.get(k), insertData);
-					insertData.setAttribute_type("HS");
+					insertData.setAttribute_type("hs");
 					insertData.setAttribute_check(0);
 					insertData.setAttribute_enkey("");
 					insertData.setAttribute_enval("");
@@ -185,11 +196,11 @@ public class CommodityAction extends AbstractAction {
 				}
 			}
 			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodityAttribute.class);
+			whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodity.class);
 			this.generalService.updateEntity(commodity, whereRelation);
 			//
 			new WhereRelation();
-			whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodity.class);
+			whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodityAttribute.class);
 			this.generalService.delete(whereRelation);
 			//
 			this.generalService.batchSave(insertAttribute);
@@ -213,7 +224,7 @@ public class CommodityAction extends AbstractAction {
 				for (String k : hsList.keySet()) {
 					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
 					BeanUtils.copyProperties(hsList.get(k), insertData);
-					insertData.setAttribute_type("HS");
+					insertData.setAttribute_type("hs");
 					insertData.setAttribute_check(0);
 					insertData.setAttribute_enkey("");
 					insertData.setAttribute_enval("");
@@ -252,6 +263,19 @@ public class CommodityAction extends AbstractAction {
 			WhereRelation whereRelation = new WhereRelation();
 			whereRelation.EQ("auditing_id", auditing_id).setUpdate("auditing_valid", 0).setTable_clazz(Auditing.class);
 			generalService.update(whereRelation);
+		}
+	}
+	
+	public void doGetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String _id = request.getParameter("attr_id");
+		int attr_id = 0;
+		if (_id != null && !_id.equals("") && !_id.equals("undefined") && !_id.equals("0")) {
+			attr_id = EncryptUtiliy.instance().intIDDecrypt(_id);
+			WhereRelation whereRelation = new WhereRelation();
+			whereRelation.setTable_clazz(CategoryCommodityAttribute.class).EQ("commodity_id", attr_id);
+			List<CategoryCommodityAttribute> attributeList = this.generalService.getEntityList(whereRelation);
+			
+			this.success.setItem("attributeList", attributeList);
 		}
 	}
 

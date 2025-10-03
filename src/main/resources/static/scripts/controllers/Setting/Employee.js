@@ -7,7 +7,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		__RESOURCE+"vendor/libs/md5.min.js?"+__VERSION
 	]);
 	$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
-	var _channel = $stateParams.channel;var urlParam = 'channel=' + _channel; 
+	var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {};
 	//定义变量
 	$scope.param.sector = {};$scope.sectorHash = {};$scope.companyList = {};$scope.companyHash = {}; //定义变量
@@ -17,7 +17,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	$scope.loading.show();
 	//获取页面数据
 	$httpService.header('method', 'getSector');
-	$httpService.post('app.do?' + urlParam, $scope, function(result) {
+	$httpService.post(urlParam, $scope, function(result) {
 		$scope.loading.hide();
 		$httpService.deleteHeader('method');
 		if (result.data.success == false) {
@@ -153,7 +153,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			console.log($scope.param);
 			var sector_name = angular.copy($scope.param.sector.sector_name);
 			$httpService.header('method', 'saveSectorPosition');
-			$httpService.post('app.do?' + urlParam, $scope, function(result) {
+			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {return;}
@@ -193,7 +193,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			if(branch_type == 'delete') $scope.param.delete_id = branch.sector_id;
 			if(branch_type == 'deletePosition') $scope.param.delete_id = $scope.param.sector.sector_id;
 			$httpService.header('method', 'deleteSectorPosition');
-			$httpService.post('app.do?' + urlParam, $scope, function(result) {
+			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {
@@ -278,7 +278,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.param.employees.position_id = position_id;
 		$scope.param.employees.password = md5(md5(this.employees.password))
 		$httpService.header('method', 'saveEmployee');
-		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_employee_id, $scope, function(result) {
+		$httpService.post(urlParam + "&edit_id=" + $scope.edit_employee_id, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
 			if (result.data.success == false) {
@@ -344,7 +344,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		function deleteData() {
 			$scope.param.delete_id = $scope.employees.e_id;
 			$httpService.header('method', 'deleteEmployee');
-			$httpService.post('app.do?' + urlParam, $scope, function(result) {
+			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {
@@ -357,7 +357,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	$scope.employeeNextPage = function(page) {	
 		$scope.param.page = page;
 		$httpService.header('method', 'getEmployee');
-		$httpService.post('app.do?' + urlParam, $scope, function(result) {
+		$httpService.post(urlParam, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
 			if (result.data.success == false) {
@@ -377,7 +377,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			$scope.loading.show();
 			$httpService.header('method', 'getPermission');
 			$scope.param = {};$scope.param.role_id = permission.role_id;
-			$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel, $scope, function(result) {
+			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {
@@ -418,7 +418,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.param.role_module = angular.copy(formParam);
 		$scope.param.role_module.role_name =this.role_module.role_name;
 		$httpService.header('method', 'savePermission');
-		$httpService.post(__WEB + 'app.do?channel=' + $stateParams.channel + "&edit_id=" + $scope.edit_permission_id, $scope, function(result) {
+		$httpService.post(urlParam + "&edit_id=" + $scope.edit_permission_id, $scope, function(result) {
 			$scope.loading.percent();
 			$httpService.deleteHeader('method');
 			if (result.data.success == false) {

@@ -11,7 +11,7 @@ import core.custom_interface.Table;
 public class CategoryCommodityVo extends CommodityBaseAbstract {
 	@Column(name = "commodity_id", primary_key = true, auto_increment = true)
 	private String commodity_id;
-	private HashMap<Integer ,CommoditySpare> commodity_spare;
+	private HashMap<String ,CommoditySpare> commodity_spare;
 
 	public String getCommodity_id() {
 		return commodity_id;
@@ -21,11 +21,11 @@ public class CategoryCommodityVo extends CommodityBaseAbstract {
 		this.commodity_id = commodity_id;
 	}
 
-	public HashMap<Integer, CommoditySpare> getCommodity_spare() {
+	public HashMap<String, CommoditySpare> getCommodity_spare() {
 		return commodity_spare;
 	}
 
-	public void setCommodity_spare(HashMap<Integer, CommoditySpare> commodity_spare) {
+	public void setCommodity_spare(HashMap<String, CommoditySpare> commodity_spare) {
 		this.commodity_spare = commodity_spare;
 	}
 	

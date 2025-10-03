@@ -407,6 +407,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.__WEB = __WEB;
 		$scope.employee = {};
 		$scope.companyList = {};
+		$scope.auditingProvisoList = [{id:"1",name:"填写"},{id:"2",name:"审核"}];
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "${noLogin}";
@@ -416,6 +417,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					if(result.data.success == true) {
 						$scope.setCommonSetting(result.data.item);
 						$httpService.header('token', result.data.item.employee.e_id);
+						noLogin = "1";
 		            }
 				});
 			}

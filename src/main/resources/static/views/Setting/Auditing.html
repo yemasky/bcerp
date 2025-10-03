@@ -98,25 +98,34 @@
 										</div>
 										<label class="col-sm-1 control-label">职位</label>
 										<div class="col-sm-3">
-										<ui-select class="w-lg" ng-model="auditing.examine[i].position_id" ng-change="selectPosition(i)" theme="bootstrap" 
-											ng-disabled="disabled">
-										  <ui-select-match placeholder="选择职位">{{$select.selected.sector_name}}</ui-select-match>
-										  <ui-select-choices group-by="'group'" 
-											repeat="position in positionList | propsFilter: {sector_name: $select.search}">
-										    <div ng-bind-html="position.sector_name | highlight: $select.search"></div>
-										  </ui-select-choices>
-										</ui-select>
+											<ui-select class="w-lg" ng-model="auditing.examine[i].position_id" ng-change="selectPosition(i)" theme="bootstrap" 
+												ng-disabled="disabled">
+											  <ui-select-match placeholder="选择职位">{{$select.selected.sector_name}}</ui-select-match>
+											  <ui-select-choices group-by="'group'" 
+												repeat="position in positionList | propsFilter: {sector_name: $select.search}">
+												<div ng-bind-html="position.sector_name | highlight: $select.search"></div>
+											  </ui-select-choices>
+											</ui-select>
  										</div>
 										<label class="col-sm-1 control-label">审核人</label>
 										<div class="col-sm-2">
-										<ui-select class="w-lg" ng-model="auditing.examine[i].employee_id" ng-change="selectEmployee(i)" theme="bootstrap" 
-											ng-disabled="disabled">
-										  <ui-select-match placeholder="选择审核人">{{$select.selected.employee_name}}</ui-select-match>
-										  <ui-select-choices group-by="'group'" 
-											repeat="employee in auditingEmployeeList[i] | propsFilter: {employee_name: $select.search}">
-										    <div ng-bind-html="employee.employee_name | highlight: $select.search"></div>
-										  </ui-select-choices>
-										</ui-select>											
+											<ui-select class="w-lg" ng-model="auditing.examine[i].employee_id" ng-change="selectEmployee(i)" theme="bootstrap" 
+												ng-disabled="disabled">
+											  <ui-select-match placeholder="选择审核人">{{$select.selected.employee_name}}</ui-select-match>
+											  <ui-select-choices group-by="'group'" 
+												repeat="employee in auditingEmployeeList[i] | propsFilter: {employee_name: $select.search}">
+												<div ng-bind-html="employee.employee_name | highlight: $select.search"></div>
+											  </ui-select-choices>
+											</ui-select>											
+										</div>
+										<label class="col-sm-1 control-label">条件</label>
+										<div class="col-sm-2">
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-model="auditing.examine[i].proviso" 
+													data-html="1" data-toggle="true" bs-options="proviso.id as proviso.name for proviso in auditingProvisoList" bs-select placeholder="审核条件" ng-change="">
+													Action <span class="caret"></span>
+												</button>
+											</span>
 										</div>
 									</div>
 								</div>

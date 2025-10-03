@@ -48,14 +48,30 @@
 									<div class="input-group no-border">
 										<span class="input-group-btn"><button class="btn btn-default" type="button">品名名称</button></span>
 										<input type="text" class="form-control w-thumb-lg" ng-model="commodity.commodity_name" required>
-											<span class="input-group-btn"><button class="btn btn-default" type="button">品名英文</button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">品名英文</button></span>
 										<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="commodity.commodity_enname" required />
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<input type="text" class="form-control btn-default" ng-model="commodity.commodity_node" placeholder="选择理由">
 									</div>
 								</div>
 								<div class="form-group m-b-xs p-h has-feedback">
 									<div class="input-group">
-										<input type="text" class="form-control btn-default" ng-model="commodity.commodity_node" placeholder="选择理由">
+										<span class="input-group-btn"><button class="btn btn-default" type="button">单位</button></span>
+										<div class="col-sm-2 no-padding">
+											<ui-select ng-model="commodity.unit_id" theme="bootstrap" ng-change="selectUnit()" 
+												ng-disabled="disabled" required>
+											  	<ui-select-match placeholder="选择单位">
+													{{$select.selected.unit_name}}
+											  	</ui-select-match>
+											  	<ui-select-choices group-by="'group'" 
+													repeat="unit in unitList | propsFilter: {unit_name: $select.search}">
+													<div ng-bind-html="unit.unit_name | highlight: $select.search"></div>
+											  	</ui-select-choices>
+											</ui-select>
+										</div>
+										<div class="col-sm-1 no-padding">
+											<input type="text" class="form-control btn-default" value="{{commodity.unit_id.unit_enname}}" placeholder="单位英文" readonly>
+										</div>
 										<span class="input-group-btn">
 											<button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}"
 												trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
@@ -76,21 +92,17 @@
 								<div class="form-group m-b-xs">
 									<div class="input-group">
 										<span class="input-group-btn"><button class="btn btn-default" type="button">备选品名</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="commodity.spare[i].name">
+										<input type="text" class="form-control w-thumb-lg" ng-model="commodity.commodity_spare[i].name">
 										<span class="input-group-btn"><button class="btn btn-default" type="button">备选英文</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="commodity.spare[i].enname" />
+										<input type="text" class="form-control w-thumb-lg" ng-model="commodity.commodity_spare[i].enname" />
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 										<span class="input-group-btn">
-											<button type="button" class="btn btn-default" ng-model="commodity.spare[i].sources" 
-												data-html="1" data-toggle="true" bs-options="sources.id as sources.name for sources in commodity_name_sources" bs-select placeholder="备选来源" ng-change="selectChannel(param.channel_id)">
+											<button type="button" class="btn btn-default" ng-model="commodity.commodity_spare[i].sources" 
+												data-html="1" data-toggle="true" bs-options="sources.id as sources.name for sources in commodity_name_sources" bs-select placeholder="备选来源" ng-change="">
 												Action <span class="caret"></span>
 											</button>
 										</span>
-									</div>
-								</div>
-								<div class="form-group m-b-xs p-h has-feedback">
-									<div class="input-group">
-										<input type="text" class="form-control btn-default" ng-model="commodity.spare[i].node" placeholder="备选理由">
+										<input type="text" class="form-control btn-default" ng-model="commodity.commodity_spare[i].node" placeholder="备选理由">
 									</div>
 								</div>
 							</div>
@@ -107,10 +119,12 @@
 									</div>
 									<div class="col-sm-3 pull-right">
 										<label class="radio-inline">
-								          <input type="radio" name="improve" id="improve1" ng-model="commodity.commodity_improve" value="1"> 已完善
+								          <input type="radio" name="improve" id="improve1" ng-model="commodity.commodity_improve" value="1"
+								          	ng-checked="commodity.commodity_improve==1"> 已完善
 								        </label>
 								        <label class="radio-inline">
-								          <input type="radio" name="improve" id="improve2" ng-model="commodity.commodity_improve" value="0"> 未完善
+								          <input type="radio" name="improve" id="improve2" ng-model="commodity.commodity_improve" value="0"
+											ng-checked="commodity.commodity_improve==0"> 未完善
 								        </label>
 									</div>
 								</div>
@@ -139,8 +153,8 @@
 									<tr>
 										<td colspan="6">
 											产品描述 
-											<a ng-click="addStep('desc')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加项</a>
-											<a ng-click="reduceStep('desc')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少项</a>
+											<a ng-click="addStep('attr')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加项</a>
+											<a ng-click="reduceStep('attr')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少项</a>
 										</td>
 									</tr>
 									<tr>
@@ -150,7 +164,7 @@
 										<td>描述(单位)[英文]</td>
 										<td colspan="2">是否必填</td>
 									</tr>
-									<tr ng-repeat="i in step['desc'].step">
+									<tr ng-repeat="i in step['attr'].step">
 										<td class="w-xs no-padding panel">
 											<input type="text" class="form-control btn-default no-border" ng-model="attribute[i].attribute_key" placeholder="输入项"></td>
 										<td class="w-xs no-padding panel">
@@ -165,8 +179,8 @@
 									</tr>
 									<tr>
 										<td colspan="6">产品图片
-											<a ng-click="addStep('pic')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加图</a>
-											<a ng-click="reduceStep('pic')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少图</a>
+											<a ng-click="addStep('images')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加图</a>
+											<a ng-click="reduceStep('images')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少图</a>
 											是否需要尺寸图 <label class="ui-switch bg-info"><input type="checkbox" ng-model="commodity.commodity_needsize"><i></i></label>
 										</td>
 									</tr>
@@ -178,7 +192,7 @@
 										<td class="text-center">
 											<div class="col-sm-12">
 												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.m.attribute_key" placeholder="主视图"></td></tr>
+													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.m.attribute_mark" placeholder="主视图"></td></tr>
 													<tr><td>
 													<img id="img_m" node="m" ng-src="{{__IMGWEB + images.m.attribute_val}}" width="120" height="120"
 														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
@@ -189,7 +203,7 @@
 										<td colspan="5">
 											<div class="col-sm-2">
 												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.x.attribute_key" placeholder="细节图"></td></tr>
+													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.x.attribute_mark" placeholder="细节图"></td></tr>
 													<tr><td>
 													<img id="img_x" node="x" ng-src="{{__IMGWEB + images.x.attribute_val}}" width="120" height="120"
 														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
@@ -198,7 +212,7 @@
 											</div>
 											<div class="col-sm-2">
 												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.a.attribute_key" placeholder="安装图"></td></tr>
+													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.a.attribute_mark" placeholder="安装图"></td></tr>
 													<tr><td>
 													<img id="img_a" node="a" ng-src="{{__IMGWEB + images.a.attribute_val}}" width="120" height="120"
 														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
@@ -207,7 +221,7 @@
 											</div>
 											<div class="col-sm-2">
 												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.b.attribute_key" placeholder="副视图"></td></tr>
+													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.b.attribute_mark" placeholder="副视图"></td></tr>
 													<tr><td>
 													<img id="img_b" node="b" ng-src="{{__IMGWEB + images.b.attribute_val}}" width="120" height="120"
 														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
@@ -216,16 +230,16 @@
 											</div>
 											<div class="col-sm-2">
 												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.c.attribute_key" placeholder="副视图"></td></tr>
+													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.c.attribute_mark" placeholder="副视图"></td></tr>
 													<tr><td>
 													<img id="img_c" node="c" ng-src="{{__IMGWEB + images.c.attribute_val}}" width="120" height="120"
 														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
 													</td></tr>
 												</table>
 											</div>
-											<div class="col-sm-2" ng-repeat="i in step['pic'].step">
+											<div class="col-sm-2" ng-repeat="i in step['images'].step">
 												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images[i].attribute_key" placeholder="副视图"></td></tr>
+													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images[i].attribute_mark" placeholder="副视图"></td></tr>
 													<tr><td>
 													<img id="img_d{{i}}" node="{{i}}" ng-src="{{__IMGWEB + images[i].attribute_val}}" width="120" height="120"
 														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
@@ -276,24 +290,6 @@
 										<td class="no-padding"></td>
 										<td colspan="2"></td>
 									</tr>
-									<tr>
-										<td>工作流审核项</td>
-										<td colspan="5"></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td colspan="2"></td>
-									</tr>
-									<tr>
-										<td class="w-xs no-padding panel"></td>
-										<td class="w-xs no-padding panel"></td>
-										<td class="no-padding"></td>
-										<td class="no-padding"></td>
-										<td colspan="2"></td>
-									</tr>
 								</tbody>
 							</table>
 						</div>
@@ -310,6 +306,7 @@
 			</div>
 			</form>
 		</div>
+		<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html?c='+edit_id"></div>
 	</div>
 </div>
 

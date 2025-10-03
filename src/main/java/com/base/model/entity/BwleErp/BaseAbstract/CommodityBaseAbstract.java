@@ -7,8 +7,7 @@ public abstract class CommodityBaseAbstract {
 	private String commodity_node;
 	private String commodity_hs_name;
 	private String commodity_hs_enname;
-	private String commodity_unit;
-	private String commodity_unit_en;
+	private Integer unit_id;
 	private String commodity_unit_seaport;
 	private String tax_refund_rate;
 	private String commodity_hs_code;
@@ -58,17 +57,11 @@ public abstract class CommodityBaseAbstract {
 	public void setCommodity_hs_enname(String commodity_hs_enname) {
 		this.commodity_hs_enname = commodity_hs_enname;
 	}
-	public String getCommodity_unit() {
-		return commodity_unit;
+	public Integer getUnit_id() {
+		return unit_id;
 	}
-	public void setCommodity_unit(String commodity_unit) {
-		this.commodity_unit = commodity_unit;
-	}
-	public String getCommodity_unit_en() {
-		return commodity_unit_en;
-	}
-	public void setCommodity_unit_en(String commodity_unit_en) {
-		this.commodity_unit_en = commodity_unit_en;
+	public void setUnit_id(Integer unit_id) {
+		this.unit_id = unit_id;
 	}
 	public String getCommodity_unit_seaport() {
 		return commodity_unit_seaport;

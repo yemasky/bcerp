@@ -67,6 +67,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 		if(editType == 'edit' && typeof(auditing) != 'undefined') {
 			$scope.auditing = angular.copy(auditing);//编辑开始
 			$scope.auditing.module_id = angular.copy($scope.auditingModuleHash[auditing.module_id]);//模块
+			$scope.step = "";
 			for(j in $scope.auditing.examine) {//解析examine
 				let examine = $scope.auditing.examine[j];
 				let position_id =  examine.position_id;
@@ -83,6 +84,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 						$scope.auditingEmployeeList[i].push(employee);
 				}
 				$scope.auditing.examine[j].employee_id = angular.copy($scope.employeeHash[examine.employee_id]);
+				$scope.step = $scope.step + "" + j;
 			}
 			$scope.edit_id = angular.copy(auditing.auditing_id);
 			$scope.edit_index = i;

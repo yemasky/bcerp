@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.BwleErp.config.Config;
 import com.BwleErp.service.impl.employee.EmployeeServiceImpl;
 import com.base.controller.AbstractController;
 import com.base.controller.SpringContextInvoke;
@@ -58,14 +59,13 @@ public class BwleErpController extends AbstractController {
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	@RequestMapping(value = "/")//value = "/**"
 	public String defaultAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		model.addAttribute("__WEB", "/erp/");
-		model.addAttribute("__IMGWEB", "http://localhost/xiaoqu/images/");
+		model.addAttribute("__IMGWEB", Config.uploadImagesUrl);
 		model.addAttribute("__ImagesUploadUrl", EncryptUtiliy.instance().intIDEncrypt(114));
 		model.addAttribute("__ImagesManagerUrl", EncryptUtiliy.instance().intIDEncrypt(115));
 		model.addAttribute("__RESOURCE", "/static/");
