@@ -15,27 +15,27 @@
 				<tr>
 					<th>#</th>
 					<th>序号</th>
-					<th>名称</th>
-					<th>编号</th>
+					<th>省</th>
+					<th>拼音</th>
 					<th></th>
 					<th></th>
 					<th></th>
 					<th></th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr ng-repeat="(i, category) in categoryList"> 
+			<tbody ng-repeat="(i, citys) in cityList">
+				<tr ng-repeat="(j, city) in citys"> 
 					<td></td>
 					<td>{{i+1}}</td>
-					<td>{{category.category_name}}</td>
-					<td>{{category.category_number}}</td>
-					<td></td>
+					<td>{{city.city_name}}</td>
+					<td>{{city.city_py}}</td>
+					<td>{{city.city_father_id==0?'省':'市'}}</td>
 					<td></td>
 					<td></td>
 					<td>
 						<div class="text-center">
-							<a ng-click="addEdit('edit', category, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-							<a ng-click="delete(category.category_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+							<a ng-click="addEdit('edit', city, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<!-- <a ng-click="delete(category.category_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a> -->
 						</div>
 					</td>
 				</tr>
@@ -56,11 +56,11 @@
 						</div>
 						<div class="panel-body">                    
 							<div class="form-group">
-								<label class="col-sm-3 control-label">选择添加省份</label>
+								<label class="col-sm-3 control-label">选择省份</label>
 								<div class="col-sm-4">
 									<button type="button" class="btn btn-default" ng-model="city.city_father_id"
-										data-html="1" data-toggle="true" bs-options="city.city_id as city.city_name for city in cityList" 
-											bs-select placeholder="选择省份" ng-change="">
+										data-html="1" data-toggle="true" bs-options="city.city_id as city.city_name for city in provinceList" 
+											bs-select placeholder="做为省份" ng-change="">
 										Action <span class="caret"></span>
 									</button>
 								</div>
