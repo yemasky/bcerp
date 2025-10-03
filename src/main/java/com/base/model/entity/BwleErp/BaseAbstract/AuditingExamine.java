@@ -5,6 +5,7 @@ public class AuditingExamine {
 	private Integer sector_id;
 	private Integer position_id;
 	private String proviso;//限制条件
+	private Integer agent;//代理
 	public Integer getEmployee_id() {
 		return employee_id;
 	}
@@ -28,6 +29,12 @@ public class AuditingExamine {
 	}
 	public void setProviso(String proviso) {
 		this.proviso = proviso;
+	}
+	public Integer getAgent() {
+		return agent;
+	}
+	public void setAgent(Integer agent) {
+		this.agent = agent;
 	}
 	
 }

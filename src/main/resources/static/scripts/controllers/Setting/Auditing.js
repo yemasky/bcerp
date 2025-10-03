@@ -84,6 +84,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 						$scope.auditingEmployeeList[i].push(employee);
 				}
 				$scope.auditing.examine[j].employee_id = angular.copy($scope.employeeHash[examine.employee_id]);
+				$scope.auditing.examine[j].agent =  $scope.auditing.examine[j].agent == 1 ? true : false;
 				$scope.step = $scope.step + "" + j;
 			}
 			$scope.edit_id = angular.copy(auditing.auditing_id);

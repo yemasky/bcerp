@@ -60,13 +60,13 @@
 						</div>
 						<div class="panel-body">                    
 							<div class="form-group">
-								<label class="col-sm-2 control-label">名称</label>
+								<label class="col-sm-1 control-label">名称</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" ng-model="auditing.auditing_name" />
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-2 control-label">模块</label>
+								<label class="col-sm-1 control-label">模块</label>
 								<div class="col-sm-4">
 										<ui-select class="w-lg" ng-model="auditing.module_id" ng-change="selectModule(i)" theme="bootstrap" 
 											ng-disabled="disabled">
@@ -79,7 +79,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-2 control-label">步骤</label>
+								<label class="col-sm-1 control-label">步骤</label>
 								<div class="col-sm-3">
 									<div class="text-center">
 										<a ng-click="addStep()" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加审核</a>
@@ -88,16 +88,16 @@
 								</div>
 							</div>
 							<div class="form-group" ng-repeat="i in step" >
-								<label class="col-sm-2 control-label">部门</label>
+								<label class="col-sm-1 control-label">部门</label>
 								<div class="col-sm-10">
 									<div class="row">
-										<div class="col-sm-2">
+										<div class="col-sm-1">
 											<input type="hidden" ng-model="auditing.examine[i].sector_id" />
 											<input type="text" class="form-control" value="{{sectorHash[auditing.examine[i].sector_id].sector_name}}"
 											 ng-click="showSector(i)" />
 										</div>
 										<label class="col-sm-1 control-label">职位</label>
-										<div class="col-sm-3">
+										<div class="col-sm-2">
 											<ui-select class="w-lg" ng-model="auditing.examine[i].position_id" ng-change="selectPosition(i)" theme="bootstrap" 
 												ng-disabled="disabled">
 											  <ui-select-match placeholder="选择职位">{{$select.selected.sector_name}}</ui-select-match>
@@ -126,6 +126,10 @@
 													Action <span class="caret"></span>
 												</button>
 											</span>
+										</div>
+										<label class="col-sm-1 control-label">代理</label>
+										<div class="col-sm-1 m-v-sm">
+											<label class="ui-switch bg-info"><input type="checkbox" ng-model="auditing.examine[i].agent"><i></i></label>
 										</div>
 									</div>
 								</div>

@@ -1,15 +1,10 @@
 <div class="p-md" ng-controller="CategoryAuditingController">
 	<div class="panel panel-default">
-		<div class="panel-heading row">
-			<div class="col-md-10">
-				<span class="no-margin">工作流审核</span>
-			</div>
-			<div class="col-md-2">
-				
-			</div>
-		</div>
 		<table class="table">
 			<thead>
+				<tr>
+					<td colspan="7">工作流审核</td>
+				</tr>
 				<tr>
 					<th>#</th>
 					<th>名称</th>
@@ -21,25 +16,38 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, auditing) in auditingList">
-					<td>{{i+1}}</td>
-					<td>{{auditing.auditing_name}}</td>
-					<td>{{auditingModuleHash[auditing.module_id].module_name}}</td>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
 					<td colspan="3">
-						<table class="table no-b-t">
-							<tr ng-repeat="(j, examine) in auditing.examine">
-								<td>{{sectorHash[examine.sector_id].sector_name}}</td>
-								<td>{{sectorHash[examine.position_id].sector_name}}</td>
-								<td>{{employeeHash[examine.employee_id].employee_name}}</td>
-							<tr>
-						</table>
-					</td>
-					<td>
-						<div class="text-center">
-							<a ng-click="addEdit('edit', auditing, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-							<a ng-click="delete(auditing.auditing_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						<div class="btn-group">
+							<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 撤销审核</button>
+							<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 递交审核</button>
 						</div>
 					</td>
+					<td>
+						
+					</td>
+				</tr>
+				<tr>
+					<th class="p-lg"></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<td style="height:150px"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 			</tbody>
 		</table>
