@@ -2,12 +2,13 @@ app.controller('CategoryController', function($rootScope, $scope, $httpService, 
 	$ocLazyLoad, $alert, $stateParams) {
 		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0;
 	//定义变量
 	$scope.edit_index = 0;$scope.editType = "";$scope.category = {};$scope.categoryList = {};
 	let aside;
 	$httpService.header('method', 'getCategory');
-	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
+	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
@@ -48,7 +49,7 @@ app.controller('CategoryController', function($rootScope, $scope, $httpService, 
 		$scope.loading.show();
 		$scope.param.category = angular.copy(this.category);
 		$httpService.header('method', 'saveCategory');
-		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
+		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 
@@ -74,7 +75,7 @@ app.controller('CategoryController', function($rootScope, $scope, $httpService, 
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
 			$httpService.header('method', 'deleteCategory');
-			$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result) {
+			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {

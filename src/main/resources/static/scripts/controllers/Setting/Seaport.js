@@ -3,12 +3,13 @@ app.controller('SeaportController', function($rootScope, $scope, $httpService, $
 		$ocLazyLoad.load([__RESOURCE+"vendor/modules/angular-ui-select/select.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/modules/angular-ui-select/select.min.css?"+__VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0;
 	$scope.seaport = {}; $scope.seaportCountry = {}; $scope.seaportList = {};$scope.countryList = {};
 	//定义变量
 	let aside;$scope.countryHash = {};
 	$httpService.header('method', 'getSeaport');
-	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
+	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) { 
@@ -50,7 +51,7 @@ app.controller('SeaportController', function($rootScope, $scope, $httpService, $
 		$scope.loading.show();
 		$scope.param.seaport = angular.copy(this.seaport);
 		$httpService.header('method', 'saveSeaport');
-		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
+		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 

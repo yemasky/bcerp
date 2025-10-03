@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
-import com.base.model.entity.BwleErp.company.Bank;
-import com.base.model.entity.BwleErp.company.Company;
-import com.base.model.vo.BwleErp.CompanyVo;
+import com.base.model.entity.BwleErp.SystemSetting.company.Bank;
+import com.base.model.entity.BwleErp.SystemSetting.company.Company;
+import com.base.model.vo.BwleErp.SystemSetting.CompanyVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;

@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
-import com.base.model.entity.BwleErp.Category;
-import com.base.model.entity.BwleErp.CategoryClassify;
-import com.base.model.entity.BwleErp.CategoryUnit;
-import com.base.model.entity.BwleErp.VehicleModel;
-import com.base.model.vo.BwleErp.CategoryUnitVo;
-import com.base.model.vo.BwleErp.VehicleModelVo;
+import com.base.model.entity.BwleErp.SystemSetting.Category;
+import com.base.model.entity.BwleErp.SystemSetting.CategoryClassify;
+import com.base.model.entity.BwleErp.SystemSetting.CategoryUnit;
+import com.base.model.entity.BwleErp.SystemSetting.VehicleModel;
+import com.base.model.vo.BwleErp.SystemSetting.CategoryUnitVo;
+import com.base.model.vo.BwleErp.SystemSetting.VehicleModelVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;

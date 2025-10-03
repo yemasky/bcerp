@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
-import com.base.model.entity.BwleErp.Auditing;
-import com.base.model.entity.BwleErp.Country;
-import com.base.model.entity.BwleErp.Seaport;
+import com.base.model.entity.BwleErp.SystemSetting.Auditing;
+import com.base.model.entity.BwleErp.SystemSetting.Country;
+import com.base.model.entity.BwleErp.SystemSetting.Seaport;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;
@@ -49,13 +49,13 @@ public class CountrySetupAction extends AbstractAction {
 		case "saveSeaport"://海港
 			this.doSaveSeaport(request, response);
 			break;	
-		case "getCurrencyRate"://海港
+		case "getCurrencyRate"://
 			this.doGetCurrencyRate(request, response);
 			break;
-		case "saveCurrencyRate"://海港
+		case "saveCurrencyRate"://
 			this.doSaveCurrencyRate(request, response);
 			break;	
-		case "deleteCurrencyRate"://海港
+		case "deleteCurrencyRate"://
 			this.doDeleteCurrencyRate(request, response);
 			break;	
 		default:

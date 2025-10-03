@@ -2,6 +2,7 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 	$ocLazyLoad, $alert, $stateParams) {
 		$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0;
 	//定义变量
 	$scope.vehicleModel = {};$scope.vehicleModelList = [];
@@ -9,7 +10,7 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 	$scope.edit_index = 0;$scope.editType = "";
 	let aside;
 	$httpService.header('method', 'getVehicleModel');
-	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
+	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
@@ -54,7 +55,7 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 		$scope.loading.show();
 		$scope.param.vehicleModel = angular.copy(this.vehicleModel);
 		$httpService.header('method', 'saveVehicleModel');
-		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
+		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 
@@ -80,7 +81,7 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
 			$httpService.header('method', 'deleteVehicleModel');
-			$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result) {
+			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if (result.data.success == false) {

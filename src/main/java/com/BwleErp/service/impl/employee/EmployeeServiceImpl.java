@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.BwleErp.service.impl.GeneralServiceImpl;
 import com.base.model.dto.BwleErp.EmployeePermissionDto;
-import com.base.model.entity.BwleErp.RoleModule;
-import com.base.model.entity.BwleErp.employee.EmployeeSector;
-import com.base.model.entity.BwleErp.module.Modules;
+import com.base.model.entity.BwleErp.SystemSetting.RoleModule;
+import com.base.model.entity.BwleErp.SystemSetting.employee.EmployeeSector;
+import com.base.model.entity.BwleErp.SystemSetting.module.Modules;
 import com.base.service.GeneralService;
 import com.base.service.BwleErp.EmployeeService;
 import com.base.util.Utility;

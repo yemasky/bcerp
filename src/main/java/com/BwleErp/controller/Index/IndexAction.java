@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
-import com.base.model.entity.BwleErp.RoleModule;
-import com.base.model.entity.BwleErp.employee.Employee;
-import com.base.model.entity.BwleErp.employee.EmployeeSector;
-import com.base.model.entity.BwleErp.module.Modules;
-import com.base.model.vo.BwleErp.CompanyVo;
-import com.base.model.vo.BwleErp.EmployeeVo;
+import com.base.model.entity.BwleErp.SystemSetting.RoleModule;
+import com.base.model.entity.BwleErp.SystemSetting.employee.Employee;
+import com.base.model.entity.BwleErp.SystemSetting.employee.EmployeeSector;
+import com.base.model.entity.BwleErp.SystemSetting.module.Modules;
+import com.base.model.vo.BwleErp.SystemSetting.CompanyVo;
+import com.base.model.vo.BwleErp.SystemSetting.EmployeeVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;

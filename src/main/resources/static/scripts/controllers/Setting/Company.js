@@ -9,6 +9,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 					  __RESOURCE+"editor/kindeditor/themes/default/default.css",
 					  __RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB; 
+		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.company_edit_id = "";
 	//定义变量
 	$scope.company = {}; $scope.param.company = {};
@@ -28,7 +29,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 	//////////
 	let asideCompany;
 	$httpService.header('method', 'getCompany');
-	$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel, $scope, function(result){
+	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
@@ -90,7 +91,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 		$scope.loading.show();
 		$scope.param.company = angular.copy(this.company);
 		$httpService.header('method', 'saveCompany');
-		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&company_edit_id="+$scope.company_edit_id, $scope, function(result){
+		$httpService.post(urlParam+"&company_edit_id="+$scope.company_edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 
@@ -134,7 +135,7 @@ app.controller('CompanyController', function($rootScope, $scope, $httpService, $
 		$scope.param = {};
 		$scope.param.bank = angular.copy(this.bank);
 		$httpService.header('method', 'saveBank');
-		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&edit_id="+$scope.edit_id, $scope, function(result){
+		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 

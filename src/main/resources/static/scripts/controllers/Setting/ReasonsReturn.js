@@ -3,11 +3,12 @@ app.controller('ReasonsReturntroller', function($rootScope, $scope, $httpService
 		$ocLazyLoad.load([__RESOURCE+"vendor/libs/moment.min.js?"+__VERSION,
 					  __RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
+		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = "";
 	//定义变量
 	let aside;
 	$httpService.header('method', 'getCountry');
-	$httpService.post('app.do?'+param, $scope, function(result){
+	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
 		if(result.data.success == false) {
@@ -46,7 +47,7 @@ app.controller('ReasonsReturntroller', function($rootScope, $scope, $httpService
 		$scope.loading.show();
 		$scope.param.company = angular.copy(this.company);
 		$httpService.header('method', 'saveCompany');
-		$httpService.post(__WEB + 'app.do?channel='+$stateParams.channel+"&company_edit_id="+$scope.company_edit_id, $scope, function(result){
+		$httpService.post(urlParam+"&company_edit_id="+$scope.company_edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 
