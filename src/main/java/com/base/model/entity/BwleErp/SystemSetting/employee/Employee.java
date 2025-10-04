@@ -10,7 +10,6 @@ public class Employee extends EmployeeBaseAbstract {
 	private Long mobile;
 	private String email;
 	private String password;
-	@Column(name = "password_salt", update_ignore = true)
 	private String password_salt;
 	private String wx_openid;
 	private String wx_unionid;

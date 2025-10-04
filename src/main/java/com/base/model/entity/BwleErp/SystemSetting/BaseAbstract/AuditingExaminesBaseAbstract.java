@@ -3,6 +3,8 @@ package com.base.model.entity.BwleErp.SystemSetting.BaseAbstract;
 public abstract class AuditingExaminesBaseAbstract {
 	private Integer auditing_id;
 	private Integer employee_id;
+	private Integer module_id;
+	private Integer link_id;
 	private String add_datetime;
 	private String examine_content;
 	private Integer audit_step;
@@ -26,6 +28,18 @@ public abstract class AuditingExaminesBaseAbstract {
 	}
 	public void setEmployee_id(Integer employee_id) {
 		this.employee_id = employee_id;
+	}
+	public Integer getModule_id() {
+		return module_id;
+	}
+	public void setModule_id(Integer module_id) {
+		this.module_id = module_id;
+	}
+	public Integer getLink_id() {
+		return link_id;
+	}
+	public void setLink_id(Integer link_id) {
+		this.link_id = link_id;
 	}
 	public String getAdd_datetime() {
 		return add_datetime;

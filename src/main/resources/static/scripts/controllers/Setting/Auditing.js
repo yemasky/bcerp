@@ -8,7 +8,8 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 	//定义变量
 	var tree,treeData = [];$scope.my_tree = tree = {};$scope.step = "0";$scope.step_length = 0;
 	$scope.auditingList = [];$scope.auditing = {};$scope.auditing.examine = {};$scope.sectorHash = {};$scope.positionList = [];
-	$scope.auditingModuleList = {};$scope.auditingModuleHash = {};$scope.employeeList = {};$scope.employeeHash = {};$scope.auditingEmployeeList = [];
+	$scope.auditingModuleList = {};$scope.auditingModuleHash = {};$scope.employeeList = {};$scope.auditingEmployeeList = [];
+	//$scope.employee-Hash = {};
 	let aside;
 	$httpService.header('method', 'getAuditing');
 	$httpService.post(urlParam, $scope, function(result){
@@ -24,7 +25,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 		$scope.auditingList = result.data.item.auditingVoList;//
 		$scope.employeeList = result.data.item.employeeList;
 		for (var index = 0; index < $scope.employeeList.length; index++) {
-			$scope.employeeHash[$scope.employeeList[index].e_id] = $scope.employeeList[index]; //哈希值
+			//$scope.employee-Hash[$scope.employeeList[index].e_id] = $scope.employeeList[index]; //哈希值
 		}
 		let sectorHash = {}; //部门职位
 		let _companySectorList = result.data.item.companySectorList;
@@ -32,7 +33,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 			sectorHash[_companySectorList[index].sector_id] = _companySectorList[index]; //哈希值
 			if(_companySectorList[index].sector_type == 'position') $scope.positionList.push(_companySectorList[index]);
 		}
-		$scope.sectorHash = sectorHash;
+		//$scope.sectorHash = sectorHash;
 			//组织架构树
 		treeData = getTreeData(result.data.item.companySectorList);
 		$scope.my_data = treeData;

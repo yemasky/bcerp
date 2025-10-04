@@ -404,7 +404,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         //初始化变量
         $scope.__RESOURCE = __RESOURCE;$scope._resource = __RESOURCE;$scope.__WEB = __WEB;$scope.__IMGWEB = __IMGWEB;//'${__IMGWEB}'
-		$scope.employee = {};$scope.loginEmployee = {};
 		$scope.companyList = {};
 		$scope.auditingProvisoList = [{id:"1",name:"填写"},{id:"2",name:"审核"}];
 		$scope.currencySymbol = [{id:0,currency_name:"港元",currency_sname:"HKD",currency_symbol:"HK$"},
@@ -528,6 +527,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         $rootScope.defaultChannel = {};
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
+        $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -546,6 +546,17 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common.employeeSector) != 'undefined') {
 					$scope.loginEmployee = angular.copy(common.employeeSector);
 				}
+				//
+				if(typeof(common.employeeList) != 'undefined') {
+					common.employeeList.forEach(function(item) {
+						$scope.employeeHash[item.e_id] = {...item};
+					})
+				}
+				if(typeof(common.sectorList) != 'undefined') {
+					common.sectorList.forEach(function(item) {
+						$scope.sectorHash[item.sector_id] = {...item};
+					})
+				}
 				$rootScope.__ImagesUploadUrl = __ImagesUploadUrl;
 				$rootScope.__ImagesManagerUrl = __ImagesManagerUrl;
 				$rootScope.__AuditingViewUrl = __AuditingViewUrl;
@@ -559,7 +570,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				}//未起作用
 			}
 		};
-		$rootScope.employeeChannel = {};
 		$scope.getHashMarket = function (marketList) {
 			var hashMarket = {};
 			if(marketList != '') {

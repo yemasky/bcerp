@@ -17,6 +17,8 @@ public abstract class CurrencyRateBaseAbstract {
 	private Integer employee_id;
 	private Integer auditing_state;
 	private Integer auditing_id;
+	private String auditing_date;
+	private Integer auditing_employee_id;
 	private Integer currency_valid;
 	
 	public String getCurrency_name() {
@@ -102,6 +104,18 @@ public abstract class CurrencyRateBaseAbstract {
 	}
 	public void setAuditing_id(Integer auditing_id) {
 		this.auditing_id = auditing_id;
+	}
+	public String getAuditing_date() {
+		return auditing_date;
+	}
+	public void setAuditing_date(String auditing_date) {
+		this.auditing_date = auditing_date;
+	}
+	public Integer getAuditing_employee_id() {
+		return auditing_employee_id;
+	}
+	public void setAuditing_employee_id(Integer auditing_employee_id) {
+		this.auditing_employee_id = auditing_employee_id;
 	}
 	public Integer getCurrency_valid() {
 		return currency_valid;

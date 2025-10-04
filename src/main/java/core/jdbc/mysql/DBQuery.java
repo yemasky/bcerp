@@ -688,10 +688,11 @@ public abstract class DBQuery {
 				//this.thisWriteConnection().close();
 				return object;
 			} catch (SQLException e) {
-				MDC.put("APP_NAME", "mysql_error");
-				logger.error("error sql", e, sql);
+				MDC.put("APP_NAME", "mysql_error");				
+				logger.error("error sql:" + sql, e);
+				throw new SQLException("SQL error." + sql);
+				
 				//this.freeAndRollBackAllConnection();
-				throw new SQLException("SQL error."+sql.toString());
 			}
 		}
 		return null;

@@ -2,7 +2,6 @@ package com.BwleErp.controller.SystemSetting;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
+import com.base.model.dto.BwleErp.AuditingExamine;
+import com.base.model.dto.BwleErp.AuditingExaminesDTO;
 import com.base.model.entity.BwleErp.SystemSetting.Auditing;
-import com.base.model.entity.BwleErp.SystemSetting.AuditingExamine;
 import com.base.model.entity.BwleErp.SystemSetting.AuditingExamines;
-import com.base.model.entity.BwleErp.SystemSetting.CurrencyRate;
 import com.base.model.entity.BwleErp.SystemSetting.company.CompanySector;
 import com.base.model.entity.BwleErp.SystemSetting.module.Modules;
 import com.base.model.vo.BwleErp.SystemSetting.AuditingVo;
@@ -76,9 +75,16 @@ public class AuditingViewAction extends AbstractAction {
 	}
 
 	public void doGetAuditing(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String id = request.getParameter("id");//提出工作流的module的表的id
+		int link_id  = 0;//提出工作流的module的表的id
+		if(!Utility.instance().isNumber(id)) {
+			link_id = EncryptUtiliy.instance().intIDDecrypt(id);
+		} else {
+			link_id = Integer.parseInt(id);
+		}
 		String channel = request.getParameter("c");
 		int module_id = EncryptUtiliy.instance().intIDDecrypt(channel);
-		WhereRelation whereRelation = new WhereRelation();//取得所有员工
+		WhereRelation whereRelation = new WhereRelation();//
 		whereRelation.EQ("auditing_valid", 1).EQ("module_id", module_id).setTable_clazz(Auditing.class);
 		List<Auditing> auditingList = this.generalService.getEntityList(whereRelation);
 		List<AuditingVo> auditingVoList = new ArrayList<>();
@@ -99,17 +105,22 @@ public class AuditingViewAction extends AbstractAction {
 		whereRelation = new WhereRelation();
 		whereRelation.EQ("sector_valid", 1).setTable_clazz(CompanySector.class);
 		List<CompanySector> companySectorList = this.generalService.getEntityList(whereRelation);
-		
+		//获取审核状态
+		whereRelation = new WhereRelation();
+		whereRelation.EQ("link_id", link_id).EQ("module_id", module_id).setTable_clazz(AuditingExamines.class);
+		List<AuditingExamines> examinesList = this.generalService.getEntityList(whereRelation);
+		//
 		this.success.setItem("companySectorList", companySectorList);
 		this.success.setItem("auditingList", auditingVoList);
+		this.success.setItem("examinesList", examinesList);
 	}
 	//遞交審核
 	public void doCommitAuditing(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String id = request.getParameter("id");
+		String id = request.getParameter("id");//提出工作流的module的表的id
 		String channel = request.getParameter("c");
 		String auditingStatus = request.getParameter("status");
 		Object _auditing_id = request.getAttribute("auditing_id");
-		int update_id  = 0;
+		int update_id  = 0;//提出工作流的module的表的id
 		if(!Utility.instance().isNumber(id)) {
 			update_id = EncryptUtiliy.instance().intIDDecrypt(id);
 		} else {
@@ -126,7 +137,7 @@ public class AuditingViewAction extends AbstractAction {
 		whereRelation.EQ("module_id", module_id).setTable_clazz(Modules.class);
 		Modules module = (Modules) this.generalService.getEntity(whereRelation);
 		String view = module.getModule_view();
-		Method execute = AuditingExaminesAction.class.getMethod(view, Integer.class, String.class);
+		Method executeExamines = AuditingExaminesAction.class.getMethod(view, AuditingExaminesDTO.class);
 		//
 		whereRelation = new WhereRelation();//取得所有员工
 		whereRelation.EQ("auditing_valid", 1).EQ("auditing_id", auditing_id).setTable_clazz(Auditing.class);
@@ -135,11 +146,16 @@ public class AuditingViewAction extends AbstractAction {
 		HashMap<Integer, AuditingExamine> examineMap = new Gson().fromJson(auditing.getExamine(), type);
 		System.out.println(new Gson().toJson(examineMap));
 		//
+		AuditingExaminesDTO update = new AuditingExaminesDTO();
+		update.setUpdate_id(update_id);
+		update.setAuditing_id(auditing_id);
+		update.setStatus(auditingStatus);
+		update.setAuditing_date(Utility.instance().getTodayDate());
+		update.setAuditing_employee_id((Integer) request.getAttribute("employee_id"));
 		this.generalService.setTransaction(true);
-		execute.invoke(new AuditingExaminesAction(this.generalService), update_id, auditingStatus);//更新狀態
+		executeExamines.invoke(new AuditingExaminesAction(this.generalService), update);//更新狀態
 		
 		//插入工作流待審核數據
-		
 		List<AuditingExamines> auditingExaminesList = new ArrayList<>();
 		for(Integer key : examineMap.keySet()) {
 			AuditingExamines auditingExamines = new AuditingExamines();
@@ -153,6 +169,10 @@ public class AuditingViewAction extends AbstractAction {
 			auditingExamines.setEmployee_id((Integer) request.getAttribute("employee_id"));
 			auditingExamines.setPosition_id(examine.getPosition_id());
 			auditingExamines.setSector_id(examine.getSector_id());
+			auditingExamines.setModule_id(module_id);
+			auditingExamines.setLink_id(update_id);
+			auditingExamines.setAdd_datetime(Utility.instance().getTodayDate());
+			auditingExamines.setExamine_valid(0);
 			auditingExaminesList.add(auditingExamines);
 		}
 		this.generalService.batchSave(auditingExaminesList);

@@ -156,6 +156,9 @@ public class CountrySetupAction extends AbstractAction {
 		if(currencyRateList != null) {
 			currencyRateList.forEach(currencyRate ->{
 				employeeIdList.add(currencyRate.getEmployee_id());
+				if(currencyRate.getAuditing_employee_id() != null) {
+					employeeIdList.add(currencyRate.getAuditing_employee_id());
+				}
 			});
 			whereRelation = new WhereRelation();
 			whereRelation.IN("employee_id", employeeIdList).setTable_clazz(EmployeeSector.class).setField("employee_name,employee_id");

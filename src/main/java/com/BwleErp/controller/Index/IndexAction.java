@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
 import com.base.model.entity.BwleErp.SystemSetting.RoleModule;
+import com.base.model.entity.BwleErp.SystemSetting.company.CompanySector;
 import com.base.model.entity.BwleErp.SystemSetting.employee.Employee;
 import com.base.model.entity.BwleErp.SystemSetting.employee.EmployeeSector;
 import com.base.model.entity.BwleErp.SystemSetting.module.Modules;
 import com.base.model.vo.BwleErp.SystemSetting.CompanyVo;
+import com.base.model.vo.BwleErp.SystemSetting.EmployeeSectorVo;
 import com.base.model.vo.BwleErp.SystemSetting.EmployeeVo;
 import com.base.model.vo.BwleErp.SystemSetting.EmployeesVo;
 import com.base.service.GeneralService;
@@ -152,6 +154,7 @@ public class IndexAction extends AbstractAction {
 		EmployeeSector employeeSector = (EmployeeSector) this.generalService.getEntity(whereRelation);
 		BeanUtils.copyProperties(employeeSector, employeesVo);
 		employeesVo.setPassword("");
+		employeesVo.setId(employee.getE_id());
 		int role_id = employeeSector.getRole_id();
 		String role_ids = employeeSector.getRole_ids();
 		if (role_ids == null) {
@@ -182,6 +185,15 @@ public class IndexAction extends AbstractAction {
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("company_id", NeedEncrypt._ENCRYPT);
 		List<HashMap<String, Object>> companyList = this.generalService.getList(whereRelation, needEncrypt);
+		//获取所有用户
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(EmployeeSectorVo.class);
+		List<EmployeeSectorVo> employeeList = this.generalService.getEntityList(whereRelation);
+		//获取所有部门
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(CompanySector.class);
+		List<CompanySector> sectorList = this.generalService.getEntityList(whereRelation);
+		
 		// System.out.println(new Gson().toJson(employeeModuleVoList));
 		this.success.setItem("employeeMenu", employeeModuleVoList);
 		this.success.setItem("module_channel", "Setting");
@@ -189,6 +201,8 @@ public class IndexAction extends AbstractAction {
 		this.success.setItem("employeeSector", employeesVo);
 		this.success.setItem("access", roleModuleAccessList);
 		this.success.setItem("companyList", companyList);
+		this.success.setItem("employeeList", employeeList);
+		this.success.setItem("sectorList", sectorList);
 	}
 
 }

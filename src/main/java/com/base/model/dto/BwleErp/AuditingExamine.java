@@ -1,4 +1,4 @@
-package com.base.model.entity.BwleErp.SystemSetting;
+package com.base.model.dto.BwleErp;
 
 public class AuditingExamine {
 	private Integer employee_id;

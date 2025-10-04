@@ -215,12 +215,12 @@ public class EmployeeAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("0")) {
 			edit_id = EncryptUtiliy.instance().intIDDecrypt(_edit_id);
 		}
+		String _salt = Encrypt.getRandomUUID().substring(0,6);
 		if(edit_id > 0) {//update  
 			this.generalService.setTransaction(true);
 			Employee employee = new Employee();
 			EmployeeSector employeeSector = new EmployeeSector();
 			if(employees.getPassword() != null && !employees.getPassword().equals("")) {
-				String _salt = Encrypt.getRandomUUID();
 				employee.setPassword(Encrypt.md5Encrypt(employees.getPassword() + _salt));
 				employee.setPassword_salt(_salt);
 			}
@@ -248,7 +248,6 @@ public class EmployeeAction extends AbstractAction {
 			this.generalService.setTransaction(true);
 			Employee employee = new Employee();
 			EmployeeSector employeeSector = new EmployeeSector();
-			String _salt = Encrypt.getRandomUUID();
 			employee.setPassword(Encrypt.md5Encrypt(employees.getPassword() + _salt));
 			employee.setPassword_salt(_salt);
 			employee.setEmail(employees.getEmail());

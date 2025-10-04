@@ -124,7 +124,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 				$scope.param.sector.sector_father_id = branch.sector_id;
 			}
 		} else if(branch_type == 'editPosition') {
-			if (typeof($scope.param.sector.sector_name) == 'undefined') {
+			if (typeof($scope.param.sector) == 'undefined' || typeof($scope.param.sector.sector_name) == 'undefined') {
 				$alert({title: 'Error',content: '选择需要修改的职位，再点击修改！',templateUrl: '/modal-warning.html',show: true});
 				return;
 			}
@@ -276,7 +276,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		//$scope.param.employees.company_id = $scope.param.sector.company_id;
 		$scope.param.employees.role_id = role_id;
 		$scope.param.employees.position_id = position_id;
-		$scope.param.employees.password = md5(md5(this.employees.password))
+		$scope.param.employees.password = angular.copy(md5(md5(this.employees.password)))
 		$httpService.header('method', 'saveEmployee');
 		$httpService.post(urlParam + "&edit_id=" + $scope.edit_employee_id, $scope, function(result) {
 			$scope.loading.percent();

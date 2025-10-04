@@ -41,11 +41,17 @@ public class DbcpPool {
 				return this.connection;
 			} else {
 				this.connection.close();
-				return this.getConnection();
+				this.connection = this.hikariCPdataSource.getConnection();//重新获取一次
+				return this.connection;
 			}
 			
 		}
 		this.connection = this.dbcpDataSource.getConnection();
+		if(this.connection.isValid(0)) {
+			return this.connection;
+		}
+		this.connection.close();
+		this.connection = this.dbcpDataSource.getConnection();//重新获取一次
 		return this.connection;
 	}
 

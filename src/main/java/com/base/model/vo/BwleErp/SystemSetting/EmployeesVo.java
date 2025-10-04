@@ -1,6 +1,7 @@
 package com.base.model.vo.BwleErp.SystemSetting;
 
 public class EmployeesVo {
+	private Integer id;
 	private String avatar;
 	private String email;
 	private String employee_name;
@@ -11,6 +12,12 @@ public class EmployeesVo {
 	private Integer role_id;
 	private String employee_enname;
 	private Integer company_id;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public String getAvatar() {
 		return avatar;
 	}
