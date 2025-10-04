@@ -21,7 +21,6 @@ import com.base.type.ErrorCode;
 import com.base.type.Success;
 import com.base.util.EncryptUtiliy;
 
-import core.util.Utiliy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -71,7 +70,7 @@ public class BwleErpController extends AbstractController {
 		model.addAttribute("__RESOURCE", "/static/");
 		model.addAttribute("__VERSION", "");
 		model.addAttribute("__TITLE", "博威利尔.ERP ᵛ¹·⁰·⁰ ");
-		model.addAttribute("thisDateTime", Utiliy.instance().getTodayDate());
+		//model.addAttribute("thisDateTime", Utiliy.instance().getTodayDate());
 		model.addAttribute("noLogin", this.noLogin);
 		return "BwleErp/default";
 	}
@@ -141,7 +140,8 @@ public class BwleErpController extends AbstractController {
 			}
 			
 			//action
-			String action = Utiliy.instance().ucfirst(actionInvoke) + "Action";
+			String action = (new StringBuilder()).append(Character.toUpperCase(actionInvoke.charAt(0)))
+					.append(actionInvoke.substring(1)).toString() + "Action";
 			//module
 			//module = module.toLowerCase();
 

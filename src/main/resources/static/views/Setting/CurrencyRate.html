@@ -14,28 +14,34 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>名称</th>
-					<th>模块</th>
-					<th>部门</th>
-					<th>职位</th>
-					<th>审核人</th>
+					<th>货币名称</th>
+					<th>货币缩写</th>
+					<th>符号</th>
+					<th>现汇买入价</th>
+					<th>现钞买入价</th>
+					<th>现汇卖出价</th>
+					<th>现钞卖出价</th>
+					<th>中行折算价</th>
+					<th>银行发布日期</th>
+					<th>财务发布日期</th>
+					<th>录入人</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, auditing) in auditingList">
+				<tr ng-repeat="(i, currencyRate) in currencyRateList">
 					<td>{{i+1}}</td>
-					<td>{{auditing.auditing_name}}</td>
-					<td>{{auditingModuleHash[auditing.module_id].module_name}}</td>
-					<td colspan="3">
-						<table class="table no-b-t">
-							<tr ng-repeat="(j, examine) in auditing.examine">
-								<td>{{sectorHash[examine.sector_id].sector_name}}</td>
-								<td>{{sectorHash[examine.position_id].sector_name}}</td>
-								<td>{{employeeHash[examine.employee_id].employee_name}}</td>
-							<tr>
-						</table>
-					</td>
+					<td>{{currencyRate.currency_name}}</td>
+					<td>{{currencyRate.currency_sname}}</td>
+					<td>{{currencyRate.currency_symbol}}</td>
+					<td>{{currencyRate.buying_rate}}</td>
+					<td>{{currencyRate.cash_buying_rate}}</td>
+					<td>{{currencyRate.selling_rate}}</td>
+					<td>{{currencyRate.cash_selling_rate}}</td>
+					<td>{{currencyRate.boe_conversion_rate}}</td>
+					<td>{{currencyRate.bank_release_date}}</td>
+					<td>{{currencyRate.financial_release_date}}</td>
+					<td>{{currencyRate.employee_id}}</td>
 					<td>
 						<div class="text-center">
 							<a ng-click="addEdit('edit', auditing, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
@@ -48,91 +54,94 @@
 	</div>
 </div>
 <script type="text/ng-template" id="AddEditCurrencyRate.html">
-	<div class="aside box-shadow aside-x" tabindex="-1" role="dialog">
-		<div class="aside-dialog">
-			<div class="aside-content">
-				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
-					<div class="panel panel-default">
-						<div class="panel-heading bg-white">
-							<i class="fa fa-building-o"> </i>
-							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
-							<button type="button" class="close" ng-click="$hide()">&times;</button>
+<div class="aside box-shadow aside-x" tabindex="-1" role="dialog">
+	<div class="aside-dialog">
+		<div class="aside-content">
+			<form name="thisForm" class="form-inline" role="form" ng-submit="saveData(thisForm)">
+			<div class="panel panel-default">
+				<div class="panel-heading bg-white">
+					<i class="fa fa-building-o"> </i>
+					<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+					<button type="button" class="close" ng-click="$hide()">&times;</button>
+				</div>
+				<div class="panel-body p-md">
+					<div class="" append-source>
+						<div class="p">
+							<div class="form-group m-b-xs">
+								<div class="input-group">
+									<span class="input-group-btn"><button class="btn btn-default" type="button">货币名称</button></span>
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" ng-model="currencyRate.currency"
+											data-html="1" data-toggle="true" bs-options="currency.id as currency.currency_name for currency in currencySymbol" 
+											bs-select placeholder="选择货币" ng-change="showChange()">
+											Action <span class="caret"></span>
+										</button>
+									</span>
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">货币缩写</button></span>
+									<input type="text" class="form-control w-thumb-lg" style="float:left;" 
+										value="{{currencySymbol[currencyRate.currency].currency_sname}}" readonly />
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">符号</button></span>
+									<input type="text" class="form-control w-thumb-lg" 
+										value="{{currencySymbol[currencyRate.currency].currency_symbol}}" readonly>
+								</div>
+							</div>
 						</div>
-						<div class="panel-body">                    
-							<div class="form-group">
-								<label class="col-sm-2 control-label">名称</label>
-								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="auditing.auditing_name" />
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-2 control-label">模块</label>
-								<div class="col-sm-4">
-										<ui-select class="w-lg" ng-model="auditing.module_id" ng-change="selectModule(i)" theme="bootstrap" 
-											ng-disabled="disabled">
-										  <ui-select-match placeholder="选择模块">{{$select.selected.module_name}}</ui-select-match>
-										  <ui-select-choices group-by="'group'" 
-											repeat="module in auditingModuleList | propsFilter: {module_name: $select.search}">
-										    <div ng-bind-html="module.module_name | highlight: $select.search"></div>
-										  </ui-select-choices>
-										</ui-select>									
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-2 control-label">步骤</label>
-								<div class="col-sm-3">
-									<div class="text-center">
-										<a ng-click="addStep()" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加审核</a>
-										<a ng-click="reduceStep()" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少审核</a>
-									</div>
-								</div>
-							</div>
-							<div class="form-group" ng-repeat="i in step" >
-								<label class="col-sm-2 control-label">部门</label>
-								<div class="col-sm-10">
-									<div class="row">
-										<div class="col-sm-2">
-											<input type="hidden" ng-model="auditing.examine[i].sector_id" />
-											<input type="text" class="form-control" value="{{sectorHash[auditing.examine[i].sector_id].sector_name}}"
-											 ng-click="showSector(i)" />
-										</div>
-										<label class="col-sm-1 control-label">职位</label>
-										<div class="col-sm-3">
-										<ui-select class="w-lg" ng-model="auditing.examine[i].position_id" ng-change="selectPosition(i)" theme="bootstrap" 
-											ng-disabled="disabled">
-										  <ui-select-match placeholder="选择职位">{{$select.selected.sector_name}}</ui-select-match>
-										  <ui-select-choices group-by="'group'" 
-											repeat="position in positionList | propsFilter: {sector_name: $select.search}">
-										    <div ng-bind-html="position.sector_name | highlight: $select.search"></div>
-										  </ui-select-choices>
-										</ui-select>
- 										</div>
-										<label class="col-sm-1 control-label">审核人</label>
-										<div class="col-sm-2">
-										<ui-select class="w-lg" ng-model="auditing.examine[i].employee_id" ng-change="selectEmployee(i)" theme="bootstrap" 
-											ng-disabled="disabled">
-										  <ui-select-match placeholder="选择审核人">{{$select.selected.employee_name}}</ui-select-match>
-										  <ui-select-choices group-by="'group'" 
-											repeat="employee in auditingEmployeeList[i] | propsFilter: {employee_name: $select.search}">
-										    <div ng-bind-html="employee.employee_name | highlight: $select.search"></div>
-										  </ui-select-choices>
-										</ui-select>											
-										</div>
+						<div class="p-h">
+							<div class="row p-h">
+								<div class="form-group m-b-xs">
+									<div class="input-group no-border">
+										<span class="input-group-btn"><button class="btn btn-default" type="button">现汇买入价</button></span>
+										<input type="text" class="form-control w-thumb-lg" ng-model="currencyRate.buying_rate" required>
+										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">现钞买入价</button></span>
+										<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="currencyRate.cash_buying_rate" required />
+										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">现汇卖出价</button></span>
+										<input type="text" class="form-control w-thumb-lg" ng-model="currencyRate.selling_rate" required>
+										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">现钞卖出价</button></span>
+										<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="currencyRate.cash_selling_rate" required />
 									</div>
 								</div>
 							</div>
 						</div>
-						<footer class="panel-footer text-right">
-							<div class="btn-group">
-								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
-								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
-								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+						<div class="p">
+							<div class="row p-h">
+								<div class="form-group m-b-xs">
+									<div class="input-group no-border">
+										<span class="input-group-btn"><button class="btn btn-default" type="button">中行折算价</button></span>
+										<input type="text" class="form-control w-thumb-lg" ng-model="currencyRate.boe_conversion_rate" required>
+										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">银行发布日期</button></span>
+										<input type="text" class="form-control w" placeholder="注册日期" ng-model="currencyRate.bank_release_date" value="{{getDay('yyyy-mm-dd')}}"
+											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
+										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">财务发布日期</button></span>
+										<input type="text" class="form-control w" placeholder="注册日期" ng-model="currencyRate.financial_release_date" value="{{getDay('yyyy-mm-dd')}}"
+											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
+										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">录入人</button></span>
+										<input type="text" class="form-control w-thumb-lg" ng-model="loginEmployee.employee_name" readonly />
+									</div>
+								</div>
 							</div>
-						</footer>
+						</div>
 					</div>
-				</form>
+				</div>
+				<footer class="panel-footer text-right">
+					<div class="btn-group">
+						<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+						<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+							trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+					</div>
+				</footer>
 			</div>
+			</form>
 		</div>
+		<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html?c='+edit_id"></div>
 	</div>
+</div>	
 </script>
 <!-- AddEditAuditing.html -->

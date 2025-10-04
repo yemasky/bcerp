@@ -15,6 +15,7 @@ import com.base.model.entity.BwleErp.SystemSetting.employee.EmployeeSector;
 import com.base.model.entity.BwleErp.SystemSetting.module.Modules;
 import com.base.model.vo.BwleErp.SystemSetting.CompanyVo;
 import com.base.model.vo.BwleErp.SystemSetting.EmployeeVo;
+import com.base.model.vo.BwleErp.SystemSetting.EmployeesVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
@@ -139,15 +140,18 @@ public class IndexAction extends AbstractAction {
 	private void setEmployeeInfo(Employee employee, HttpServletResponse response) throws Exception {
 		//
 		EmployeeVo employeeVo = new EmployeeVo();
+		EmployeesVo employeesVo = new EmployeesVo();
 		BeanUtils.copyProperties(employee, employeeVo);
 		String encryptEid = EncryptUtiliy.instance().myIDEncrypt(employee.getE_id());
 		employeeVo.setE_id(encryptEid);
 		// 用户登录成功设置cookie
 		this.setCookie(response, this.employeeCookieName, encryptEid);
-		// 获取用户权限
+		// 获取用户权限//获取用户姓名
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.EQ("employee_id", employee.getE_id()).setTable_clazz(EmployeeSector.class);
 		EmployeeSector employeeSector = (EmployeeSector) this.generalService.getEntity(whereRelation);
+		BeanUtils.copyProperties(employeeSector, employeesVo);
+		employeesVo.setPassword("");
 		int role_id = employeeSector.getRole_id();
 		String role_ids = employeeSector.getRole_ids();
 		if (role_ids == null) {
@@ -182,6 +186,7 @@ public class IndexAction extends AbstractAction {
 		this.success.setItem("employeeMenu", employeeModuleVoList);
 		this.success.setItem("module_channel", "Setting");
 		this.success.setItem("employee", employeeVo);
+		this.success.setItem("employeeSector", employeesVo);
 		this.success.setItem("access", roleModuleAccessList);
 		this.success.setItem("companyList", companyList);
 	}

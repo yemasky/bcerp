@@ -16,7 +16,7 @@ import com.base.service.BwleErp.UploadService;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
-import core.util.Utiliy;
+import com.base.util.Utility;
 
 @Service("xiaoqu.UploadServiceImpl")
 public class UploadServiceImpl implements UploadService {
@@ -75,8 +75,8 @@ public class UploadServiceImpl implements UploadService {
 				uploadFile.setFile_url(fileDTO.getFile_url());
 				uploadFile.setFile_size(fileDTO.getFile_size());
 				uploadFile.setFile_extend(fileDTO.getFile_extend());
-				uploadFile.setFile_year(Integer.parseInt(Utiliy.instance().getYear()));
-				uploadFile.setFile_month(Integer.parseInt(Utiliy.instance().getMonth()));
+				uploadFile.setFile_year(Integer.parseInt(Utility.instance().getYear()));
+				uploadFile.setFile_month(Integer.parseInt(Utility.instance().getMonth()));
 				uploadFile.setFile_datetime(fileDTO.getFile_datetime());
 				uploadFile.setFile_valid(1);
 				if(privacy != null && privacy.equals("private")) uploadFile.setFile_valid(2);

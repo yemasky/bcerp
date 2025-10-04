@@ -21,7 +21,6 @@ import com.base.model.entity.example.Test;
 import com.base.type.ErrorCode;
 import com.base.type.Success;
 
-import core.util.Utiliy;
 import core.util.Encrypt;
 
 //import com.Example.controller.action.*;
@@ -105,7 +104,8 @@ public class ExampleController extends AbstractController {
 			String actionInvoke = (String) request.getAttribute("action");
 			if (actionInvoke == null || actionInvoke.isEmpty() || actionInvoke.equals(""))
 				actionInvoke = "index";
-			String action = Utiliy.instance().ucfirst(actionInvoke) + "Action";
+			String action = (new StringBuilder()).append(Character.toUpperCase(actionInvoke.charAt(0)))
+					.append(actionInvoke.substring(1)).toString() + "Action";
 			String module = (String) request.getAttribute("module");
 			if (module == null || module.isEmpty()) {
 				module = "";

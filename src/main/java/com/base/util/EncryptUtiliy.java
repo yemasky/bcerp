@@ -6,7 +6,6 @@ import java.util.Date;
 import com.base.config.Config;
 
 import core.util.Encrypt;
-import core.util.Utiliy;
 
 public class EncryptUtiliy {
 	private static EncryptUtiliy encryptUtiliy = null;
@@ -18,7 +17,7 @@ public class EncryptUtiliy {
 	}
 
 	public String intIDEncrypt(int intId) {
-		return Encrypt.base64DESEncrypt(intId + "`" + Utiliy.instance().getTodayDate(), Config.encryptKey);
+		return Encrypt.base64DESEncrypt(intId + "`" + Utility.instance().getTodayDate(), Config.encryptKey);
 	}
 
 	public int intIDDecrypt(String intEncrypt) {
@@ -43,7 +42,7 @@ public class EncryptUtiliy {
 	}
 	
 	public String myIDEncrypt(int intId) throws Exception {
-		return Encrypt.strAESEncrypt(intId + "---" + Utiliy.instance().getTodayDate(), Config.myEncryptKey);
+		return Encrypt.strAESEncrypt(intId + "---" + Utility.instance().getTodayDate(), Config.myEncryptKey);
 	}
 	
 	public int myIDDecrypt(String intEncrypt) throws Exception {

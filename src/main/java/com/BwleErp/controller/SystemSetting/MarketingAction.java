@@ -13,7 +13,6 @@ import com.base.model.entity.BwleErp.SystemSetting.Seaport;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;
-import com.base.util.Utility;
 import com.google.gson.Gson;
 
 import core.jdbc.mysql.WhereRelation;
@@ -21,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class CountrySetupAction extends AbstractAction {
+public class MarketingAction extends AbstractAction {
 	@Autowired
 	private GeneralService generalService;
 	
@@ -159,12 +158,11 @@ public class CountrySetupAction extends AbstractAction {
 		// TODO Auto-generated method stub
 		CurrencyRate currencyRate = this.modelMapper.map(request.getAttribute("currencyRate"), CurrencyRate.class);
 		WhereRelation whereRelation = new WhereRelation();
+		currencyRate.setEmployee_id((Integer) request.getAttribute("request"));
 		if(edit_id > 0) {//update
 			whereRelation.EQ("currency_id", edit_id).setTable_clazz(CurrencyRate.class);
 			generalService.updateEntity(currencyRate, whereRelation);
 		} else {
-			currencyRate.setEmployee_id((Integer) request.getAttribute("employee_id"));
-			currencyRate.setAdd_datetime(Utility.instance().getTodayDate());
 			int id = generalService.save(currencyRate);
 			_edit_id = EncryptUtiliy.instance().intIDEncrypt(id);
 		}

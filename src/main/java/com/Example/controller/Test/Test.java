@@ -1,6 +1,6 @@
 package com.Example.controller.Test;
 import core.util.Encrypt;
-import core.util.Utiliy;
+import com.base.util.Utility;
 public class Test {
 
 	public static void main(String[] args) {
@@ -8,7 +8,7 @@ public class Test {
 		 System.out.println("Hello, World!");
 		 
 		 try {
-			String aa = Encrypt.strAESEncrypt("1" + "---" + Utiliy.instance().getTodayDate(), "07811dc607811dc607811dc607811dc6");
+			String aa = Encrypt.strAESEncrypt("1" + "---" + Utility.instance().getTodayDate(), "07811dc607811dc607811dc607811dc6");
 			 System.out.println(aa);
 			 String bb = "gK68gipAtUASTZQtpw3jVxOeShItPUJj";
 			 System.out.println(Encrypt.strAESDecrypt(bb, "07811dc607811dc607811dc607811dc6"));

@@ -25,7 +25,7 @@ import com.google.gson.reflect.TypeToken;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
-import core.util.Utiliy;
+import com.base.util.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -135,7 +135,7 @@ public class AuditingAction extends AbstractAction {
 			whereRelation.EQ("auditing_id", auditing_id).setTable_clazz(Auditing.class);
 			generalService.updateEntity(auditing, whereRelation);
 		} else {
-			auditing.setAdd_datetime(Utiliy.instance().getTodayDate());
+			auditing.setAdd_datetime(Utility.instance().getTodayDate());
 			int id = generalService.save(auditing);
 			edit_id = EncryptUtiliy.instance().intIDEncrypt(id);
 		}

@@ -50,8 +50,8 @@
 	  </li>
 	  <li>            
 		<a href class="clear no-padding-h" bs-dropdown="dropdown" data-animation="am-collapse" data-template-url="/app/header/user.html">
-		  <img ng-src="{{employee.avatar}}" onError="this.src='/static/images/userimg/user_h.png'" class="navbar-img pull-right">
-		  <span class="hidden-sm m-l">{{employee.employee_name}}</span>
+		  <img ng-src="{{__IMGWEB + loginEmployee.avatar}}" onError="this.src='/static/images/userimg/user_h.png'" class="navbar-img pull-right">
+		  <span class="hidden-sm m-l">{{loginEmployee.employee_name}}</span>
 		  <b class="caret m-h-xs hidden-sm"></b>
 		</a>
 	  </li>

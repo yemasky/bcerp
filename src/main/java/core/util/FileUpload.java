@@ -38,6 +38,13 @@ public class FileUpload {
 		}
 		return diskPath + "/";
 	}
+	
+	public String formatDate(String formatData) {
+        Date date = new Date();//formatData = "yyyy-MM-dd HH:mm:ss"
+        SimpleDateFormat format = new SimpleDateFormat(formatData);//
+        String dateStr = format.format(date);
+        return dateStr;
+    }
 	/*
 	 * spring 上传文件
 	 */
@@ -64,7 +71,7 @@ public class FileUpload {
 				if (file != null) {
 					String originalFilename = file.getOriginalFilename();
 					int n = originalFilename.lastIndexOf(".");
-					String newName = employee_id + Utiliy.instance().formatDate("HHmmss")+(int)((Math.random()*9+1)*100000);
+					String newName = employee_id + this.formatDate("HHmmss")+(int)((Math.random()*9+1)*100000);
 					String suffix =  originalFilename.substring(n);
 					String path = diskPath + newName + suffix;
 					// 上传
@@ -74,11 +81,11 @@ public class FileUpload {
 					//ImagesUtil.instance().reduceImage();
 					
 					FileDTO fileDTO = new FileDTO();
-					fileDTO.setFile_name(Encrypt.md5Lower(originalFilename));
+					//fileDTO.setFile_name(Encrypt.md5Lower(originalFilename));
 					fileDTO.setFile_type(file.getContentType());
 					fileDTO.setFile_size((int) file.getSize());
 					fileDTO.setFile_url(urlPath + newName + suffix);
-					fileDTO.setFile_datetime(Utiliy.instance().getTodayDate());
+					fileDTO.setFile_datetime(this.formatDate("yyyy-MM-dd HH:mm:ss"));
 					//扩展信息
 					
 					fileDTOList.add(fileDTO);

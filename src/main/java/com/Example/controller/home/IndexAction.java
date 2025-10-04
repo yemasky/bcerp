@@ -19,7 +19,7 @@ import com.base.service.example.ExampleService;
 import com.base.type.CheckedStatus;
 import com.base.type.ErrorCode;
 
-import core.util.Utiliy;
+import com.base.util.Utility;
 
 @Component("example.home.index")
 public class IndexAction extends AbstractAction {
@@ -106,7 +106,7 @@ public class IndexAction extends AbstractAction {
 	}
 
 	public void doTestPost(HttpServletRequest request, HttpServletResponse response) {
-		Test post = modelMapper.map(Utiliy.instance().getRequestMap(request), Test.class);
+		Test post = modelMapper.map(Utility.instance().getRequestMap(request), Test.class);
 		this.success.setItem("post", post);
 		this.success.setSuccessCode(ErrorCode.__T_SUCCESS);
 	}

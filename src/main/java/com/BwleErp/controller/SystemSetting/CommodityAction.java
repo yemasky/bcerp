@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import core.jdbc.mysql.WhereRelation;
-import core.util.Utiliy;
+import com.base.util.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -205,7 +205,7 @@ public class CommodityAction extends AbstractAction {
 			//
 			this.generalService.batchSave(insertAttribute);
 		} else {
-			commodity.setAdd_datetime(Utiliy.instance().getTodayDate());
+			commodity.setAdd_datetime(Utility.instance().getTodayDate());
 			commodity_id = this.generalService.save(commodity);
 			if (attributeList != null) {
 				for (String k : attributeList.keySet()) {

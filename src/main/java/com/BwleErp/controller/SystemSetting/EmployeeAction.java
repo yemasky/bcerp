@@ -24,7 +24,7 @@ import com.base.util.EncryptUtiliy;
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
 import core.util.Encrypt;
-import core.util.Utiliy;
+import com.base.util.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -253,7 +253,7 @@ public class EmployeeAction extends AbstractAction {
 			employee.setPassword_salt(_salt);
 			employee.setEmail(employees.getEmail());
 			employee.setMobile(employees.getMobile());
-			employee.setAdd_datetime(Utiliy.instance().getTodayDate());
+			employee.setAdd_datetime(Utility.instance().getTodayDate());
 			employee.setCompany_id(employees.getCompany_id());
 			edit_id = this.generalService.save(employee);
 			//

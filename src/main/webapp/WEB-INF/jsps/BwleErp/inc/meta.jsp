@@ -402,12 +402,14 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $("#"+_id).hide();$("#"+id).show();
         }
         //初始化变量
-        $scope.__RESOURCE = __RESOURCE;
-		$scope._resource = __RESOURCE;
-		$scope.__WEB = __WEB;
-		$scope.employee = {};
+        $scope.__RESOURCE = __RESOURCE;$scope._resource = __RESOURCE;$scope.__WEB = __WEB;$scope.__IMGWEB = __IMGWEB;//'${__IMGWEB}'
+		$scope.employee = {};$scope.loginEmployee = {};
 		$scope.companyList = {};
 		$scope.auditingProvisoList = [{id:"1",name:"填写"},{id:"2",name:"审核"}];
+		$scope.currencySymbol = [{id:0,currency_name:"港元",currency_sname:"HKD",currency_symbol:"HK$"},
+								 {id:1,currency_name:"美元",currency_sname:"USD",currency_symbol:"$"},
+								 {id:2,currency_name:"欧元",currency_sname:"EUR",currency_symbol:"€"},
+								 {id:3,currency_name:"人民币",currency_sname:"CNY",currency_symbol:"￥"},];
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "${noLogin}";
@@ -538,7 +540,10 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					$scope.companyList = common.companyList;
 				}
 				if(typeof(common.employee) != 'undefined') {
-					$scope.employee = common.employee;
+					$scope.employee = angular.copy(common.employee);
+				}
+				if(typeof(common.employeeSector) != 'undefined') {
+					$scope.loginEmployee = angular.copy(common.employeeSector);
 				}
 				$rootScope.__ImagesUploadUrl = common.imagesUploadUrl;
 				$rootScope.__ImagesManagerUrl = common.imagesManagerUrl;

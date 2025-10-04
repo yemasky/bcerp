@@ -1,15 +1,13 @@
-app.controller('CurrencyRateController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+app.controller('SalesCollectPaymentController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-		$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
-		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION,
-		__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
+		//$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = "";
 	//定义变量
 	$scope.currencyRate = {};$scope.currencyRateList = [];
 	let aside;
-	$httpService.header('method', 'getCurrencyRate');
+	$httpService.header('method', 'getSalesCollectPayment');
 	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
@@ -50,7 +48,7 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 		}
 		$scope.loading.show();
 		$scope.param.currencyRate = angular.copy(this.currencyRate);
-		$httpService.header('method', 'saveCurrencyRate');
+		$httpService.header('method', 'saveSalesCollectPayment');
 		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
@@ -76,7 +74,7 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 		function deleteData() {
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteCurrencyRate');
+			$httpService.header('method', 'deleteSalesCollectPayment');
 			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
@@ -87,10 +85,5 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 			});
 		}
 	}
-	$scope.showChange = function() {
-		console.log($scope.currencyRate);
-		$scope.currencyRate.currency_name = $scope.currencySymbol[$scope.currencyRate.currency].currency_name;
-		$scope.currencyRate.currency_symbol = $scope.currencySymbol[$scope.currencyRate.currency].currency_symbol;
-		$scope.currencyRate.currency_sname = $scope.currencySymbol[$scope.currencyRate.currency].currency_sname;
-	}
+
 });
