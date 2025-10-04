@@ -47,8 +47,14 @@ public class EmployeeServiceImpl implements EmployeeService{
 				employeePermission.setModule_id(module_id);
 				employeePermission.setModule_channel(module.getModule_channel());
 				employeePermission.setModule(module.getModule());
+				employeePermission.setModule_name(module.getModule_name());
 				employeePermission.setModule_view(module.getModule_view());
 				employeePermission.setAction(module.getAction());
+			} else {
+				whereRelation = new WhereRelation();
+				whereRelation.EQ("module_id", module_id).setTable_clazz(Modules.class);
+				Modules module = (Modules) generalService.getEntity(whereRelation);
+				employeePermission.setModule_name(module.getModule_name());
 			}
 		}
 		return employeePermission;

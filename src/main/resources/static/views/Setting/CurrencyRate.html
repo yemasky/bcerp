@@ -41,11 +41,11 @@
 					<td>{{currencyRate.boe_conversion_rate}}</td>
 					<td>{{currencyRate.bank_release_date}}</td>
 					<td>{{currencyRate.financial_release_date}}</td>
-					<td>{{currencyRate.employee_id}}</td>
+					<td>{{employeeNameHash[currencyRate.employee_id]}}</td>
 					<td>
 						<div class="text-center">
-							<a ng-click="addEdit('edit', auditing, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-							<a ng-click="delete(auditing.auditing_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+							<a ng-click="addEdit('edit', currencyRate, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
+							<a ng-click="delete(currencyRate.currency_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
 						</div>
 					</td>
 				</tr>
@@ -66,7 +66,7 @@
 				</div>
 				<div class="panel-body p-md">
 					<div class="" append-source>
-						<div class="p">
+						<div class="p"> 
 							<div class="form-group m-b-xs">
 								<div class="input-group">
 									<span class="input-group-btn"><button class="btn btn-default" type="button">货币名称</button></span>
@@ -123,14 +123,16 @@
 											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 										<span class="input-group-btn"><button class="btn btn-default" type="button">录入人</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="loginEmployee.employee_name" readonly />
+										<input type="text" class="form-control w-thumb-lg" ng-model="loginEmployee.employee_name" readonly ng-if="edit_id==''" />
+										<input type="text" class="form-control w-thumb-lg" value="{{employeeNameHash[currencyRate.employee_id]}}" 
+											readonly ng-if="edit_id!=''" />
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<footer class="panel-footer text-right">
+				<footer class="panel-footer text-right bg-white">
 					<div class="btn-group">
 						<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
 						<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
@@ -140,7 +142,7 @@
 			</div>
 			</form>
 		</div>
-		<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html?c='+edit_id"></div>
+		<div ng-init="name=currencyRate" ng-include="__RESOURCE+'views/Common/CategoryAuditing.html'"></div>
 	</div>
 </div>	
 </script>

@@ -5,6 +5,7 @@ public class EmployeePermissionDto {
 	private int module_id;
 	private String module_channel;
 	private String module;
+	private String module_name;
 	private String module_view;
 	private String action;
 	
@@ -38,6 +39,14 @@ public class EmployeePermissionDto {
 
 	public void setModule(String module) {
 		this.module = module;
+	}
+
+	public String getModule_name() {
+		return module_name;
+	}
+
+	public void setModule_name(String module_name) {
+		this.module_name = module_name;
 	}
 
 	public String getModule_view() {

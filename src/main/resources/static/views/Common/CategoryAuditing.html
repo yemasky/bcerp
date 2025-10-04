@@ -3,31 +3,34 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<td colspan="7">工作流审核</td>
+					<td colspan="7">工作流</td>
 				</tr>
-				<tr>
-					<th>#</th>
-					<th>名称</th>
-					<th>模块</th>
-					<th>部门</th>
-					<th>职位</th>
-					<th>审核人</th>
-					<th></th>
-				</tr>
+				<tr><th>#</th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td colspan="3">
-						
+					<td colspan="7" class="text-right pull-right">
+						<form name="thisForm" class="form-inline" role="form" ng-submit="commitAuditing(thisForm)">
+							<div class="input-group ">
+							  <span class="input-group-addon no-radius"> </span>
+							  <input class="form-control w" type="text" ng-model="_self_module.module_name" readonly >
+							  <span class="input-group-addon no-radius no-padding no-border"></span>
+							  <select class="form-control w" ng-model="auditing_id">
+								  <option value="{{auditing.auditing_id}}" ng-repeat="(i, auditing) in auditingList">{{auditing.auditing_name}}</option>
+							  </select>
+							  <span class="input-group-btn">
+								  <div class="btn-group">
+										<button type="submit" class="btn btn-rounded btn-info" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+											trigger-loading="beginLoading"><i class="glyphicon glyphicon-floppy-saved"> </i> 提交工作流</button>
+								  </div>
+							  </span>
+							</div>
+						</form>
 					</td>
-					<td class="text-right">
-						<div class="btn-group">
-							<button type="button" class="btn btn-rounded btn-default btn-xs" ng-click="$hide()"><i class="fa fa-times"> </i> 撤回</button>
-							<button type="submit" class="btn btn-rounded btn-info btn-xs" btn-loading-text="{{'common.hint.LOADING' | translate}}"
-								trigger-loading="beginLoading"><i class="ti-check"> </i> 提交</button>
+					<td class="text-right" ng-if="auditing.auditing_state==0">
+						
+						<div class="input-group col-sm-3">
+							
 						</div>
 					</td>
 				</tr>
@@ -89,10 +92,12 @@ app.controller('CategoryAuditingController', function($rootScope, $scope, $httpS
 		$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
 		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
-		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
+		var urlParam = __WEB + 'app.do?channel=' + __AuditingViewUrl+"&c="+$stateParams.channel+'&id='+$rootScope.param.id;
 	$scope.param = {}; $scope.edit_id = "";
 	//定义变量
-	console.log("routeParams",$rootScope, $scope,$routeParams,$stateParams);
+	console.log("CategoryAuditing routeParams",$rootScope.param);
+	$scope.auditing = $rootScope.param.auditing;
+	$scope.auditingList = [];$scope.auditing_id = 0;
 	let aside;
 	$httpService.header('method', 'getAuditing');
 	$httpService.post(urlParam, $scope, function(result){
@@ -101,180 +106,21 @@ app.controller('CategoryAuditingController', function($rootScope, $scope, $httpS
 		if(result.data.success == false) {
 			return;
 		} 
+		$scope.auditingList = result.data.item.auditingList;
 	})
 	
-	$scope.addEdit = function(editType, commodity, i) {
-		$scope.editType = editType;
-		$scope.commodity = {};
-		if(editType == 'edit' && typeof(commodity) != 'undefined') {
-			$scope.commodity = angular.copy(commodity);//编辑开始
-			$scope.commodity.systype_id = angular.copy($scope.systypeHash[$scope.commodity.systype_id]);
-			$scope.commodity.unit_id = angular.copy($scope.unitHash[$scope.commodity.unit_id]);
-			if(typeof(commodity.commodity_spare) == "object") {
-				$scope.step['spare'].step = "";$scope.step['spare'].length = 0;
-				for (let si in commodity.commodity_spare) {
-					$scope.step['spare'].step = $scope.step['spare'].step + "" + $scope.step['spare'].length;
-					$scope.step['spare'].length++;
-				}
-			}
-			$httpService.header('method', 'getAttribute');
-			$httpService.post(urlParam + '&attr_id='+commodity.commodity_id, $scope, function(result){
-				$scope.loading.hide();
-				$httpService.deleteHeader('method'); 
-				if(result.data.success == false) {return;} 
-				let attrList = result.data.item.attributeList;
-				$scope.step['attr'].step = "";$scope.step['attr'].length = 0;$scope.attribute = [];
-				$scope.step['hs'].step = "";$scope.step['hs'].length = 0;$scope.hs = [];
-				$scope.step['images'].step = "";$scope.step['images'].length = 0;$scope.images = {};
-				for (var i in attrList) {
-					let attr = attrList[i];
-					if(attr.attribute_type=='attr') {
-						attr.attribute_check = true;
-						if(attr.attribute_check == 0) attr.attribute_check = false;
-						$scope.attribute.push(attr);
-						$scope.step[attr.attribute_type].step = $scope.step[attr.attribute_type].step + "" + $scope.step[attr.attribute_type].length;
-						$scope.step[attr.attribute_type].length++;
-					}
-					if(attr.attribute_type=='hs') {
-						$scope.hs.push(attr);
-						$scope.step[attr.attribute_type].step = $scope.step[attr.attribute_type].step + "" + $scope.step[attr.attribute_type].length;
-						$scope.step[attr.attribute_type].length++;
-					}
-					if(attr.attribute_type=='images') {
-						$scope.images[attr.attribute_key] = attr;
-						$scope.step[attr.attribute_type].step = $scope.step[attr.attribute_type].step + "" + $scope.step[attr.attribute_type].length;
-						$scope.step[attr.attribute_type].length++;
-					}
-				}
-				console.log($scope.step,$scope.images,$scope.attribute,$scope.hs);
-				//$scope.$apply();//刷新数据
-			});
-			//图片
-			//let images = 
-			$scope.edit_id = angular.copy(commodity.commodity_id);
-			$scope.edit_index = i;
-		}
-		$scope.setActionNavName($stateParams.id, "添加/编辑");
-		$scope.action = '添加/编辑';
-		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: __RESOURCE + 'views/Setting/CommodityAddEditAside.html?'+__VERSION});
-		aside.$promise.then(function() {
-			aside.show();
-			$(document).ready(function(){
-				$scope.setImage();
-			});
-		})
-	}
-
-	$scope.saveData = function() {
-		console.log(this.commodity, $scope.commodity);
-		if(this.commodity == null || this.commodity == '') {$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});return;}
-		if(!angular.isDefined(this.commodity.commodity_name)) {$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});return;}
-		$scope.loading.show();
-		$scope.param.commodity = angular.copy(this.commodity);
-		$scope.param.images = angular.copy(this.images);
-		$scope.param.attribute = angular.copy(this.attribute);
-		$scope.param.hs = angular.copy(this.hs);
-		$scope.param.commodity.systype_id = angular.copy(this.commodity.systype_id.systype_id);
-		if(typeof(this.commodity.unit_id) == 'object')
-			$scope.param.commodity.unit_id = angular.copy(this.commodity.unit_id.unit_id);
-		$httpService.header('method', 'saveCommodity');
-		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
-			$scope.loading.percent();
-		    $httpService.deleteHeader('method');
-			if(result.data.success == false) { 
+	$scope.commitAuditing = function(thisFrom) {
+		$httpService.header('method', 'commitAuditing');
+		$scope.param = {};$scope.param.auditing_id = this.auditing_id;
+		$httpService.post(urlParam+'&status=1', $scope, function(result){//status=1 代表遞交審核
+			$scope.loading.hide();
+			$httpService.deleteHeader('method'); 
+			if(result.data.success == false) {
 				return;
 			} 
-			if($scope.editType == "add") {
-				$scope.param.commodity.commodity_id = result.data.item.commodity_id;
-				$scope.commodityPage.pageList.push(angular.copy($scope.param.commodity));
-			}
-			if($scope.editType == "edit") {
-				$scope.commodityPage.pageList[$scope.edit_index] = angular.copy($scope.param.commodity);
-			}
-			$scope.commodity = {};
-			$scope.edit_id = 0;
-			aside.hide(); 
-		});
+			$scope.auditingList = result.data.item.auditingList;
+		})
 	}
 	
-	$scope.delete = function(delete_id, i) {
-	var message = '您确定要删除吗？';
-	$scope.confirm({'content': message,'callback': deleteData});
-		function deleteData() {
-			$scope.param = {};
-			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteCommodity');
-			$httpService.post(urlParam, $scope, function(result) {
-				$scope.loading.percent();
-				$httpService.deleteHeader('method');
-				if (result.data.success == false) {
-					return;
-				}
-				delete $scope.commodityPage.pageList[i]; 				
-			});
-		}
-	}
-	//<!--图片上传及操作-->
-	//images
-	$scope.setImage = function() {
-		//$scope.__WEB+'app.do?method=uploadCompanyLogo&channel='+$rootScope.__ImagesUploadUrl;
-		var uploadJsonUrl = $scope.__WEB+'index/uploadCompanyLogo?channel='+__ImagesUploadUrl+"&UseType=CompanyLogo";
-		var fileManagerJsonUrl = $scope.__WEB+'index/fileManager?channel='+__ImagesManagerUrl;
-		window.K = KindEditor;
-		var editor = K.editor({
-			uploadJson : uploadJsonUrl,fileManagerJson : fileManagerJsonUrl,allowFileManager : true,formatUploadUrl: false
-		});
-		let keditor = K('.set_image_src');
-		keditor.click(function() {
-			let _this = this;
-			editor.loadPlugin('image', function() {
-				editor.plugin.imageDialog({
-					//clickFn : function(url, title, width, height, border, align) {
-					clickFn : function(url) {
-						editor.hideDialog();
-						$(_this).src = url;
-						let node = $(_this).attr('node');
-						if(typeof($scope.images[node]) == 'undefined') $scope.images[node] = {};
-						$scope.images[node].attribute_val = url;
-						$scope.$apply();//刷新数据
-					}
-				});
-			});
-		});
-	} 
-	$scope.selectSystype = function() {
-		console.log($scope.commodity)
-	}
-	$scope.selectUnit = function() {
-		console.log($scope.commodity)
-	}
-	$scope.addStep = function(key) {
-		//if($scope.step_length > 4) {$alert({title: 'Notice', content: '最多允许6个', templateUrl: '/modal-warning.html', show: true});return;}
-		$scope.step[key].length++;
-		$scope.step[key].step=$scope.step[key].step+''+$scope.step[key].length;
-		if(key == 'images') {
-			$(document).ready(function(){
-				$scope.setImage();
-			});
-		}
-	}
-	$scope.reduceStep = function(key) {
-		if($scope.step[key].length < 1) {$alert({title: 'Notice', content: '最少需要1个', templateUrl: '/modal-warning.html', show: true});return;}
-		$scope.step[key].step=$scope.step[key].step.substring(0,$scope.step[key].step.length-1);
-		$scope.step[key].length--;
-	}
-	$scope.nextPage = function(page) {	
-		$scope.param.page = page;
-		$httpService.header('method', 'getCommodity');
-		$httpService.post(urlParam, $scope, function(result) {
-			$scope.loading.percent();
-			$httpService.deleteHeader('method');
-			if (result.data.success == false) {
-				return;
-			}
-			$scope.commodityPage = result.data.item.commodityPage;		
-		});
-	}
 });
 </script>

@@ -150,6 +150,7 @@ public abstract class DBQuery {
 					logger.error("error SQL NoSuchMethodException==>:", methodName, e);
 					throw new SQLException("SQL NoSuchMethodException-->:" +methodName+","+ e.getMessage());
 				} 
+				//System.out.println("====>"+dbFieldName);
 				methodHashMap.put(dbFieldName, method);
 				dbFieldHashMap.put(dbFieldName, field);
 			}
@@ -624,61 +625,45 @@ public abstract class DBQuery {
 	}
 
 	private <T> Object excuteBatchInsertObject(List<T> objectList, String insertType) throws Exception {
-		int insertSize = objectList.size(), i = 0;
+		int insertSize = objectList.size();
 		if (insertSize > 0) {
 			StringBuilder sql = null;
 			try {
 				Class<?> objectClass = objectList.get(0).getClass();
+				this.table(objectClass);
 				TableAnnotation tableAnnotation = getTableAnnotation(objectClass);// 取得entityClassT table的Annotation
+				String tableName = tableAnnotation.getTableName();
+				//List<Object> valueObj = new ArrayList<Object>();
+				sql = new StringBuilder(insertType + tableName + " (");
+				StringBuilder sqlParamters = new StringBuilder("");
+				HashMap<String, Method> methodHashMap = entityParseMap.get(objectClass).getMethodHashMap();//
+				for (String dbFieldName : methodHashMap.keySet()) {
+					sql.append(dbFieldName).append(",");// 用列名构造SQL
+					sqlParamters.append("?,");
+				}
+				
 				List<List<Object>> valueObjList = new ArrayList<>();
 				List<Object> valueList = new ArrayList<>();
-				sql = new StringBuilder(insertType + tableAnnotation.getTableName() + " (");
-				StringBuilder sqlParamters = new StringBuilder("");
-				HashMap<String, Method> fieldHashMap = new HashMap<>();
-				List<Method> fieldMethodList = new ArrayList<>();
-				for (; i < insertSize; i++) {
-					T objectT = objectList.get(i);
-					for (; objectClass != Object.class; objectClass = objectClass.getSuperclass()) {
-						// Method[] methods = objectClass.getDeclaredMethods();
-						Field[] fields = objectClass.getDeclaredFields();
-						for (Field field : fields) {
-							String fieldName = field.getName();
-							String columnName = fieldName;
-							FieldAnnotation fieldAnnotation = this.getFieldAnnotation(field);
-							if (tableAnnotation.isAnnotationField) {// 如果使用了Annotation的Field
-								columnName = fieldAnnotation.getColumnName();// 得到数据库表的columnName表名
-							}
-							if (fieldAnnotation.isIgnore() || fieldAnnotation.isAutoIncrement()) {// 如果是忽略和递增就跳过
-								continue;
-							}
-							String methodNameBegin = fieldName.substring(0, 1).toUpperCase();
-							String methodName = "get" + methodNameBegin + fieldName.substring(1);
-							Method method = objectClass.getDeclaredMethod(methodName);
-							//System.out.println("===>/"+methodName+",=>"+columnName);
-							fieldHashMap.put(columnName, method);
-							fieldMethodList.add(method);
-							sqlParamters.append("?,");
-							sql.append(columnName).append(",");// 用表名构造SQL
-						}
-						
-					}
+				for (int i = 0; i < insertSize; i++) {
+					T objectT = objectList.get(i);					
 					valueList = new ArrayList<>();
-					for(Method method : fieldMethodList) {
-						Object tempObj = method.invoke(objectT);// 获取值
+					for (String dbFieldName : methodHashMap.keySet()) {
+						Object tempObj = methodHashMap.get(dbFieldName).invoke(objectT);
 						valueList.add(tempObj);
 					}
 					valueObjList.add(valueList);
 				}
 				// 最后一位为,，去除
 				sql = this.trimChar(sql);
+				//System.out.println("sql---3>"+sql);
 				sqlParamters = this.trimChar(sqlParamters);
 				sql.append(") VALUES (").append(sqlParamters).append(")");
 				PreparedStatement preparedStatement = this.thisWriteConnection().prepareStatement(sql.toString(),
 						PreparedStatement.RETURN_GENERATED_KEYS);
 				logger.info(sql.toString());
 				int k = 0, objSize = 0;
-				i = 0;
-				for (; i < insertSize; i++) {
+				int i = 0;
+				for (i = 0; i < insertSize; i++) {
 					valueList = valueObjList.get(i);
 					objSize = valueList.size();
 					for (k = 0; k < objSize; k++) {
@@ -1052,8 +1037,10 @@ public abstract class DBQuery {
 				}
 			}
 		}
-		if(this.readConnection != null && this.writeConnection != null) {
-			System.out.println("=====currentConnHashMap>"+this.readConnection.isValid(0)+",=====>"+this.writeConnection.isValid(0));
+		if(this.readConnection != null || this.writeConnection != null) {
+			if(this.readConnection != null && this.readConnection.isValid(0) == false) this.readConnection.close();
+			if(this.writeConnection != null && this.writeConnection.isValid(0) == false) this.writeConnection.close();
+			System.out.println("=====currentConnHashMap>readConnection writeConnection");
 		}
 	}
 

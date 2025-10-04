@@ -57,7 +57,7 @@
 								<div class="form-group m-b-xs p-h has-feedback">
 									<div class="input-group">
 										<span class="input-group-btn"><button class="btn btn-default" type="button">单位</button></span>
-										<div class="col-sm-2 no-padding">
+										<div class="col-sm-5 no-padding">
 											<ui-select ng-model="commodity.unit_id" theme="bootstrap" ng-change="selectUnit()" 
 												ng-disabled="disabled" required>
 											  	<ui-select-match placeholder="选择单位">
@@ -70,7 +70,8 @@
 											</ui-select>
 										</div>
 										<div class="col-sm-1 no-padding">
-											<input type="text" class="form-control btn-default" value="{{commodity.unit_id.unit_enname}}" placeholder="单位英文" readonly>
+											<input type="text" class="form-control btn-default" value="{{commodity.unit_id.unit_enname}}" 
+												style="width:100px" placeholder="单位英文" readonly>
 										</div>
 										<span class="input-group-btn">
 											<button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}"

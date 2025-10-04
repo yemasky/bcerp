@@ -7,7 +7,7 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = "";
 	//定义变量
-	$scope.currencyRate = {};$scope.currencyRateList = [];
+	$scope.currencyRate = {};$scope.currencyRateList = [];$scope.employeeNameHash = {};
 	let aside;
 	$httpService.header('method', 'getCurrencyRate');
 	$httpService.post(urlParam, $scope, function(result){
@@ -17,14 +17,21 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 			return;
 		} 
 		$scope.currencyRateList = result.data.item.currencyRateList;
+		$scope.employeeNameHash = result.data.item.employeeNameHash;
 	})
 	
 	$scope.addEdit = function(editType, currencyRate, i) {
 		$scope.editType = editType;
-		$scope.currencyRate = {};
+		$scope.currencyRate = {};$scope.edit_id = "";
 		if(editType == 'edit' && typeof(currencyRate) != 'undefined') {
+			$scope.currencyRate = angular.copy(currencyRate);
 			$scope.edit_id = angular.copy(currencyRate.currency_id);
 			$scope.edit_index = i;
+			let currencySymbol = $scope.currencySymbol;
+			currencySymbol.forEach((val, i) => {
+				if(currencyRate.currency_name == val.currency_name) $scope.currencyRate.currency = i;
+			});
+			$rootScope.param = {};$rootScope.param.auditing = $scope.currencyRate;$rootScope.param.id = $scope.currencyRate.currency_id;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';

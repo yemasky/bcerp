@@ -67,6 +67,7 @@ public class BwleErpController extends AbstractController {
 		model.addAttribute("__IMGWEB", Config.uploadImagesUrl);
 		model.addAttribute("__ImagesUploadUrl", EncryptUtiliy.instance().intIDEncrypt(114));
 		model.addAttribute("__ImagesManagerUrl", EncryptUtiliy.instance().intIDEncrypt(115));
+		model.addAttribute("__AuditingViewUrl", EncryptUtiliy.instance().intIDEncrypt(117));
 		model.addAttribute("__RESOURCE", "/static/");
 		model.addAttribute("__VERSION", "");
 		model.addAttribute("__TITLE", "博威利尔.ERP ᵛ¹·⁰·⁰ ");
@@ -131,11 +132,13 @@ public class BwleErpController extends AbstractController {
 				if(!employeePermission.isPermission()) {
 					Success success = new Success();
 					success.setErrorCode(ErrorCode.__F_PERMISSION);
+					success.setMessage("缺少"+employeePermission.getModule_name()+"权限");
 					return success;
 				}
 				if(employeePermission.getModule_id() > 0) {
 					actionInvoke = employeePermission.getAction();
 					module = employeePermission.getModule();
+					request.setAttribute("module_id", module_id);
 				}
 			}
 			

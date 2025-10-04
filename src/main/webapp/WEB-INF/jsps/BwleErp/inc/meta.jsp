@@ -10,6 +10,7 @@
 <script language="javascript">
     var __RESOURCE = '${__RESOURCE}'; var __IMGWEB = '${__IMGWEB}';var __WEB = '${__WEB}';
     var __ImagesUploadUrl = '${__ImagesUploadUrl}';var __ImagesManagerUrl = '${__ImagesManagerUrl}';
+    var __AuditingViewUrl = '${__AuditingViewUrl}';
 //jQuery 插件
 (function ($) {
     $.serializeFormat = function (id) {//取出form的值包括 xxx[yyy]的值
@@ -545,8 +546,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common.employeeSector) != 'undefined') {
 					$scope.loginEmployee = angular.copy(common.employeeSector);
 				}
-				$rootScope.__ImagesUploadUrl = common.imagesUploadUrl;
-				$rootScope.__ImagesManagerUrl = common.imagesManagerUrl;
+				$rootScope.__ImagesUploadUrl = __ImagesUploadUrl;
+				$rootScope.__ImagesManagerUrl = __ImagesManagerUrl;
+				$rootScope.__AuditingViewUrl = __AuditingViewUrl;
 				//未起作用 ? 
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;

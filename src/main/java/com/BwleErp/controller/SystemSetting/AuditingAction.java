@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
 import com.base.model.entity.BwleErp.SystemSetting.Auditing;
+import com.base.model.entity.BwleErp.SystemSetting.AuditingExamine;
 import com.base.model.entity.BwleErp.SystemSetting.AuditingModule;
-import com.base.model.entity.BwleErp.SystemSetting.BaseAbstract.AuditingExamine;
 import com.base.model.entity.BwleErp.SystemSetting.company.CompanySector;
 import com.base.model.entity.BwleErp.SystemSetting.employee.EmployeeSector;
 import com.base.model.entity.BwleErp.SystemSetting.module.Modules;

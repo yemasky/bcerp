@@ -122,6 +122,7 @@ app.controller('AuditingController', function($rootScope, $scope, $httpService, 
 			$scope.param.auditing.examine[i].employee_id = angular.copy(this.auditing.examine[i].employee_id.e_id);
 			$scope.param.auditing.examine[i].position_id = angular.copy(this.auditing.examine[i].position_id.sector_id);
 			$scope.param.auditing.module_id = angular.copy(this.auditing.module_id.module_id);
+			$scope.param.auditing.examine[i].step = i;
 		}
 		$httpService.header('method', 'saveAuditing');
 		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){

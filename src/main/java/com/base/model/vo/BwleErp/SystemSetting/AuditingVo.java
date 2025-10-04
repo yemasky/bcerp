@@ -2,8 +2,8 @@ package com.base.model.vo.BwleErp.SystemSetting;
 
 import java.util.HashMap;
 
+import com.base.model.entity.BwleErp.SystemSetting.AuditingExamine;
 import com.base.model.entity.BwleErp.SystemSetting.BaseAbstract.AuditingBaseAbstract;
-import com.base.model.entity.BwleErp.SystemSetting.BaseAbstract.AuditingExamine;
 
 import core.custom_interface.Column;
 import core.custom_interface.Table;

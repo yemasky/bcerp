@@ -1,5 +1,7 @@
 package com.BwleErp.controller.SystemSetting;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import com.base.model.entity.BwleErp.SystemSetting.Auditing;
 import com.base.model.entity.BwleErp.SystemSetting.Country;
 import com.base.model.entity.BwleErp.SystemSetting.CurrencyRate;
 import com.base.model.entity.BwleErp.SystemSetting.Seaport;
+import com.base.model.entity.BwleErp.SystemSetting.employee.EmployeeSector;
+import com.base.model.vo.BwleErp.SystemSetting.CurrencyRateVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;
@@ -145,8 +149,22 @@ public class CountrySetupAction extends AbstractAction {
 		// TODO Auto-generated method stub
 		//
 		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.setTable_clazz(CurrencyRate.class);
-		List<CurrencyRate> currencyRateList = generalService.getEntityList(whereRelation);
+		whereRelation.setTable_clazz(CurrencyRateVo.class);
+		List<CurrencyRateVo> currencyRateList = this.generalService.getEntityList(whereRelation);
+		List<Integer> employeeIdList = new ArrayList<>();
+		HashMap<Integer, String> employeeNameHash = new HashMap<>();
+		if(currencyRateList != null) {
+			currencyRateList.forEach(currencyRate ->{
+				employeeIdList.add(currencyRate.getEmployee_id());
+			});
+			whereRelation = new WhereRelation();
+			whereRelation.IN("employee_id", employeeIdList).setTable_clazz(EmployeeSector.class).setField("employee_name,employee_id");
+			List<EmployeeSector> employeeList = this.generalService.getEntityList(whereRelation);
+			employeeList.forEach(employee ->{
+				employeeNameHash.put(employee.getE_id(), employee.getEmployee_name());
+			});
+			this.success.setItem("employeeNameHash", employeeNameHash);
+		}
 		this.success.setItem("currencyRateList", currencyRateList);
 	}
 	

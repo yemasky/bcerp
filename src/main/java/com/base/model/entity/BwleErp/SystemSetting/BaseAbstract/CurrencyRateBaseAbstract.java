@@ -15,6 +15,10 @@ public abstract class CurrencyRateBaseAbstract {
 	private Date financial_release_date;
 	private String add_datetime;
 	private Integer employee_id;
+	private Integer auditing_state;
+	private Integer auditing_id;
+	private Integer currency_valid;
+	
 	public String getCurrency_name() {
 		return currency_name;
 	}
@@ -86,6 +90,24 @@ public abstract class CurrencyRateBaseAbstract {
 	}
 	public void setEmployee_id(Integer employee_id) {
 		this.employee_id = employee_id;
+	}
+	public Integer getAuditing_state() {
+		return auditing_state;
+	}
+	public void setAuditing_state(Integer auditing_state) {
+		this.auditing_state = auditing_state;
+	}
+	public Integer getAuditing_id() {
+		return auditing_id;
+	}
+	public void setAuditing_id(Integer auditing_id) {
+		this.auditing_id = auditing_id;
+	}
+	public Integer getCurrency_valid() {
+		return currency_valid;
+	}
+	public void setCurrency_valid(Integer currency_valid) {
+		this.currency_valid = currency_valid;
 	}
 	
 }
