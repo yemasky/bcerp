@@ -8,7 +8,7 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td colspan="7">
+					<td colspan="8">
 						<div class="row p-h-md pull-right">
 							<form name="commitForm" class="form-inline" role="form" ng-submit="commitAuditing(commitForm)" ng-if="auditing.auditing_state<=0">
 								<div class="input-group" ng-if="loginEmployee.id==auditing.employee_id">
@@ -68,10 +68,16 @@
 										trigger-loading="beginLoading"><i class="ti-check"> </i> 通过</button>
 								</div>
 							</span>
-							<span class="input-group-btn" ng-if="loginEmployee.id!=examines.audit_employee_id || examines.audit_state==0">
+							<span class="input-group-btn" ng-if="loginEmployee.id!=examines.audit_employee_id && examines.audit_state==0">
 								<div class="btn-group">
 									<button type="button" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
 										trigger-loading="beginLoading"> 等待审核</button>
+								</div>
+							</span>
+							<span class="input-group-btn" ng-if="examines.audit_state!=0">
+								<div class="btn-group">
+									<button type="button" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+										trigger-loading="beginLoading"> 无操作</button>
 								</div>
 							</span>
 						</div>
@@ -79,7 +85,7 @@
 					</form>
 				</tr>
 				<tr>
-					<td colspan="7">
+					<td colspan="8">
 						#
 					</td>
 				</tr>

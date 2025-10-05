@@ -45,11 +45,11 @@
 					<td>{{employeeNameHash[currencyRate.employee_id]}}</td>
 					<td>{{auditingStateExplain[currencyRate.auditing_state]}}</td>
 					<td>
-						<div class="text-center">
-							<a ng-click="addEdit('edit', currencyRate, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>
-							<a ng-click="delete(currencyRate.currency_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</a>
+						<div class="pull-right btn-group">
+							<a ng-click="addEdit('edit', currencyRate, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(currencyRate.currency_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
 						</div>
-					</td>
+					</td> 
 				</tr>
 			</tbody>
 		</table>
@@ -117,11 +117,11 @@
 										<input type="text" class="form-control w-thumb-lg" ng-model="currencyRate.boe_conversion_rate" required>
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 										<span class="input-group-btn"><button class="btn btn-default" type="button">银行发布日期</button></span>
-										<input type="text" class="form-control w" placeholder="注册日期" ng-model="currencyRate.bank_release_date" value="{{getDay('yyyy-mm-dd')}}"
+										<input type="text" class="form-control w" placeholder="银行发布日期" ng-model="currencyRate.bank_release_date" value="{{getDay('yyyy-mm-dd')}}"
 											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 										<span class="input-group-btn"><button class="btn btn-default" type="button">财务发布日期</button></span>
-										<input type="text" class="form-control w" placeholder="注册日期" ng-model="currencyRate.financial_release_date" value="{{getDay('yyyy-mm-dd')}}"
+										<input type="text" class="form-control w" placeholder="财务发布日期" ng-model="currencyRate.financial_release_date" value="{{getDay('yyyy-mm-dd')}}"
 											data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker required />
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 										<span class="input-group-btn"><button class="btn btn-default" type="button">录入人</button></span>

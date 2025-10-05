@@ -7,13 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>博威利尔.ERP ᵛ¹·⁰·⁰ </title>
 <link rel="shortcut icon" href="/static/favicon.ico">
-<script language="javascript">var __VERSION = ''; var baseDateTime = '2025-10-03 00:47:31', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
+<script language="javascript">var __VERSION = ''; var baseDateTime = '', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
 <link rel="stylesheet" href="/static/styles/app.min.css?" type="text/css" />
 <!-- commom -->
 <script language="javascript" src="/static/jquery-3.4.1.min.js?"></script>
 <script language="javascript">
     var __RESOURCE = '/static/'; var __IMGWEB = 'http://www.xiaoqu.love/xiaoqu/images/';var __WEB = '/erp/';
-    var __ImagesUploadUrl = '9t8_e1HtIvlFp80mcxJ2Tz6yu_6UOPd1';var __ImagesManagerUrl = 'wXyXTSl-qztFp80mcxJ2Tz6yu_6UOPd1';
+    var __ImagesUploadUrl = '9t8_e1HtIvlI4QB0r6DqL835ywKZzi79';var __ImagesManagerUrl = 'wXyXTSl-qztI4QB0r6DqL835ywKZzi79';
+    var __AuditingViewUrl = 'SeL4I7IYWm5I4QB0r6DqL835ywKZzi79';
 //jQuery 插件
 (function ($) {
     $.serializeFormat = function (id) {//取出form的值包括 xxx[yyy]的值
@@ -406,11 +407,15 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $("#"+_id).hide();$("#"+id).show();
         }
         //初始化变量
-        $scope.__RESOURCE = __RESOURCE;
-		$scope._resource = __RESOURCE;
-		$scope.__WEB = __WEB;
-		$scope.employee = {};
+        $scope.__RESOURCE = __RESOURCE;$scope._resource = __RESOURCE;$scope.__WEB = __WEB;$scope.__IMGWEB = __IMGWEB;//'http://localhost/xiaoqu/images/'
 		$scope.companyList = {};
+		$scope.auditingProvisoList = [{id:"1",name:"填写"},{id:"2",name:"审核"}];
+		$scope.currencySymbol = [{id:0,currency_name:"港元",currency_sname:"HKD",currency_symbol:"HK$"},
+								 {id:1,currency_name:"美元",currency_sname:"USD",currency_symbol:"$"},
+								 {id:2,currency_name:"欧元",currency_sname:"EUR",currency_symbol:"€"},
+								 {id:3,currency_name:"人民币",currency_sname:"CNY",currency_symbol:"￥"},];
+		//审核状态 1已遞交審核 2審核通過 -1退回 0未遞交
+		$scope.auditingStateExplain = {"-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过"};
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "1";
@@ -420,6 +425,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					if(result.data.success == true) {
 						$scope.setCommonSetting(result.data.item);
 						$httpService.header('token', result.data.item.employee.e_id);
+						noLogin = "1";
 		            }
 				});
 			}
@@ -525,8 +531,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         $scope.getChannelModule = function(module_id) {
             return $scope.hashEmployeeModule[module_id];
         }
-        $rootScope.defaultChannel = {};
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
+        $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -540,10 +546,25 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					$scope.companyList = common.companyList;
 				}
 				if(typeof(common.employee) != 'undefined') {
-					$scope.employee = common.employee;
+					$scope.employee = angular.copy(common.employee);
 				}
-				$rootScope.__ImagesUploadUrl = common.imagesUploadUrl;
-				$rootScope.__ImagesManagerUrl = common.imagesManagerUrl;
+				if(typeof(common.employeeSector) != 'undefined') {
+					$scope.loginEmployee = angular.copy(common.employeeSector);
+				}
+				//
+				if(typeof(common.employeeList) != 'undefined') {
+					common.employeeList.forEach(function(item) {
+						$scope.employeeHash[item.e_id] = {...item};
+					})
+				}
+				if(typeof(common.sectorList) != 'undefined') {
+					common.sectorList.forEach(function(item) {
+						$scope.sectorHash[item.sector_id] = {...item};
+					})
+				}
+				$rootScope.__ImagesUploadUrl = __ImagesUploadUrl;
+				$rootScope.__ImagesManagerUrl = __ImagesManagerUrl;
+				$rootScope.__AuditingViewUrl = __AuditingViewUrl;
 				//未起作用 ? 
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
@@ -554,7 +575,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				}//未起作用
 			}
 		};
-		$rootScope.employeeChannel = {};
 		$scope.getHashMarket = function (marketList) {
 			var hashMarket = {};
 			if(marketList != '') {
@@ -783,8 +803,8 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
 	  </li>
 	  <li>            
 		<a href class="clear no-padding-h" bs-dropdown="dropdown" data-animation="am-collapse" data-template-url="/app/header/user.html">
-		  <img ng-src="{{employee.avatar}}" onError="this.src='/static/images/userimg/user_h.png'" class="navbar-img pull-right">
-		  <span class="hidden-sm m-l">{{employee.employee_name}}</span>
+		  <img ng-src="{{__IMGWEB + loginEmployee.avatar}}" onError="this.src='/static/images/userimg/user_h.png'" class="navbar-img pull-right">
+		  <span class="hidden-sm m-l">{{loginEmployee.employee_name}}</span>
 		  <b class="caret m-h-xs hidden-sm"></b>
 		</a>
 	  </li>
