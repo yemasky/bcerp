@@ -25,8 +25,8 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 	})
 	
 	$scope.addEdit = function(editType, vehicleModel, i) {
-		$scope.editType = editType;
-		if(typeof(vehicleModel) != 'undefined') {
+		$scope.editType = editType; $scope.vehicleModel = {};
+		if(editType == 'edit' && typeof(vehicleModel) != 'undefined') {
 			$scope.vehicleModel = angular.copy(vehicleModel);
 			$scope.edit_id = angular.copy(vehicleModel.vehicle_model_id);
 			$scope.edit_index = i;

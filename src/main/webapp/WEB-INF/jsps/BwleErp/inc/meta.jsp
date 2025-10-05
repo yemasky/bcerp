@@ -321,6 +321,19 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
             }]
         }
         
+    }).state('app.Marketing', {
+        url: "/Marketing/:view/:id/:channel", //url: "/role/edit?id", 由view的 ui-sref="app.{{module.module_channel}}({view:module.module_view,channel:module.url})" 决定
+        templateUrl: function($routeParams, $rootScope, $scope) {
+			var view = $routeParams.view;//有view访问静态文件
+			return __RESOURCE + 'views/Marketing/'+$routeParams.view+'.html?'+__VERSION;
+        },
+        controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
+		resolve: {
+            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
+				return $ocLazyLoad.load([__RESOURCE + "scripts/controllers/Marketing/"+$stateParams.view+".js?"+__VERSION]);
+            }]
+        }
+        
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
@@ -411,7 +424,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 								 {id:2,currency_name:"欧元",currency_sname:"EUR",currency_symbol:"€"},
 								 {id:3,currency_name:"人民币",currency_sname:"CNY",currency_symbol:"￥"},];
 		//审核状态 1已遞交審核 2審核通過 -1退回 0未遞交
-		$scope.auditingStateExplain = {"-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过"};
+		$scope.auditingStateExplain = {"":"","-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过"};
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "${noLogin}";
@@ -529,6 +542,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
         $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
+        $scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -556,6 +570,17 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common.sectorList) != 'undefined') {
 					common.sectorList.forEach(function(item) {
 						$scope.sectorHash[item.sector_id] = {...item};
+					})
+				}
+				if(typeof(common.cityList) != 'undefined') {
+					$scope.cityList = angular.copy(common.cityList);
+					common.cityList.forEach(function(item) {
+						$scope.cityHash[item.city_id] = {...item};
+					})
+				}
+				if(typeof(common.countryList) != 'undefined') {
+					common.countryList.forEach(function(item) {
+						$scope.countryHash[item.country_id] = {...item};
 					})
 				}
 				$rootScope.__ImagesUploadUrl = __ImagesUploadUrl;

@@ -37,7 +37,7 @@
 					<td>{{vehicleModel.vehicle_end_date}}</td>
 					<td>{{vehicleModel.vehicle_add_date}}</td>
 					<td>
-						<div class="text-center btn-group">
+						<div class="pull-right btn-group">
 							<a ng-click="addEdit('edit', vehicleModel, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
 							<a ng-click="delete(vehicleModel.vehicle_model_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
 						</div>
@@ -62,11 +62,8 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">车厂</label>
 								<div class="col-sm-4">
-									<select class="form-control w-sm" name="classify_id" id="classify_id" ng-model="vehicleModel.classify_id" required>
-										<option class="form-control w-sm" ng-repeat="(i, classify) in classifyList" value="{{classify.classify_id}}"
-											ng-selected="vehicleModel.classify_id==classify.classify_id">
-											{{classify.classify_name}} {{classify.classify_enname}}
-										</option>
+									<select class="form-control w-sm" name="classify_id" id="classify_id" ng-model="vehicleModel.classify_id" 
+										ng-options="classify.classify_id as classify.classify_name for classify in classifyList" required>
 									</select>
 								</div>
 							</div>

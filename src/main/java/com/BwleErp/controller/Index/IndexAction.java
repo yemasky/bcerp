@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
+import com.base.model.entity.BwleErp.SystemSetting.Country;
+import com.base.model.entity.BwleErp.SystemSetting.CountryCity;
 import com.base.model.entity.BwleErp.SystemSetting.RoleModule;
 import com.base.model.entity.BwleErp.SystemSetting.company.CompanySector;
 import com.base.model.entity.BwleErp.SystemSetting.employee.Employee;
@@ -172,7 +174,7 @@ public class IndexAction extends AbstractAction {
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		if(iModule_idsList != null && iModule_idsList.length > 0) {
 			whereRelation = new WhereRelation();
-			whereRelation.IN("module_id", iModule_idsList).ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
+			whereRelation.IN("module_id", iModule_idsList).EQ("is_release", "1").ORDER_DESC("module_channel").ORDER_DESC("module_father_id")
 					.ORDER_DESC("module_order").ORDER_DESC("action_order").setTable_clazz(Modules.class);
 			needEncrypt.setNeedEncrypt(true);
 			needEncrypt.setNeedEncrypt("module_id", "url");
@@ -193,8 +195,18 @@ public class IndexAction extends AbstractAction {
 		whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(CompanySector.class);
 		List<CompanySector> sectorList = this.generalService.getEntityList(whereRelation);
-		
-		// System.out.println(new Gson().toJson(employeeModuleVoList));
+		//获取所有城市
+		whereRelation = new WhereRelation();
+		whereRelation.ORDER_ASC("country_id").ORDER_ASC("city_father_id").ORDER_ASC("city_id")
+			.setTable_clazz(CountryCity.class);
+		List<CountryCity> cityList = this.generalService.getEntityList(whereRelation);
+		//获取所有国家
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(Country.class);
+		List<Country> countryList = generalService.getEntityList(whereRelation);
+		//
+		this.success.setItem("countryList", countryList);
+		this.success.setItem("cityList", cityList);
 		this.success.setItem("employeeMenu", employeeModuleVoList);
 		this.success.setItem("module_channel", "Setting");
 		this.success.setItem("employee", employeeVo);

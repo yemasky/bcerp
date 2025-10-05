@@ -250,7 +250,7 @@
 										</td>
 									</tr>
 									<tr>
-										<td>财务部填写</td><td colspan="5"></td>
+										<td>财务部审核</td><td colspan="5"></td>
 									</tr>
 									<tr>
 										<td>报关品名</td><td>海关编码</td><td>退税率</td><td>报关单位</td><td colspan="2">海关数据来源</td>
@@ -310,7 +310,7 @@
 			</div>
 			</form>
 		</div>
-		<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html'"></div>
+		<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html'" ng-if="editType=='edit'"></div>
 	</div>
 </div>
 

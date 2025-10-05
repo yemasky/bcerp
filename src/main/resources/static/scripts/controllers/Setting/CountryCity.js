@@ -6,7 +6,7 @@ app.controller('CountryCityController', function($rootScope, $scope, $httpServic
 	$scope.param = {}; $scope.edit_id = ""; $scope.editType = "";
 	//定义变量
 	$scope.cityList = [];
-	$scope.provinceHash = {}; $scope.provinceList = []; $scope.city = {};
+	$scope.provinceHash = {}; $scope.city = {};
 	let aside;
 	$httpService.header('method', 'getCountryCity');
 	$httpService.post(urlParam, $scope, function(result) {
@@ -17,13 +17,18 @@ app.controller('CountryCityController', function($rootScope, $scope, $httpServic
 		}
 		let cityList = result.data.item.cityList;
 		for (let i in cityList) {
+			let city = cityList[i];
+			let country_id = city.country_id;
 			if (cityList[i].city_father_id == 0) {
-				$scope.provinceHash[cityList[i].city_id] = cityList[i];
-				$scope.provinceList.push(cityList[i]);
+				if(typeof($scope.provinceHash[country_id]) == 'undefined') {
+					$scope.provinceHash[country_id] = {};
+					$scope.provinceHash[country_id][0] = {'city_id':0,'city_name':'作为省份'};
+				}
+				$scope.provinceHash[country_id][cityList[i].city_id] = cityList[i];
 			}
 		}
 		$scope.cityList = $scope.arrayToTree(cityList);
-		console.log($scope.cityList);
+		console.log($scope.provinceHash);
 		//$scope.$apply();//刷新数据
 	})
 
@@ -69,7 +74,8 @@ app.controller('CountryCityController', function($rootScope, $scope, $httpServic
 
 			if ($scope.editType == "add") {
 				$scope.param.city.city_id = result.data.item.city_id;
-				$scope.cityList.push(angular.copy($scope.param.city));
+				//$scope.cityList.push(angular.copy($scope.param.city));
+				Array.prototype.push.apply($scope.cityList, $scope.param.city);
 			}
 			if ($scope.editType == "edit") {
 				$scope.cityList[$scope.edit_index] = angular.copy($scope.param.city);

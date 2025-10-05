@@ -39,7 +39,7 @@
 					<td>{{classify.classify_introduce}}</td>
 					<td>{{classify.classify_history}}</td>
 					<td>
-						<div class="text-center btn-group">
+						<div class="pull-right btn-group">
 							<a ng-click="addEdit('edit', classify, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
 							<a ng-click="delete(classify.classify_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
 						</div>
@@ -64,12 +64,8 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">车种</label>
 								<div class="col-sm-4">
-									<select class="form-control w-sm" name="category_id" id="category_id"  ng-init="classify.category_id = 1" 
-										ng-model="classify.category_id" required>
-										<option class="form-control w-sm" ng-repeat="(i, category) in categoryList" value="{{category.category_id}}"
-											ng-selected="classify.category_id==category.category_id">
-											{{category.category_name}}
-										</option>
+									<select class="form-control w-sm" name="classify_id" id="classify_id" ng-model="classify.category_id"
+										ng-options="category.category_id as category.category_name for category in categoryList" required>
 									</select>
 								</div>
 							</div>
@@ -82,11 +78,8 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">国别</label>
 								<div class="col-sm-4">
-									<select class="form-control w-sm" name="country_id" id="country_id" ng-model="classify.country_id" required>
-										<option class="form-control w-sm" ng-repeat="(i, country) in countryList" value="{{country.country_id}}" 
-											 ng-selected="classify.country_id==country.country_id">
-											{{country.country_name}}-{{country.country_enname}}
-										</option>
+									<select class="form-control w-sm" name="country_id" id="country_id" ng-model="classify.country_id"
+										ng-options="country.country_id as country.country_name for country in countryList" required>
 									</select>
 								</div>
 							</div>

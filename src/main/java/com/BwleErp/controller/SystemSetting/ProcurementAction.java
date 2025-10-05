@@ -63,7 +63,8 @@ public class ProcurementAction extends AbstractAction {
 
 	public void doGetCountryCity(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.ORDER_ASC("city_father_id").ORDER_ASC("city_id").setTable_clazz(CountryCityVo.class);
+		whereRelation.ORDER_ASC("country_id").ORDER_ASC("city_father_id").ORDER_ASC("city_id")
+			.setTable_clazz(CountryCityVo.class);
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		//needEncrypt.setNeedEncrypt(true);
 		//needEncrypt.setNeedEncrypt("city_id", NeedEncrypt._ENCRYPT);

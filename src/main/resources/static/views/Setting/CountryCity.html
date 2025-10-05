@@ -18,7 +18,7 @@
 					<th>名称</th>
 					<th>拼音</th>
 					<th></th>
-					<th></th>
+					<th>国家</th>
 					<th></th>
 					<th></th>
 				</tr>
@@ -54,15 +54,22 @@
 							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
 							<button type="button" class="close" ng-click="$hide()">&times;</button>
 						</div>
-						<div class="panel-body">                    
+						<div class="panel-body">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">选择国家</label>
+								<div class="col-sm-4">
+									<select class="form-control w-sm" ng-model="city.country_id"
+										ng-options="country.country_id as country.country_name for country in countryHash" required>
+									</select>
+								</div>
+							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label">选择省份</label>
 								<div class="col-sm-4">
-									<button type="button" class="btn btn-default" ng-model="city.city_father_id"
-										data-html="1" data-toggle="true" bs-options="city.city_id as city.city_name for city in provinceList" 
-											bs-select placeholder="做为省份" ng-change="">
-										Action <span class="caret"></span>
-									</button>
+									<select class="form-control w-sm" ng-model="city.city_father_id"
+										ng-options="city.city_id as city.city_name for city in provinceHash[city.country_id]" 
+											placeholder="做为省份">
+									</select>
 								</div>
 							</div>
 							<div class="form-group">

@@ -19,3 +19,9 @@
 这些快捷键和方法可以帮助你更好地理解代码的结构和逻辑，从而提高开发效率。
 
 : : 
+
+
+https://www.yuque.com/yangzhuzai/fumamx/silvggdk7g3fbzhf
+appid/appsecret：I4UfdbMi/40270f10408f94db496ed96c088ce84d1fc77b98
+客户库同步的接口文档
+客户数据以孚盟同步的为准，ERP不做维护，可查询即可。

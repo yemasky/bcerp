@@ -1,4 +1,4 @@
-package com.BwleErp.controller.SystemSetting;
+package com.BwleErp.controller.Marketing;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class MarketingAction extends AbstractAction {
+public class CustomerAction extends AbstractAction {
 	@Autowired
 	private GeneralService generalService;
 	
