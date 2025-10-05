@@ -53,7 +53,6 @@ public class ProcurementAction extends AbstractAction {
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		generalService.closeConnection();
 	}
 
 	@Override

@@ -410,6 +410,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 								 {id:1,currency_name:"美元",currency_sname:"USD",currency_symbol:"$"},
 								 {id:2,currency_name:"欧元",currency_sname:"EUR",currency_symbol:"€"},
 								 {id:3,currency_name:"人民币",currency_sname:"CNY",currency_symbol:"￥"},];
+		//审核状态 1已遞交審核 2審核通過 -1退回 0未遞交
+		$scope.auditingStateExplain = {"-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过"};
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "${noLogin}";
@@ -525,7 +527,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         $scope.getChannelModule = function(module_id) {
             return $scope.hashEmployeeModule[module_id];
         }
-        $rootScope.defaultChannel = {};
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
         $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
 		$scope.setCommonSetting = function(common) {//$common == null?

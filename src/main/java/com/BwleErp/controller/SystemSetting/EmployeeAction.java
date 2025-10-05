@@ -79,7 +79,6 @@ public class EmployeeAction extends AbstractAction {
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		this.generalService.closeConnection();
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class DbcpPool {
 		this.close_num++;
 		System.out.println("-------=======>关闭链接："+this.close_num);
 		this.connection.close();
-		conn.close();
+		if(conn != null) conn.close();
 		//if (this.config.getDrive().equals("HikariCP")) this.hikariCPdataSource.close();
 	}
 

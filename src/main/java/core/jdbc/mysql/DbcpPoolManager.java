@@ -107,8 +107,7 @@ public class DbcpPoolManager {
 			logger.info("得到 pool connection. ActiveConnectionNum: " + pool.getActiveConnectionNum());
 		} else {
 			logger.warning("连接已满,等待0.5秒");
-			if (time == 0)
-				time = System.currentTimeMillis();
+			this.time = System.currentTimeMillis();
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
@@ -117,13 +116,13 @@ public class DbcpPoolManager {
 			}
 			long timeout = 5000;
 			if ((System.currentTimeMillis() - time) >= timeout) {// 超时5秒
-				time = 0;
+				this.time = 0;
 				logger.warning("没有取到连接.连接已满.超时5秒");
 				// throw new SQLException("没有取到连接.连接已满.超时5秒");
 			}
 			return this.getConnection(jdbcDsn);
 		}
-
+		this.time = 0;
 		return connection;
 	}
 

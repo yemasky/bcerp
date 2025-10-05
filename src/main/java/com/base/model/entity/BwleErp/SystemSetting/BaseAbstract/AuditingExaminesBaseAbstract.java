@@ -13,7 +13,7 @@ public abstract class AuditingExaminesBaseAbstract {
 	private Integer position_id;
 	private String audit_datetime;
 	private String audit_content;
-	private Integer auditing_state;
+	private Integer audit_state;
 	private Integer proviso;
 	private Integer agent;
 	private Integer examine_valid;
@@ -89,11 +89,11 @@ public abstract class AuditingExaminesBaseAbstract {
 	public void setAudit_content(String audit_content) {
 		this.audit_content = audit_content;
 	}
-	public Integer getAuditing_state() {
-		return auditing_state;
+	public Integer getAudit_state() {
+		return audit_state;
 	}
-	public void setAuditing_state(Integer auditing_state) {
-		this.auditing_state = auditing_state;
+	public void setAudit_state(Integer audit_state) {
+		this.audit_state = audit_state;
 	}
 	public Integer getProviso() {
 		return proviso;

@@ -25,6 +25,7 @@
 					<th>银行发布日期</th>
 					<th>财务发布日期</th>
 					<th>录入人</th>
+					<th>审核</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -42,6 +43,7 @@
 					<td>{{currencyRate.bank_release_date}}</td>
 					<td>{{currencyRate.financial_release_date}}</td>
 					<td>{{employeeNameHash[currencyRate.employee_id]}}</td>
+					<td>{{auditingStateExplain[currencyRate.auditing_state]}}</td>
 					<td>
 						<div class="text-center">
 							<a ng-click="addEdit('edit', currencyRate, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</a>

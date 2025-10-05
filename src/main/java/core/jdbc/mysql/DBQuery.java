@@ -37,9 +37,6 @@ public abstract class DBQuery {
 	private static HashMap<Class<?>, String> tableMap= new HashMap<>();
 	
 	private static ConcurrentHashMap<Thread, HashMap<String, Connection>> currentConnHashMap = new ConcurrentHashMap<>();
-	// 当前使用connection
-	private Connection writeConnection = null;
-	private Connection readConnection = null;
 
 	public DBQuery(String dbJdbcDsn) throws SQLException {
 		if (!dbJdbcDsn.equals(""))
@@ -170,11 +167,10 @@ public abstract class DBQuery {
 	}
 	//含 Entity 表示返回的是 实体类 没有则是 hashMap数据
 	private List<HashMap<String, Object>> getList(String sql, Object... paramters) throws SQLException {
-		ResultSet rs = null;
 		try {
 			long start = System.currentTimeMillis();
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);//
-			rs = this.executeForQuery(preparedStatement, paramters);
+			ResultSet rs = this.executeForQuery(preparedStatement, paramters);
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, this.table_class, false);
 			logger.info("查询耗时：" + (System.currentTimeMillis() - start) + " ms" + ",SQL:"+sql);
 			if (rs != null)
@@ -192,7 +188,6 @@ public abstract class DBQuery {
 	public List<HashMap<String, Object>> getList(Object object, WhereRelation whereRelation) throws SQLException {
 		Class<?> objectClass = object.getClass();
 		this.table(objectClass);
-		ResultSet rs = null;
 		String sql = "";
 		try {
 			HashMap<String, Method> methodHashMap = entityParseMap.get(objectClass).getMethodHashMap();//
@@ -206,7 +201,7 @@ public abstract class DBQuery {
 			sql = whereRelation.sql(tableAnnotation.getTableName());
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);
 			logger.debug(sql);
-			rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
+			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, objectClass, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
@@ -222,14 +217,13 @@ public abstract class DBQuery {
 	
 	public List<HashMap<String, Object>> getListByEntity(Class<?> entityClassT, WhereRelation whereRelation) throws SQLException {
 		this.table(entityClassT);
-		ResultSet rs = null;
 		String sql = "";
 		try {
 			TableAnnotation tableAnnotation = getTableAnnotation(entityClassT);// 取得objectClass table的Annotation
 			sql = whereRelation.sql(tableAnnotation.getTableName());
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);
 			logger.debug(sql);
-			rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
+			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, entityClassT, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
@@ -268,7 +262,6 @@ public abstract class DBQuery {
 	public <T> List<T> getEntityList(Class<T> entityClassT, Object object) throws SQLException {
 		this.table(entityClassT);
 		List<T> list = new ArrayList<>();
-		ResultSet rs = null;
 		String sql = "";
 		WhereRelation whereRelation = new WhereRelation();
 		try {
@@ -285,7 +278,7 @@ public abstract class DBQuery {
 			list = new ArrayList<T>();
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);
 			logger.debug(sql);
-			rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
+			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
@@ -303,12 +296,11 @@ public abstract class DBQuery {
 		this.table(entityClassT);
 		String sql = whereRelation.sql(this.table_name);
 		List<T> list;
-		ResultSet rs = null;
 		try {
 			list = new ArrayList<T>();
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);
 			logger.debug(sql);
-			rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
+			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
@@ -326,12 +318,11 @@ public abstract class DBQuery {
 		String sql = whereRelation.sql(this.table_name);
 		this.parseEntityClass(entityClassT);
 		List<T> list;
-		ResultSet rs = null;
 		try {
 			list = new ArrayList<T>();
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);
 			logger.debug(sql);
-			rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
+			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
 			if (rs != null)
 				rs.close();
@@ -354,10 +345,9 @@ public abstract class DBQuery {
 	public Object getOne(WhereRelation whereRelation) throws SQLException, InterruptedException {
 		String sql = whereRelation.sql(this.table_name);
 		Object result = null;
-		ResultSet rs = null;
 		try {
 			PreparedStatement preparedStatement = this.thisReadConnection().prepareStatement(sql);
-			rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
+			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			if (rs.next()) {
 				result = rs.getObject(1);
 			}
@@ -973,38 +963,26 @@ public abstract class DBQuery {
 
 	private Connection thisWriteConnection() throws SQLException {
 		String key = this.dbJdbcDsn + "." + this.write;
-		if (this.writeConnection == null || !this.writeConnection.isValid(1)) {
-			this.writeConnection = DbcpPoolManager.instance().getConnection(key);
-		}
-		this.setCurrentConnHashMap(key, this.writeConnection);
-		return this.writeConnection;
+		Connection conn = DbcpPoolManager.instance().getConnection(key);
+		this.setCurrentConnHashMap(key, conn);
+		return conn;
 	}
 
 	private Connection thisReadConnection() throws SQLException {
 		String key = this.dbJdbcDsn + "." + this.read;
-		if (this.readConnection == null || !this.readConnection.isValid(1)) {
-			this.readConnection = DbcpPoolManager.instance().getConnection(key);
-		}
-		this.setCurrentConnHashMap(key, this.readConnection);
-		return this.readConnection;
+		Connection conn = DbcpPoolManager.instance().getConnection(key);
+		this.setCurrentConnHashMap(key, conn);
+		return conn;
 	}
 	
 	// 释放连接
 	public void closeConnection() throws SQLException { 
-		this.thisWriteConnection().close();
-		this.thisReadConnection().close();
+		//if (this.readConnection == null) this.readConnection.close();
+		//if (this.writeConnection == null) this.writeConnection.close();
+		this.closeReadConnection();
+		this.closeWriteConnection();
 	}
 	
-	public void freeConnection() throws SQLException {
-		if (this.readConnection != null) {
-			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.read, this.readConnection);
-		}
-
-		if (this.writeConnection != null) {
-			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.write, this.writeConnection);
-		}
-	}
-
 	private void setCurrentConnHashMap(String key, Connection connection) {
 		Thread thread = Thread.currentThread();
 		HashMap<String, Connection> jdbcDsnMap = currentConnHashMap.get(thread);
@@ -1033,15 +1011,12 @@ public abstract class DBQuery {
 				Connection c = jdbcDsnMap.get(k);
 				if (c != null) {
 					//DbcpPoolManager.instance().freeConnection(k, jdbcDsnMap.get(k));
-					System.out.println("jdbcDsnMap=====currentConnHashMap>"+c.isValid(0));
-					if(c.isValid(0) == false) c.close();
+					if(c.isValid(0) == false) {
+						System.out.println("jdbcDsnMap=====currentConnHashMap>false");
+						c.close();
+					}
 				}
 			}
-		}
-		if(this.readConnection != null || this.writeConnection != null) {
-			if(this.readConnection != null && this.readConnection.isValid(0) == false) this.readConnection.close();
-			if(this.writeConnection != null && this.writeConnection.isValid(0) == false) this.writeConnection.close();
-			System.out.println("=====currentConnHashMap>readConnection writeConnection");
 		}
 	}
 
@@ -1071,32 +1046,27 @@ public abstract class DBQuery {
 	}*/
 	// 释放读连接
 	public void closeReadConnection() throws SQLException {
-		if (this.readConnection != null) {
-			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.read, this.readConnection);
-		}
+		String readKey = this.dbJdbcDsn + "." + this.read;
+		DbcpPoolManager.instance().freeConnection(readKey, null);
 	}
 
 	// 释放写连接
 	public void closeWriteConnection() throws SQLException {
-		if (this.writeConnection != null) {
-			DbcpPoolManager.instance().freeConnection(this.dbJdbcDsn + "." + this.write, this.writeConnection);
-		}
+		String writeKey = this.dbJdbcDsn + "." + this.write;
+		DbcpPoolManager.instance().freeConnection(writeKey, null);
+
 	}
 
 	public void setTransaction(boolean isTransaction) throws SQLException {
 		if (isTransaction) {
-			if(this.writeConnection == null || this.writeConnection.isClosed()) {
-				this.thisWriteConnection();//.setAutoCommit(false);
-				//return;
-			} 
-			this.writeConnection.setAutoCommit(false);// 开始事务
+			this.thisWriteConnection().setAutoCommit(false);// 开始事务
 		} else {
-			if(this.writeConnection != null)this.writeConnection.setAutoCommit(true);// 删除事务
+			this.thisWriteConnection().setAutoCommit(true);// 删除事务
 		}
 	}
 
 	public void commit() throws SQLException {
-		this.writeConnection.commit();
+		this.thisWriteConnection().commit();
 	}
 
 	/**
@@ -1105,7 +1075,7 @@ public abstract class DBQuery {
 	 * @throws SQLException
 	 */
 	public void rollback() throws SQLException {
-		if(this.writeConnection != null && this.writeConnection.isValid(0)) this.writeConnection.rollback();
+		this.thisWriteConnection().rollback();
 	}
 
 }

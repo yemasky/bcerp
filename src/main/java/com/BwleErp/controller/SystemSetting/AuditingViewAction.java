@@ -28,7 +28,9 @@ import com.google.gson.reflect.TypeToken;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 工作流操作 作者 CooC email yemasky@msn.com
+ */
 @Component
 public class AuditingViewAction extends AbstractAction {
 	@Autowired
@@ -53,6 +55,9 @@ public class AuditingViewAction extends AbstractAction {
 		case "commitAuditing":
 			this.doCommitAuditing(request, response);
 			break;
+		case "verifyAuditing":
+			this.doVerifyAuditing(request, response);
+			break;	
 		case "deleteAuditing":
 			this.doDeleteAuditing(request, response);
 			break;
@@ -65,7 +70,6 @@ public class AuditingViewAction extends AbstractAction {
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		generalService.closeConnection();
 	}
 
 	@Override
@@ -139,7 +143,7 @@ public class AuditingViewAction extends AbstractAction {
 		String view = module.getModule_view();
 		Method executeExamines = AuditingExaminesAction.class.getMethod(view, AuditingExaminesDTO.class);
 		//
-		whereRelation = new WhereRelation();//取得所有员工
+		whereRelation = new WhereRelation();//
 		whereRelation.EQ("auditing_valid", 1).EQ("auditing_id", auditing_id).setTable_clazz(Auditing.class);
 		Auditing auditing = (Auditing) this.generalService.getEntity(whereRelation);
 		Type type = new TypeToken<HashMap<Integer, AuditingExamine>>(){}.getType();
@@ -152,6 +156,7 @@ public class AuditingViewAction extends AbstractAction {
 		update.setStatus(auditingStatus);
 		update.setAuditing_date(Utility.instance().getTodayDate());
 		update.setAuditing_employee_id((Integer) request.getAttribute("employee_id"));
+		//开始事务
 		this.generalService.setTransaction(true);
 		executeExamines.invoke(new AuditingExaminesAction(this.generalService), update);//更新狀態
 		
@@ -165,14 +170,15 @@ public class AuditingViewAction extends AbstractAction {
 			auditingExamines.setAudit_employee_id(examine.getEmployee_id());
 			auditingExamines.setAudit_step(examine.getStep());
 			auditingExamines.setAuditing_id(auditing.getAuditing_id());
-			auditingExamines.setAuditing_state(0);//剛開始插入初始狀態是 0 未遞交審核
 			auditingExamines.setEmployee_id((Integer) request.getAttribute("employee_id"));
 			auditingExamines.setPosition_id(examine.getPosition_id());
 			auditingExamines.setSector_id(examine.getSector_id());
 			auditingExamines.setModule_id(module_id);
 			auditingExamines.setLink_id(update_id);
 			auditingExamines.setAdd_datetime(Utility.instance().getTodayDate());
-			auditingExamines.setExamine_valid(0);
+			auditingExamines.setAudit_state(0);//审核状态 0未流转未审核 1已流转未审核 2審核通過 -1退回
+			if(examine.getStep() == 0) auditingExamines.setAudit_state(1);
+			auditingExamines.setExamine_valid(1);
 			auditingExaminesList.add(auditingExamines);
 		}
 		this.generalService.batchSave(auditingExaminesList);
@@ -190,8 +196,56 @@ public class AuditingViewAction extends AbstractAction {
 		if(auditing_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();
 			whereRelation.EQ("auditing_id", auditing_id).setUpdate("auditing_valid", 0).setTable_clazz(Auditing.class);
-			generalService.update(whereRelation);
+			this.generalService.update(whereRelation);
 		}
+	}
+	
+	public void doVerifyAuditing(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		AuditingExamines examines = this.modelMapper.map(request.getAttribute("examines"), AuditingExamines.class);
+		if(examines != null && examines.getExamine_id() > 0) {//update
+			WhereRelation whereRelation = new WhereRelation();//可以加上判断代理人来进行审核
+			whereRelation.EQ("examine_id", examines.getExamine_id()).EQ("audit_employee_id", request.getAttribute("employee_id"))
+				.EQ("audit_step", examines.getAudit_step()).setUpdate("audit_state", examines.getAudit_state());
+			if(examines.getAudit_content() != null) whereRelation.setUpdate("audit_content", examines.getAudit_content());
+			whereRelation.setUpdate("audit_datetime", Utility.instance().getTodayDate()).setTable_clazz(AuditingExamines.class);
+			this.generalService.setTransaction(true);
+			this.generalService.update(whereRelation);
+			//判断更新下一步 
+			whereRelation = new WhereRelation();//可以加上判断代理人来进行审核
+			whereRelation.EQ("auditing_id", examines.getAuditing_id()).EQ("module_id", examines.getModule_id())
+				.EQ("link_id", examines.getLink_id()).EQ("employee_id", examines.getEmployee_id())
+				.EQ("audit_step", examines.getAudit_step()+1).setTable_clazz(AuditingExamines.class);
+			AuditingExamines isNextExamines = (AuditingExamines) this.generalService.getEntity(whereRelation);
+			if(isNextExamines != null && examines.getAudit_state() != -1) {//如果退回则不更新下一步
+				whereRelation.setUpdate("audit_state", 1);
+				this.generalService.update(whereRelation);//更新流转
+			} 
+			//如果是退回 把还没审核的之后的数据删除
+			if(examines.getAudit_state() == -1) {
+				whereRelation = new WhereRelation();//可以加上判断代理人来进行审核
+				whereRelation.EQ("auditing_id", examines.getAuditing_id()).EQ("module_id", examines.getModule_id())
+					.EQ("link_id", examines.getLink_id()).EQ("audit_state", 0).setTable_clazz(AuditingExamines.class);
+				this.generalService.delete(whereRelation);
+			}
+			if(isNextExamines == null || examines.getAudit_state() == -1) {//最后一步 或者退回 更新提出审核的模块 
+				String channel = request.getParameter("c");
+				int module_id = EncryptUtiliy.instance().intIDDecrypt(channel);
+				whereRelation = new WhereRelation();//
+				whereRelation.EQ("module_id", module_id).setTable_clazz(Modules.class);
+				Modules module = (Modules) this.generalService.getEntity(whereRelation);
+				String view = module.getModule_view();
+				Method executeExamines = AuditingExaminesAction.class.getMethod(view, AuditingExaminesDTO.class);
+				AuditingExaminesDTO update = new AuditingExaminesDTO();
+				update.setUpdate_id(examines.getLink_id());
+				update.setStatus(examines.getAudit_state()+"");
+				update.setAuditing_date(Utility.instance().getTodayDate());
+				update.setAuditing_employee_id((Integer) request.getAttribute("employee_id"));
+				this.generalService.setTransaction(true);
+				executeExamines.invoke(new AuditingExaminesAction(this.generalService), update);//更新狀態
+			}
+			this.generalService.commit();
+		}
+		this.success.setItem("audit_datetime", Utility.instance().getTodayDate());
 	}
 
 }
