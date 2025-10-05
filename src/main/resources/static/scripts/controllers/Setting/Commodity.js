@@ -13,6 +13,7 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 	$scope.step['attr'].step = "0";$scope.step['attr'].length = 0;
 	$scope.step['images'].step = "0";$scope.step['images'].length = 0;
 	$scope.step['hs'].step = "0";$scope.step['hs'].length = 0;
+	///////////////////////
 	$scope.images = {};$scope.attribute = {};$scope.hs = {};
 	$scope.systypeList = [];$scope.systypeHash = {};//系统分类
 	$scope.commodityPage = {};$scope.unitList = {};$scope.unitHash = {};
@@ -82,6 +83,8 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 			//let images = 
 			$scope.edit_id = angular.copy(commodity.commodity_id);
 			$scope.edit_index = i;
+			//工作流审核相关
+			$rootScope.param = {};$rootScope.param.auditing = $scope.commodity;$rootScope.param.id = $scope.commodity.commodity_id;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';

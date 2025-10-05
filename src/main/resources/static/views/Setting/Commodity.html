@@ -26,9 +26,7 @@
 					<th>HS编码来源</th>
 					<th>产品提交人</th>
 					<th>提交时间</th>
-					<th>流转步骤</th>
 					<th>审核</th>
-					<th>审核时间</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -40,18 +38,16 @@
 					<td>{{commodity.commodity_hs_name}}</td>
 					<td>{{commodity.commodity_name}}</td>
 					<td>{{commodity.commodity_enname}}</td>
-					<td>{{commodity.commodity_unit}}</td>
-					<td>{{commodity.commodity_unit_en}}</td>
+					<td>{{unitHash[commodity.unit_id].unit_name}}</td>
+					<td>{{unitHash[commodity.unit_id].unit_enname}}</td>
 					<td>{{commodity.commodity_unit_seaport}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
-					<td>{{i+1}}</td>
+					<td>{{commodity.commodity_hs_code}}</td>
+					<td>{{commodity.commodity_hs_source}}</td>
+					<td>{{employeeHash[commodity.employee_id].employee_name}}</td>
+					<td>{{commodity.add_datetime}}</td>
+					<td>{{auditingStateExplain[commodity.auditing_state]}}</td>
 					<td>
-						<div class="text-center btn-group">
+						<div class="pull-right btn-group">
 							<a ng-click="addEdit('edit', commodity, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i></a>
 							<a ng-click="delete(commodity.commodity_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i></a>
 						</div>
@@ -65,6 +61,10 @@
 								ng-class="{active:$index+1==commodityPage.currentPage}" ng-click="nextPage($index+1)">
 								{{$index+1}}
 							</button>
+							<input type="text" size="9" class="form-control w-thumb" ng-model="commodityPage.perPage">
+							<span class="btn input-group-btn">
+								<button class="btn btn-default" type="submit">Go!</button>
+							</span>
 						</div>
 					</td>
 				</tr>

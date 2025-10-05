@@ -21,6 +21,10 @@ public abstract class CommodityBaseAbstract {
 	private Integer employee_id;
 	private String add_datetime;
 	private Integer commodity_valid;
+	private Integer auditing_state;
+	private Integer auditing_id;
+	private String auditing_date;
+	private Integer auditing_employee_id;
 	public Integer getSystype_id() {
 		return systype_id;
 	}
@@ -140,5 +144,29 @@ public abstract class CommodityBaseAbstract {
 	}
 	public void setCommodity_valid(Integer commodity_valid) {
 		this.commodity_valid = commodity_valid;
+	}
+	public Integer getAuditing_state() {
+		return auditing_state;
+	}
+	public void setAuditing_state(Integer auditing_state) {
+		this.auditing_state = auditing_state;
+	}
+	public Integer getAuditing_id() {
+		return auditing_id;
+	}
+	public void setAuditing_id(Integer auditing_id) {
+		this.auditing_id = auditing_id;
+	}
+	public String getAuditing_date() {
+		return auditing_date;
+	}
+	public void setAuditing_date(String auditing_date) {
+		this.auditing_date = auditing_date;
+	}
+	public Integer getAuditing_employee_id() {
+		return auditing_employee_id;
+	}
+	public void setAuditing_employee_id(Integer auditing_employee_id) {
+		this.auditing_employee_id = auditing_employee_id;
 	}
 }

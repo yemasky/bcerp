@@ -31,8 +31,8 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 			currencySymbol.forEach((val, i) => {
 				if(currencyRate.currency_name == val.currency_name) $scope.currencyRate.currency = i;
 			});
+			//工作流审核相关
 			$rootScope.param = {};$rootScope.param.auditing = $scope.currencyRate;$rootScope.param.id = $scope.currencyRate.currency_id;
-			$rootScope.param.employeeNameHash = $scope.employeeNameHash;
 		}
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';

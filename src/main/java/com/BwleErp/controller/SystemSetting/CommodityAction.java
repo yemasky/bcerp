@@ -28,7 +28,9 @@ import core.jdbc.mysql.WhereRelation;
 import com.base.util.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 品名库 作者 CooC email yemasky@msn.com 2025/10/05
+ */
 @Component
 public class CommodityAction extends AbstractAction {
 	@Autowired
@@ -120,13 +122,7 @@ public class CommodityAction extends AbstractAction {
 		PageVoEntity<CategoryCommodityVo> commodityVoPage = new PageVoEntity<>();
 		BeanUtils.copyProperties(commodityPage, commodityVoPage);
 		commodityVoPage.setPageList(commodityVoList);
-		//判断工作流
-		String channel = request.getParameter("channel");
-		int module_id = EncryptUtiliy.instance().intIDDecrypt(channel);
-		whereRelation = new WhereRelation();
-		whereRelation.EQ("module_id", module_id).EQ("auditing_valid", 1).setTable_clazz(Auditing.class);
-		Auditing auditing = (Auditing) this.generalService.getEntity(whereRelation);
-		//
+		//单位
 		this.success.setItem("systypeList", systypeList);
 		this.success.setItem("unitList", unitList);
 		this.success.setItem("commodityPage", commodityVoPage);
@@ -155,45 +151,6 @@ public class CommodityAction extends AbstractAction {
 		List<CategoryCommodityAttribute> insertAttribute = new ArrayList<>();
 		this.generalService.setTransaction(true);
 		if (commodity_id > 0) {// update
-			//
-			if (attributeList != null) {
-				for (String k : attributeList.keySet()) {
-					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
-					BeanUtils.copyProperties(attributeList.get(k), insertData);
-					insertData.setAttribute_type(edit_id);
-					Integer check = attributeList.get(k).getAttribute_check();
-					if (check == null)
-						insertData.setAttribute_check(0);
-					insertData.setAttribute_type("attr");
-					insertData.setCommodity_id(commodity_id);
-					insertAttribute.add(insertData);
-				}
-			}
-			if (hsList != null) {
-				for (String k : hsList.keySet()) {
-					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
-					BeanUtils.copyProperties(hsList.get(k), insertData);
-					insertData.setAttribute_type("hs");
-					insertData.setAttribute_check(0);
-					insertData.setAttribute_enkey("");
-					insertData.setAttribute_enval("");
-					insertData.setCommodity_id(commodity_id);
-					insertAttribute.add(insertData);
-				}
-			}
-			if (imagesList != null) {
-				for (String k : imagesList.keySet()) {
-					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
-					BeanUtils.copyProperties(imagesList.get(k), insertData);
-					insertData.setAttribute_type("images");
-					insertData.setAttribute_check(0);
-					insertData.setAttribute_enkey("");
-					insertData.setAttribute_enval("");
-					insertData.setAttribute_key(k);
-					insertData.setCommodity_id(commodity_id);
-					insertAttribute.add(insertData);
-				}
-			}
 			WhereRelation whereRelation = new WhereRelation();
 			whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodity.class);
 			this.generalService.updateEntity(commodity, whereRelation);
@@ -202,52 +159,53 @@ public class CommodityAction extends AbstractAction {
 			whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodityAttribute.class);
 			this.generalService.delete(whereRelation);
 			//
-			this.generalService.batchSave(insertAttribute);
+			
 		} else {
 			commodity.setAdd_datetime(Utility.instance().getTodayDate());
+			commodity.setEmployee_id((Integer) request.getAttribute("employee_id"));
 			commodity_id = this.generalService.save(commodity);
-			if (attributeList != null) {
-				for (String k : attributeList.keySet()) {
-					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
-					BeanUtils.copyProperties(attributeList.get(k), insertData);
-					insertData.setAttribute_type(edit_id);
-					Integer check = attributeList.get(k).getAttribute_check();
-					if (check == null)
-						insertData.setAttribute_check(0);
-					insertData.setAttribute_type("attr");
-					insertData.setCommodity_id(commodity_id);
-					insertAttribute.add(insertData);
-				}
-			}
-			if (hsList != null) {
-				for (String k : hsList.keySet()) {
-					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
-					BeanUtils.copyProperties(hsList.get(k), insertData);
-					insertData.setAttribute_type("hs");
-					insertData.setAttribute_check(0);
-					insertData.setAttribute_enkey("");
-					insertData.setAttribute_enval("");
-					insertData.setCommodity_id(commodity_id);
-					insertAttribute.add(insertData);
-				}
-			}
-			if (imagesList != null) {
-				for (String k : imagesList.keySet()) {
-					CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
-					BeanUtils.copyProperties(imagesList.get(k), insertData);
-					insertData.setAttribute_type("images");
-					insertData.setAttribute_check(0);
-					insertData.setAttribute_enkey("");
-					insertData.setAttribute_enval("");
-					insertData.setAttribute_key(k);
-					insertData.setCommodity_id(commodity_id);
-					insertAttribute.add(insertData);
-				}
-			}
-			this.generalService.batchSave(insertAttribute);
-			edit_id = EncryptUtiliy.instance().intIDEncrypt(commodity_id);
-			//
 		}
+		if (attributeList != null) {
+			for (String k : attributeList.keySet()) {
+				CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
+				BeanUtils.copyProperties(attributeList.get(k), insertData);
+				insertData.setAttribute_type(edit_id);
+				Integer check = attributeList.get(k).getAttribute_check();
+				if (check == null)
+					insertData.setAttribute_check(0);
+				insertData.setAttribute_type("attr");
+				insertData.setCommodity_id(commodity_id);
+				insertAttribute.add(insertData);
+			}
+		}
+		if (hsList != null) {
+			for (String k : hsList.keySet()) {
+				CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
+				BeanUtils.copyProperties(hsList.get(k), insertData);
+				insertData.setAttribute_type("hs");
+				insertData.setAttribute_check(0);
+				insertData.setAttribute_enkey("");
+				insertData.setAttribute_enval("");
+				insertData.setCommodity_id(commodity_id);
+				insertAttribute.add(insertData);
+			}
+		}
+		if (imagesList != null) {
+			for (String k : imagesList.keySet()) {
+				CategoryCommodityAttribute insertData = new CategoryCommodityAttribute();
+				BeanUtils.copyProperties(imagesList.get(k), insertData);
+				insertData.setAttribute_type("images");
+				insertData.setAttribute_check(0);
+				insertData.setAttribute_enkey("");
+				insertData.setAttribute_enval("");
+				insertData.setAttribute_key(k);
+				insertData.setCommodity_id(commodity_id);
+				insertAttribute.add(insertData);
+			}
+		}
+		this.generalService.batchSave(insertAttribute);
+		edit_id = EncryptUtiliy.instance().intIDEncrypt(commodity_id);
+			//
 		this.generalService.commit();
 		this.success.setItem("auditing_id", edit_id);
 	}

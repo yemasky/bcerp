@@ -3,7 +3,7 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<td colspan="7">#工作流审核<button type="button" class="close" ng-click="$hide()">&times;</button></td>
+					<td colspan="8">#工作流审核<button type="button" class="close" ng-click="$hide()">&times;</button></td>
 				</tr>
 			</thead>
 			<tbody>
@@ -35,7 +35,7 @@
 									<span class="input-group-addon no-radius">递交时间</span>
 									<input class="form-control w" type="text" value="{{auditing.auditing_date}}" readonly >
 									<span class="input-group-addon no-radius">递交人</span>
-									<input class="form-control w" type="text" value="{{employeeNameHash[auditing.auditing_employee_id]}}" readonly >
+									<input class="form-control w" type="text" value="{{employeeHash[auditing.auditing_employee_id].employee_name}}" readonly >
 									<span class="input-group-btn" ng-if="loginEmployee.id==auditing.employee_id">
 										<div class="btn-group">
 											<button type="submit" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
@@ -103,7 +103,7 @@ app.controller('CategoryAuditingController', function($rootScope, $scope, $httpS
 	$scope.param = {}; $scope.edit_id = "";
 	//定义变量
 	console.log("CategoryAuditing routeParams",$rootScope, $scope);
-	$scope.auditing = $rootScope.param.auditing;$scope.employeeNameHash = $rootScope.param.employeeNameHash;
+	$scope.auditing = $rootScope.param.auditing;
 	$scope.auditingList = [];$scope.auditing_id = 0;$scope.examinesList = [];
 	$scope.examinesStateExplain = {"-1":"已退回","0":"","1":"等待审核","2":"审核通过"};
 	let aside;
