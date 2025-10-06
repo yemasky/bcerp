@@ -2,10 +2,10 @@ package com.base.model.entity.BwleErp.SystemSetting.BaseAbstract;
 
 public abstract class MarketingCollectionBaseAbstract extends AuditingBase {
 	private Integer collection_num;
-	private String collection_deposit;
-	private String collection_before;
+	private Integer collection_deposit;
+	private Integer collection_before;
 	private Integer collection_days;
-	private String collection_after;
+	private Integer collection_after;
 	private String collection_cn;
 	private String collection_en;
 	private Integer employee_id;
@@ -16,16 +16,16 @@ public abstract class MarketingCollectionBaseAbstract extends AuditingBase {
 	public void setCollection_num(Integer collection_num) {
 		this.collection_num = collection_num;
 	}
-	public String getCollection_deposit() {
+	public Integer getCollection_deposit() {
 		return collection_deposit;
 	}
-	public void setCollection_deposit(String collection_deposit) {
+	public void setCollection_deposit(Integer collection_deposit) {
 		this.collection_deposit = collection_deposit;
 	}
-	public String getCollection_before() {
+	public Integer getCollection_before() {
 		return collection_before;
 	}
-	public void setCollection_before(String collection_before) {
+	public void setCollection_before(Integer collection_before) {
 		this.collection_before = collection_before;
 	}
 	public Integer getCollection_days() {
@@ -34,10 +34,10 @@ public abstract class MarketingCollectionBaseAbstract extends AuditingBase {
 	public void setCollection_days(Integer collection_days) {
 		this.collection_days = collection_days;
 	}
-	public String getCollection_after() {
+	public Integer getCollection_after() {
 		return collection_after;
 	}
-	public void setCollection_after(String collection_after) {
+	public void setCollection_after(Integer collection_after) {
 		this.collection_after = collection_after;
 	}
 	public String getCollection_cn() {

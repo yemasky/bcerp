@@ -12,6 +12,7 @@ import com.base.controller.AbstractAction;
 import com.base.model.entity.BwleErp.SystemSetting.Category;
 import com.base.model.entity.BwleErp.SystemSetting.CategoryClassify;
 import com.base.model.entity.BwleErp.SystemSetting.CategoryUnit;
+import com.base.model.entity.BwleErp.SystemSetting.CommodityDesc;
 import com.base.model.entity.BwleErp.SystemSetting.VehicleModel;
 import com.base.model.vo.BwleErp.SystemSetting.CategoryUnitVo;
 import com.base.model.vo.BwleErp.SystemSetting.VehicleModelVo;
@@ -60,6 +61,14 @@ public class CategoryUtilAction extends AbstractAction {
 		case "deleteVehicleModel":
 			this.doDeleteVehicleModel(request, response);
 			break;
+		case "getDesc":
+			this.doGetDesc(request, response);
+			break;
+		case "saveDesc":
+			this.doSaveDesc(request, response);
+			break;
+		case "deleteDesc":
+			this.doDeleteDesc(request, response);
 		default:
 			this.doDefault(request, response);
 			break;
@@ -173,4 +182,43 @@ public class CategoryUtilAction extends AbstractAction {
 		}
 	}
 	////////////////
+	public void doGetDesc(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(CommodityDesc.class);
+		List<CommodityDesc> descList = this.generalService.getEntityList(whereRelation);
+		
+		this.success.setItem("descList", descList);
+	}
+	
+	public void doSaveDesc(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String edit_id = request.getParameter("edit_id");
+		int desc_id = 0;
+		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
+			desc_id = Integer.parseInt(edit_id);
+		}
+		CommodityDesc desc = this.modelMapper.map(request.getAttribute("desc"), CommodityDesc.class);	
+		if(desc_id > 0) {//update
+			WhereRelation whereRelation = new WhereRelation();
+			whereRelation.EQ("desc_id", desc_id).setTable_clazz(CommodityDesc.class);
+			this.generalService.updateEntity(desc, whereRelation);
+		} else {
+			desc.setDesc_id(null);
+			desc_id = this.generalService.save(desc);
+			//edit_id = EncryptUtiliy.instance().intIDEncrypt(id);
+		}
+		this.success.setItem("desc_id", desc_id);
+	}
+	
+	public void doDeleteDesc(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String delete_id = (String) request.getAttribute("delete_id");
+		int desc_id = 0;
+		if(delete_id != null && !delete_id.equals("") && !delete_id.equals("undefined") && !delete_id.equals("0")) {
+			desc_id = Integer.parseInt(delete_id);
+		}
+		if(desc_id > 0) {//update
+			WhereRelation whereRelation = new WhereRelation();
+			whereRelation.EQ("desc_id", desc_id).setUpdate("dict_valid", 0).setTable_clazz(CommodityDesc.class);
+			this.generalService.update(whereRelation);
+		}
+	}
 }

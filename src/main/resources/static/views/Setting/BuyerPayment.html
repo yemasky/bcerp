@@ -1,4 +1,4 @@
-<div class="p-md" ng-controller="SalesPaymentController">
+<div class="p-md" ng-controller="BuyerPaymentController">
 	<div class="panel panel-default">
 		<div class="panel-heading row">
 			<div class="col-md-10">
@@ -15,25 +15,25 @@
 				<tr>
 					<th>#</th>
 					<th>序号</th>
-					<th>英文</th>
-					<th>中文</th>
+					<th>描述</th>
+					<th>简述</th>
 					<th>录入人</th>
 					<th>审核</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, collection) in collectionList">
+				<tr ng-repeat="(i, payment) in paymentList">
 					<td>{{i+1}}</td>
-					<td>{{collection.collection_num}}</td>
-					<td>{{collection.collection_en}}</td>
-					<td>{{collection.collection_cn}}</td>
-					<td>{{employeeHash[collection.employee_id].employee_name}}</td>
-					<td>{{auditingStateExplain[collection.auditing_state]}}</td>
+					<td>{{payment.payment_num}}</td>
+					<td>{{payment.payment_desc}}</td>
+					<td>{{payment.payment_sdesc}}</td>
+					<td>{{employeeHash[payment.employee_id].employee_name}}</td>
+					<td>{{auditingStateExplain[payment.auditing_state]}}</td>
 					<td>
 						<div class="pull-right btn-group">
-							<a ng-click="addEdit('edit', collection, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
-							<a ng-click="delete(collection.collection_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
+							<a ng-click="addEdit('edit', payment, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(payment.payment_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
 						</div>
 					</td>
 				</tr>
@@ -41,7 +41,7 @@
 		</table>
 	</div>
 </div>
-<script type="text/ng-template" id="AddEditCurrencyRate.html">
+<script type="text/ng-template" id="AddEditBuyerPayment.html">
 <div class="aside box-shadow aside-x" tabindex="-1" role="dialog">
 	<div class="aside-dialog">
 		<div class="aside-content">
@@ -59,19 +59,22 @@
 								<div class="form-group m-b-xs">
 									<div class="input-group no-border">
 										<span class="input-group-btn"><button class="btn btn-default" type="button">序号</button></span>
-										<input type="text" class="form-control col-md-1 w-thumb-md" size="5" ng-model="collection.collection_num" required>
+										<input type="number" class="form-control col-md-1 w-thumb-md" size="5" ng-model="payment.payment_num" required>
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-										<input type="text" class="form-control w-thumb-md" style="float:left;" ng-model="collection.collection_deposit" required />
-										<span class="input-group-btn"><button class="btn btn-default" type="button">%定金</button></span>
+										<input type="number" class="form-control w-thumb-md" style="float:left;" ng-change="setNewVal()" ng-model="payment.payment_deposit" required />
+										<span class="input-group-btn"><button class="btn btn-default" type="button">%定金，</button></span>
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-										<span class="input-group-btn"><button class="btn btn-default" type="button">出货前</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="collection.collection_before" required>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">供货方发货前付</button></span>
+										<input type="number" class="form-control w-thumb-lg" ng-change="setNewVal()" ng-model="payment.payment_before" required>
 										<span class="input-group-btn"><button class="btn btn-default" type="button">%，</button></span>
 										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-										<span class="input-group-btn"><button class="btn btn-default" type="button">出货后</button></span>
-										<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="collection.collection_days" required />
+										<span class="input-group-btn"><button class="btn btn-default" type="button">入货后</button></span>
+										<input type="number" class="form-control w-thumb-lg" style="float:left;" ng-change="setNewVal()" ng-model="payment.payment_days" required />
 										<span class="input-group-btn"><button class="btn btn-default" type="button">天，付</button></span>
-										<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="collection.collection_after" required />
+										<input type="number" class="form-control w-thumb-lg" style="float:left;" ng-change="setNewVal()" ng-model="payment.payment_after" required />
+										<span class="input-group-btn"><button class="btn btn-default" type="button">%</button></span>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">凭发票付</button></span>
+										<input type="number" class="form-control w-thumb-lg" style="float:left;" ng-change="setNewVal()" ng-model="payment.payment_receipt" required />
 										<span class="input-group-btn"><button class="btn btn-default" type="button">%</button></span>
 									</div>
 								</div>
@@ -82,15 +85,15 @@
 								<table class="table">
 									<tbody>
 										<tr>
-											<td class="w-thumb-lg">英文描述</td>
+											<td class="w-thumb-lg">描述</td>
 											<td>
-												<textarea class="form-control col-md-6" style="width: 50%;" rows="1" ng-model="collection.collection_en"></textarea>
+												<textarea class="form-control col-md-6" style="width: 50%;" rows="1" ng-model="payment.payment_desc"></textarea>
 											</td>
 										</tr>
 										<tr>
-											<td>中文描述</td>
+											<td>简述</td>
 											<td>
-												<textarea class="form-control col-md-6" style="width: 50%;" rows="1" ng-model="collection.collection_cn"></textarea>
+												<textarea class="form-control col-md-6" style="width: 50%;" rows="1" ng-model="payment.payment_sdesc"></textarea>
 											</td>
 										</tr>
 									</tbody>

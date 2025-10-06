@@ -41,7 +41,7 @@ app.controller('CommDictController', function($rootScope, $scope, $httpService, 
 
 	$scope.addEdit = function(editType, dict, i) {
 		$scope.editType = editType;
-		if (typeof (dict) != 'undefined') {
+		if (editType == 'edit' && typeof (dict) != 'undefined') {
 			$scope.dict = dict;
 			$scope.edit_id = angular.copy(dict.dict_id);
 			$scope.edit_index = i;

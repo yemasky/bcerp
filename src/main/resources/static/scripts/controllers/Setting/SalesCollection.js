@@ -1,4 +1,4 @@
-app.controller('SalesPaymentController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+app.controller('SalesCollectionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
 		//$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
@@ -7,7 +7,7 @@ app.controller('SalesPaymentController', function($rootScope, $scope, $httpServi
 	//定义变量
 	$scope.collection = {};$scope.collectionList = [];
 	let aside;
-	$httpService.header('method', 'getSalesPayment');
+	$httpService.header('method', 'getSalesCollection');
 	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
@@ -30,7 +30,7 @@ app.controller('SalesPaymentController', function($rootScope, $scope, $httpServi
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditCurrencyRate.html'});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditSalesCollection.html'});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){
@@ -51,7 +51,7 @@ app.controller('SalesPaymentController', function($rootScope, $scope, $httpServi
 		}
 		$scope.loading.show();
 		$scope.param.collection = angular.copy(this.collection);
-		$httpService.header('method', 'saveSalesPayment');
+		$httpService.header('method', 'saveSalesCollection');
 		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
@@ -77,7 +77,7 @@ app.controller('SalesPaymentController', function($rootScope, $scope, $httpServi
 		function deleteData() {
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteSalesPayment');
+			$httpService.header('method', 'deleteSalesCollection');
 			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
@@ -88,5 +88,11 @@ app.controller('SalesPaymentController', function($rootScope, $scope, $httpServi
 			});
 		}
 	}
-
+	
+	$scope.setNewVal =function () {
+		//30% DEPOSIT,60% AGAINST B/L COPY,10% 11DAYS AFTER LAST PAYMENT DATE
+		//30% DEPOSIT,60% AGAINST B/L COPY,10% 1DAYS AFTER LAST PAYMENT DATE
+		$scope.collection.collection_en = $scope.collection.collection_deposit+"%DEPOSIT，"+$scope.collection.collection_before
+										+"% AGAINST B/L COPY, "+$scope.collection.collection_after+"% "+$scope.collection.collection_days+" DAYS AFTER LAST PAYMENT DATE";
+	}
 });
