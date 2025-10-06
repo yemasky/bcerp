@@ -151,7 +151,7 @@ public class BwleErpController extends AbstractController {
 			Class<?> controllerClass = Class
 					.forName("com." + this.thisController + ".controller." + module + "." + action);
 			Object controllerAction = SpringContextInvoke.getBean(controllerClass);
-
+			System.out.println("==>"+controllerClass.getCanonicalName());
 			Method execute = controllerClass.getMethod("execute", HttpServletRequest.class, HttpServletResponse.class);
 			Success tempObj = (Success) execute.invoke(controllerAction, request, response);
 			this.release(request, response);
@@ -159,6 +159,11 @@ public class BwleErpController extends AbstractController {
 			//if(tempObj.getCode().equals("-1")) return tempObj.getData("API_DATA");
 			return tempObj;
 		} catch (Exception e) {
+			Throwable cause = e.getCause(); // 获取实际抛出的异常
+			if (cause != null) {
+				System.out.println("Actual Exception: " + cause);
+			}
+			e.printStackTrace();
 			this.release(request, response);
 			MDC.put("APP_NAME", "bwle_error");
 			logger.error(e.getMessage(), e);

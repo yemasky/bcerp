@@ -95,10 +95,18 @@ app.controller('CustomerController', function($rootScope, $scope, $httpService, 
 			});
 		}
 	}
-	$scope.showChange = function() {
-		console.log($scope.currencyRate);
-		$scope.currencyRate.currency_name = $scope.currencySymbol[$scope.currencyRate.currency].currency_name;
-		$scope.currencyRate.currency_symbol = $scope.currencySymbol[$scope.currencyRate.currency].currency_symbol;
-		$scope.currencyRate.currency_sname = $scope.currencySymbol[$scope.currencyRate.currency].currency_sname;
+	////////////////////
+	$scope.SyncCustomer = function () {
+		let url = 'https://opengw.fumamx.com/auth-server/open/acquire_token';
+		$scope.param = {};
+		$scope.param.appId = 'I4UfdbMi';
+		$scope.param.appId = '40270f10408f94db496ed96c088ce84d1fc77b98';
+		$httpService.header('method', 'syncCustomer');
+		$httpService.post(urlParam, $scope, function(result) {
+			$scope.loading.percent();
+			$httpService.deleteHeader('method');
+			console.log(result);		
+		});
 	}
+
 });

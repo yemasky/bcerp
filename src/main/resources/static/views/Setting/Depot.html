@@ -1,0 +1,222 @@
+<div class="p-md" ng-controller="DepotController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加车种分类
+				</button>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>序号</th>
+					<th>名称</th>
+					<th>编号</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, depot) in depotList">
+					<td></td>
+					<td>{{i+1}}</td>
+					<td>{{depot.category_name}}</td>
+					<td>{{depot.category_number}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>
+						<div class="pull-right btn-group">
+							<a ng-click="addEdit('edit', depot, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(depot.depot_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditDepot.html">
+	<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body">  
+							<ul class="nav nav-tabs" ui-nav>
+								<li class="active" ng-click="tab=1">
+									<a href>仓库设置</a>
+								</li>
+								<li ng-click="tab=2">
+									<a href>添加一级科目</a>
+								</li>
+								<li ng-click="tab=3">
+									<a href>添加二级科目</a>
+								</li>
+							</ul>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==1">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">选择一级科目</label>
+									<div class="col-sm-3">
+										<select class="form-control w-sm" ng-model="depot.depot_father_id"
+											ng-options="father.depot_id as father.depot_name for father in depotFather" 
+												placeholder="一级科目">
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">选择二级科目</label>
+									<div class="col-sm-2">
+										<select class="form-control w-sm" ng-model="depot.depot_id"
+											ng-options="father.depot_id as father.depot_name for father in depotFather" 
+												placeholder="一级科目">
+										</select>
+									</div>
+									<label class="col-sm-1 control-label">仓库编码</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_code" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">仓库功能说明</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" ng-model="depot.depot_explain" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">仓库地址</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" ng-model="depot.depot_address" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">联系电话</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_mobile" />
+									</div>
+									<label class="col-sm-1 control-label">联系人</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_contact" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">仓位明细</label>
+									<div class="col-sm-6">
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>一级区域</td>
+													<td>二级区域</td>
+													<td>三级区域</td>
+													<td>仓位编码</td>
+												</tr>
+												<tr>
+													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control"  /></td>
+												</tr>
+											</table> 
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==2">
+								<div class="form-group">
+									<label class="col-sm-3 control-label">输入一级科目名称</label>
+									<div class="col-sm-4">
+										<input type="text" class="form-control" ng-model="depot.depot_name" require />
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==3">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">选择一级科目</label>
+									<div class="col-sm-3">
+										<select class="form-control w-sm" ng-model="depot.depot_father_id"
+											ng-options="father.depot_id as father.depot_name for father in depotFather" 
+												placeholder="一级科目">
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">二级科目</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_name" />
+									</div>
+									<label class="col-sm-1 control-label">仓库编码</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_code" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">仓库功能说明</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" ng-model="depot.depot_explain" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">仓库地址</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" ng-model="depot.depot_address" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">联系电话</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_mobile" />
+									</div>
+									<label class="col-sm-1 control-label">联系人</label>
+									<div class="col-sm-2">
+										<input type="text" class="form-control" ng-model="depot.depot_contact" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">仓位明细</label>
+									<div class="col-sm-6">
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>一级区域</td>
+													<td>二级区域</td>
+													<td>三级区域</td>
+													<td>仓位编码</td>
+												</tr>
+												<tr>
+													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control"  /></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+<!-- AddEditCategory.html.html -->

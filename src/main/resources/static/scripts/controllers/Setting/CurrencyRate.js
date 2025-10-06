@@ -5,7 +5,7 @@ app.controller('CurrencyRateController', function($rootScope, $scope, $httpServi
 		__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
-	$scope.param = {}; $scope.edit_id = "";
+	$scope.param = {}; $scope.edit_id = ""; $scope.editType = "";
 	//定义变量
 	$scope.currencyRate = {};$scope.currencyRateList = [];$scope.employeeNameHash = {};
 	let aside;

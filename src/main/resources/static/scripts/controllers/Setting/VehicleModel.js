@@ -3,11 +3,10 @@ app.controller('VehicleModelController', function($rootScope, $scope, $httpServi
 		$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
-	$scope.param = {}; $scope.edit_id = 0;
+	$scope.param = {}; $scope.edit_id = 0;$scope.edit_index = 0;$scope.editType = "";
 	//定义变量
 	$scope.vehicleModel = {};$scope.vehicleModelList = [];
 	$scope.classifyHash = {};$scope.classifyList = [];
-	$scope.edit_index = 0;$scope.editType = "";
 	let aside;
 	$httpService.header('method', 'getVehicleModel');
 	$httpService.post(urlParam, $scope, function(result){

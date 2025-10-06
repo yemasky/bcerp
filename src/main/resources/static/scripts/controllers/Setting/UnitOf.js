@@ -3,10 +3,9 @@ app.controller('UnitOfController', function($rootScope, $scope, $httpService, $l
 		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
-	$scope.param = {};$scope.edit_id = 0; 
+	$scope.param = {};$scope.edit_id = 0; $scope.edit_index = 0;$scope.editType = "";
 	//定义变量
 	$scope.unit = {};$scope.unitList = [];
-	$scope.edit_index = 0;$scope.editType = "";
 	let aside;
 	$httpService.header('method', 'getUnit');
 	$httpService.post(urlParam, $scope, function(result){

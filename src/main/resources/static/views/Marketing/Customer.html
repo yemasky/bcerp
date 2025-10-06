@@ -3,11 +3,20 @@
 		<div class="panel-heading row">
 			<div class="col-md-10">
 				<span class="no-margin" ng-bind-html="action_nav"></span>
+				
 			</div>
 			<div class="col-md-2">
-				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit(param)" class="btn btn-rounded btn-info btn-sm">
-					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加{{_self_module.module_name}}
-				</button>
+				
+			</div>
+			<div class="col-md-2" ng-if="hashAccess[_self_module.module_id]>1">
+				<div class="btn-group">
+					<button ng-click="SyncCustomer()" class="btn btn-rounded btn-sm">
+						<i class="fa fa-fw m-r-xs fa-plus"></i> 同步客户信息
+					</button>
+					<button ng-click="addEdit(param)" class="btn btn-rounded btn-info btn-sm">
+						<i class="fa fa-fw m-r-xs fa-plus"></i> 添加{{_self_module.module_name}}
+					</button>
+				</div>
 			</div>
 		</div>
 		<table class="table">

@@ -3,9 +3,9 @@ app.controller('CategoryController', function($rootScope, $scope, $httpService, 
 		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
-	$scope.param = {}; $scope.edit_id = 0;
+	$scope.param = {}; $scope.edit_id = 0;$scope.edit_index = 0;$scope.editType = "";
 	//定义变量
-	$scope.edit_index = 0;$scope.editType = "";$scope.category = {};$scope.categoryList = {};
+	$scope.category = {};$scope.categoryList = {};
 	let aside;
 	$httpService.header('method', 'getCategory');
 	$httpService.post(urlParam, $scope, function(result){
@@ -20,7 +20,7 @@ app.controller('CategoryController', function($rootScope, $scope, $httpService, 
 	
 	$scope.addEdit = function(editType, category, i) {
 		$scope.editType = editType;
-		if(typeof(category) != 'undefined') {
+		if(editType == 'edit' && typeof(category) != 'undefined') {
 			$scope.category = category;
 			$scope.edit_id = angular.copy(category.category_id);
 			$scope.edit_index = i;
