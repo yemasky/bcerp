@@ -23,7 +23,9 @@ import com.google.gson.Gson;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 国家配置 作者 CooC email yemasky@msn.com
+ */
 @Component
 public class CountrySetupAction extends AbstractAction {
 	@Autowired

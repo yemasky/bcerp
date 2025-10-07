@@ -1,13 +1,24 @@
 package com.base.model.entity.BwleErp.SystemSetting.BaseAbstract;
 
 public abstract class DepotBaseAbstract {
+	private Integer depot_grandpa_id;
 	private String depot_name;
 	private String depot_address;
 	private String depot_mobile;
 	private String depot_contact;
 	private String depot_explain;
 	private String depot_code;
-	private String depot_region;
+	private Integer depot_type;
+	private String depot_regiona;
+	private String depot_regionb;
+	private String depot_regionc;
+	private Integer depot_valid;
+	public Integer getDepot_grandpa_id() {
+		return depot_grandpa_id;
+	}
+	public void setDepot_grandpa_id(Integer depot_grandpa_id) {
+		this.depot_grandpa_id = depot_grandpa_id;
+	}
 	public String getDepot_name() {
 		return depot_name;
 	}
@@ -44,11 +55,34 @@ public abstract class DepotBaseAbstract {
 	public void setDepot_code(String depot_code) {
 		this.depot_code = depot_code;
 	}
-	public String getDepot_region() {
-		return depot_region;
+	public Integer getDepot_type() {
+		return depot_type;
 	}
-	public void setDepot_region(String depot_region) {
-		this.depot_region = depot_region;
+	public void setDepot_type(Integer depot_type) {
+		this.depot_type = depot_type;
 	}
-	
+	public String getDepot_regiona() {
+		return depot_regiona;
+	}
+	public void setDepot_regiona(String depot_regiona) {
+		this.depot_regiona = depot_regiona;
+	}
+	public String getDepot_regionb() {
+		return depot_regionb;
+	}
+	public void setDepot_regionb(String depot_regionb) {
+		this.depot_regionb = depot_regionb;
+	}
+	public String getDepot_regionc() {
+		return depot_regionc;
+	}
+	public void setDepot_regionc(String depot_regionc) {
+		this.depot_regionc = depot_regionc;
+	}
+	public Integer getDepot_valid() {
+		return depot_valid;
+	}
+	public void setDepot_valid(Integer depot_valid) {
+		this.depot_valid = depot_valid;
+	}	
 }

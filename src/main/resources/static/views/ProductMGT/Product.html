@@ -1,0 +1,138 @@
+<div class="p-md" ng-controller="ProductController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加{{_self_module.module_name}}
+				</button>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<td>#</td>
+					<td>LM No.</td>
+					<td>品名</td>
+					<td>品名[英文]</td>
+					<td>Qty/Ctn</td>
+					<td>Unit</td>
+					<td>G.W/Ctn(KG)</td>
+					<td>N.W/Ctn(KG)</td>
+					<td>L(CM)</td>
+					<td>W(CM)</td>
+					<td>H(CM)</td>
+					<td>Weight/Pcs(KG)</td>
+					<td>Volume/Pcs(CBM)</td>
+					<td>采购合同</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, box) in boxList"> 
+					<td>{{i+1}}</td>
+					<td>{{box.box_no}}</td>
+					<td>{{box.box_name}}</td>
+					<td>{{box.box_enname}}</td>
+					<td>{{box.box_qty_ctn}}</td>
+					<td>{{box.box_unit}}</td>
+					<td>{{box.box_gw_ctn_kg}}</td>
+					<td>{{box.box.box_nw_ctn_kg}}</td>
+					<td>{{box.box.box_l}}</td>
+					<td>{{box.box_w}}</td>
+					<td>{{box.box_h}}</td>
+					<td>{{box.box_weight_pcs}}</td>
+					<td>{{box.box_volume_pcs}}</td>
+					<td>{{box.box_pcontract}}</td>
+					<td>
+						<div class="pull-right btn-group">
+							<a ng-click="addEdit('edit', box, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(box.box_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditBoxStandard.html">
+	<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body">          
+							<table class="table">
+								<thead>
+									<tr>
+										<td>LM No.</td>
+										<td>品名</td>
+										<td>品名[英文]</td>
+										<td>Qty/Ctn</td>
+										<td>Unit</td>
+										<td>G.W/Ctn(KG)</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input type="text" class="form-control" ng-model="box.box_no" required ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_name" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_enname" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_qty_ctn" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_unit" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_gw_ctn_kg" ></td>
+									</tr>
+									<tr>
+										<td>N.W/Ctn(KG)</td>
+										<td>L(CM)</td>
+										<td>W(CM)</td>
+										<td>H(CM)</td>
+										<td>Weight/Pcs(KG)</td>
+										<td>Volume/Pcs(CBM)</td>
+										
+									</tr>
+									<tr>
+										<td><input type="text" class="form-control" ng-model="box.box_nw_ctn_kg" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_l" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_w" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_h" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_weight_pcs" ></td>
+										<td><input type="text" class="form-control" ng-model="box.box_volume_pcs" ></td>
+									</tr>
+									<tr>
+										<td>采购合同</td>
+										<td colspan="3"><input type="text" class="form-control" ng-model="box.box_pcontract" ></td>
+										<td colspan="2"></td>
+									</tr>
+									<tr>
+										<td>产品描述(中文)</td>
+										<td colspan="5"><input type="text" class="form-control" ng-model="box.box_desc" ></td>
+									</tr>
+									<tr>
+										<td>备注</td>
+										<td colspan="5"><input type="text" class="form-control" ng-model="box.box_node" ></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+<!-- AddEditCategory.html.html -->

@@ -17,7 +17,9 @@ import com.base.util.EncryptUtiliy;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 字典 作者 CooC email yemasky@msn.com
+ */
 @Component
 public class CommDictAction extends AbstractAction {
 	@Autowired

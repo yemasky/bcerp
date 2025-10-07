@@ -28,7 +28,9 @@ import core.jdbc.mysql.WhereRelation;
 import com.base.util.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 工作流配置 作者 CooC email yemasky@msn.com
+ */
 @Component
 public class AuditingAction extends AbstractAction {
 	@Autowired

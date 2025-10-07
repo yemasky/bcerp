@@ -10,6 +10,8 @@ public class FinanceDepotVo extends DepotBaseAbstract{
 	@Column(name = "depot_id", primary_key = true, auto_increment = true)
 	private String depot_id;
 	private String depot_father_id;
+	@Column(name = "", ignore = true)
+	private String depot_temp_code;
 	public String getDepot_id() {
 		return depot_id;
 	}
@@ -24,5 +26,12 @@ public class FinanceDepotVo extends DepotBaseAbstract{
 
 	public void setDepot_father_id(String depot_father_id) {
 		this.depot_father_id = depot_father_id;
+	}
+	public String getDepot_temp_code() {
+		return depot_temp_code;
+	}
+
+	public void setDepot_temp_code(String depot_temp_code) {
+		this.depot_temp_code = depot_temp_code;
 	}
 }

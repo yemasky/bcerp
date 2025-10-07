@@ -22,7 +22,9 @@ import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 车种配置 作者 CooC email yemasky@msn.com
+ */
 @Component
 public class CategoryAction extends AbstractAction {
 	@Autowired

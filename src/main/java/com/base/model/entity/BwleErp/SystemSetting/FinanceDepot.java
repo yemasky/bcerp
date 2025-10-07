@@ -25,4 +25,5 @@ public class FinanceDepot extends DepotBaseAbstract{
 	public void setDepot_father_id(Integer depot_father_id) {
 		this.depot_father_id = depot_father_id;
 	}
+
 }

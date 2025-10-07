@@ -347,6 +347,19 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
             }]
         }
         
+    }).state('app.ProductMGT', {
+        url: "/ProductMGT/:view/:id/:channel", //url: "/role/edit?id", 由view的 ui-sref="app.{{module.module_channel}}({view:module.module_view,channel:module.url})" 决定
+        templateUrl: function($routeParams, $rootScope, $scope) {
+			var view = $routeParams.view;//有view访问静态文件
+			return __RESOURCE + 'views/ProductMGT/'+$routeParams.view+'.html?'+__VERSION;
+        },
+        controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
+		resolve: {
+            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
+				return $ocLazyLoad.load([__RESOURCE + "scripts/controllers/ProductMGT/"+$stateParams.view+".js?"+__VERSION]);
+            }]
+        }
+        
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {

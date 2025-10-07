@@ -5,7 +5,7 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0; $scope.edit_index = 0; $scope.editType = "";
 	//定义变量
-	$scope.tab = 1; $scope.depot = {}; $scope.depotList = {};$scope.depotFather = {};
+	$scope.tab = 1; $scope.depot = {}; $scope.depot.depot_type = 1; $scope.depotList = {};$scope.depotFather = {};
 	$scope.depotChild = {};
 	//增加项相关
 	$scope.step = {};$scope.step['edit'] = {};$scope.step['edit'].step = "0";$scope.step['edit'].length = 0;
@@ -18,25 +18,32 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 		if(result.data.success == false) {
 			return;
 		} 
-		let depotList = result.data.item.depotList;//部门职位
+		$scope.depotList = result.data.item.depotList;//
+		$scope.parseData();
+		//$scope.$apply();//刷新数据
+	})
+	$scope.parseData = function() {
+		let depotList = $scope.depotList;
 		depotList.forEach(item => {
 			if(item.depot_father_id == 0) {
 				$scope.depotFather[item.depot_id] = item
-			} else {//二级科目
+			} else if(item.depot_type == 0) {//二级科目
 				if(!angular.isDefined($scope.depotChild[item.depot_father_id])) {
-					$scope.depotChild[item.depot_father_id] = []
+					$scope.depotChild[item.depot_father_id] = {};
 				}
 				$scope.depotChild[item.depot_father_id][item.depot_id] = item;
+			} if(item.depot_type == 0) {
+			
 			}
 		});
 		console.log($scope.depotChild);
-		//$scope.$apply();//刷新数据
-	})
-	
+	}
 	$scope.addEdit = function(editType, depot, i) {
 		$scope.editType = editType;
+		$scope.edit_id = 0;
 		if(editType == 'edit' && typeof(depot) != 'undefined') {
 			$scope.depot = depot;
+			$scope.depot.depot_temp_code = depot.depot_code;
 			$scope.edit_id = angular.copy(depot.depot_id);
 			$scope.edit_index = i;
 		}
@@ -78,6 +85,7 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 			if($scope.editType == "edit") {
 				$scope.depotList[$scope.edit_index] = angular.copy($scope.param.depot);
 			}
+			$scope.parseData();
 			$scope.depot = {};
 			$scope.edit_id = 0;
 			aside.hide(); 
@@ -114,7 +122,13 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 		$scope.step[key].length--;
 	}
 	$scope.setChange = function() {
-		$scope.depot = $scope.depotChild[$scope.depot.depot_father_id][$scope.depot.depot_id];
+		if(angular.isDefined($scope.depotChild[$scope.depot.depot_father_id]) && 
+			angular.isDefined($scope.depotChild[$scope.depot.depot_father_id][$scope.depot.depot_id])) {
+			$scope.depot = angular.copy($scope.depotChild[$scope.depot.depot_father_id][$scope.depot.depot_id]);
+			$scope.depot.depot_type = 1;
+		} else {
+			//$scope.depot = {};
+		}
 		console.log($scope.depot);
 	}
 });

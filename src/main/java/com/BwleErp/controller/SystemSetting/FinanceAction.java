@@ -17,7 +17,9 @@ import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/*
+ * 财务模块 作者 CooC email yemasky@msn.com
+ */
 @Component
 public class FinanceAction extends AbstractAction {
 	@Autowired
@@ -78,9 +80,15 @@ public class FinanceAction extends AbstractAction {
 			depot_id = Integer.parseInt(edit_id);
 		}
 		FinanceDepotVo depotVo = this.modelMapper.map(request.getAttribute("depot"), FinanceDepotVo.class);
+		Integer type = depotVo.getDepot_type();
+		if(type == 1) {
+			depotVo.setDepot_grandpa_id(Integer.parseInt(depotVo.getDepot_father_id()));
+			depotVo.setDepot_father_id(depotVo.getDepot_id());
+			depotVo.setDepot_code(depotVo.getDepot_temp_code());
+		}
 		if(depot_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("auditing_id", depot_id).setTable_clazz(Auditing.class);
+			whereRelation.EQ("auditing_id", depot_id).setTable_clazz(FinanceDepotVo.class);
 			generalService.updateEntity(depotVo, whereRelation);
 		} else {
 			if(depotVo.getDepot_father_id() == null) {

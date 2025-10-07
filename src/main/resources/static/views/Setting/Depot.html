@@ -16,20 +16,20 @@
 					<th>#</th>
 					<th>一级科目</th>
 					<th>二级科目</th>
-					<th>编号</th>
-					<th></th>
+					<th>仓库编码</th>
+					<th>仓位编码</th>
 					<th></th>
 					<th></th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, depot) in depotList">
-					<td></td>
+				<tr ng-repeat="(i, depot) in depotList" ng-if="depot.depot_type==1">
 					<td>{{i+1}}</td>
-					<td>{{depot.category_name}}</td>
-					<td>{{depot.category_number}}</td>
-					<td></td>
+					<td>{{depotFather[depot.depot_grandpa_id].depot_name}}</td>
+					<td>{{depot.depot_name}}</td>
+					<td>{{depotChild[depot.depot_grandpa_id][depot.depot_father_id].depot_code}}</td>
+					<td>{{depot.depot_code}}</td>
 					<td></td>
 					<td></td>
 					<td>
@@ -56,13 +56,13 @@
 						</div>
 						<div class="panel-body">  
 							<ul class="nav nav-tabs" ui-nav>
-								<li class="active" ng-click="tab=1;depot={}">
+								<li class="active" ng-click="tab=1;depot={};depot.depot_type=1;">
 									<a href>仓库设置</a>
 								</li>
-								<li ng-click="tab=2;depot={}">
+								<li ng-click="tab=2;depot={};depot.depot_type=0;edit_id=0">
 									<a href>一级科目</a>
 								</li>
-								<li ng-click="tab=3;depot={}">
+								<li ng-click="tab=3;depot={};depot.depot_type=0;edit_id=0">
 									<a href>二级科目</a>
 								</li>
 							</ul>
@@ -70,7 +70,7 @@
 								<div class="form-group">
 									<label class="col-sm-2 control-label">选择一级科目</label>
 									<div class="col-sm-3">
-										<select class="form-control w-sm" ng-model="depot.depot_father_id"
+										<select class="form-control w-sm" ng-model="depot.depot_grandpa_id"
 											ng-options="father.depot_id as father.depot_name for father in depotFather" 
 												placeholder="一级科目">
 										</select>
@@ -79,38 +79,37 @@
 								<div class="form-group">
 									<label class="col-sm-2 control-label">选择二级科目</label>
 									<div class="col-sm-2">
-										<select class="form-control w-sm" ng-model="depot.depot_id" 
-											ng-change="setChange()"
-											ng-options="child.depot_id as child.depot_name for child in depotChild[depot.depot_father_id]" 
+										<select class="form-control w-sm" ng-model="depot.depot_father_id" ng-change="setChange()"
+											ng-options="child.depot_id as child.depot_name for child in depotChild[depot.depot_grandpa_id]" 
 												placeholder="二级科目">
 										</select>
 									</div>
 									<label class="col-sm-1 control-label">仓库编码</label>
-									<div class="col-sm-2">{{depot.depot_code}}</div>
+									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_code}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓库功能说明</label>
-									<div class="col-sm-5">{{depot.depot_explain}}</div>
+									<div class="col-sm-5 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_explain}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓库地址</label>
-									<div class="col-sm-5">{{depot.depot_address}}</div>
+									<div class="col-sm-5 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_address}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">联系电话</label>
-									<div class="col-sm-2">{{depot.depot_mobile}}</div>
+									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_mobile}}</div>
 									<label class="col-sm-1 control-label">联系人</label>
-									<div class="col-sm-2">{{depot.depot_contact}}</div>
+									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_contact}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓位明细</label>
 									<div class="col-sm-6">
-										<div class="row">
+										<!-- <div class="row">
 											<div class="text-center">
 												<a ng-click="addStep('edit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加仓位</a>
 												<a ng-click="reduceStep('edit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少仓位</a>
 											</div>
-										</div>
+										</div> -->
 										<div class="panel panel-default">
 											<table class="table">
 												<tr>
@@ -120,10 +119,10 @@
 													<td>仓位编码</td>
 												</tr>
 												<tr ng-repeat="i in step['edit'].step">
-													<td><input type="text" class="form-control" ng-model="auditing.examine[i].position_id" /></td>
-													<td><input type="text" class="form-control"  /></td>
-													<td><input type="text" class="form-control"  /></td>
-													<td><input type="text" class="form-control"  /></td>
+													<td><input type="text" class="form-control" ng-model="depot.depot_regiona" /></td>
+													<td><input type="text" class="form-control" ng-model="depot.depot_regionb"/></td>
+													<td><input type="text" class="form-control" ng-model="depot.depot_regionc"/></td>
+													<td><input type="text" class="form-control" ng-model="depot.depot_temp_code" /></td>
 												</tr>
 											</table> 
 										</div>
