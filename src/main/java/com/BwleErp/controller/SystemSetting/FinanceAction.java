@@ -3,11 +3,11 @@ package com.BwleErp.controller.SystemSetting;
 import java.util.HashMap;
 import java.util.List;
 
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
-import com.base.model.entity.BwleErp.SystemSetting.Auditing;
 import com.base.model.vo.BwleErp.SystemSetting.FinanceDepotVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
@@ -79,11 +79,10 @@ public class FinanceAction extends AbstractAction {
 		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
 			depot_id = Integer.parseInt(edit_id);
 		}
+		this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		FinanceDepotVo depotVo = this.modelMapper.map(request.getAttribute("depot"), FinanceDepotVo.class);
 		Integer type = depotVo.getDepot_type();
 		if(type == 1) {
-			depotVo.setDepot_grandpa_id(Integer.parseInt(depotVo.getDepot_father_id()));
-			depotVo.setDepot_father_id(depotVo.getDepot_id());
 			depotVo.setDepot_code(depotVo.getDepot_temp_code());
 		}
 		if(depot_id > 0) {//update
@@ -92,9 +91,8 @@ public class FinanceAction extends AbstractAction {
 			generalService.updateEntity(depotVo, whereRelation);
 		} else {
 			if(depotVo.getDepot_father_id() == null) {
-				depotVo.setDepot_father_id("0");
+				depotVo.setDepot_father_id(0);
 			}
-			depotVo.setDepot_id(null);
 			depot_id = generalService.save(depotVo);
 		}
 		this.success.setItem("depot_id", depot_id);

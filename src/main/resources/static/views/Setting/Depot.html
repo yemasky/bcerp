@@ -85,21 +85,21 @@
 										</select>
 									</div>
 									<label class="col-sm-1 control-label">仓库编码</label>
-									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_code}}</div>
+									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id][depot.depot_father_id].depot_code}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓库功能说明</label>
-									<div class="col-sm-5 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_explain}}</div>
+									<div class="col-sm-5 control-label text-left">{{depotChild[depot.depot_grandpa_id][depot.depot_father_id].depot_explain}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓库地址</label>
-									<div class="col-sm-5 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_address}}</div>
+									<div class="col-sm-5 control-label text-left">{{depotChild[depot.depot_grandpa_id][depot.depot_father_id].depot_address}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">联系电话</label>
-									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_mobile}}</div>
+									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id][depot.depot_father_id].depot_mobile}}</div>
 									<label class="col-sm-1 control-label">联系人</label>
-									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id].depot_contact}}</div>
+									<div class="col-sm-2 control-label text-left">{{depotChild[depot.depot_grandpa_id][depot.depot_father_id].depot_contact}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓位明细</label>

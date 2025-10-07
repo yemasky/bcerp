@@ -40,7 +40,7 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 	}
 	$scope.addEdit = function(editType, depot, i) {
 		$scope.editType = editType;
-		$scope.edit_id = 0;
+		$scope.edit_id = 0;$scope.depot = {};
 		if(editType == 'edit' && typeof(depot) != 'undefined') {
 			$scope.depot = depot;
 			$scope.depot.depot_temp_code = depot.depot_code;
@@ -64,7 +64,7 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 			$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
-		if(!angular.isDefined(this.depot.depot_name)) {
+		if(this.depot.depot_type == 0 && !angular.isDefined(this.depot.depot_name)) {
 			$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
@@ -124,11 +124,11 @@ app.controller('DepotController', function($rootScope, $scope, $httpService, $lo
 	$scope.setChange = function() {
 		if(angular.isDefined($scope.depotChild[$scope.depot.depot_father_id]) && 
 			angular.isDefined($scope.depotChild[$scope.depot.depot_father_id][$scope.depot.depot_id])) {
-			$scope.depot = angular.copy($scope.depotChild[$scope.depot.depot_father_id][$scope.depot.depot_id]);
-			$scope.depot.depot_type = 1;
+			//$scope.depot = angular.copy($scope.depotChild[$scope.depot.depot_father_id][$scope.depot.depot_id]);
 		} else {
 			//$scope.depot = {};
 		}
+		$scope.depot.depot_type = 1;
 		console.log($scope.depot);
 	}
 });
