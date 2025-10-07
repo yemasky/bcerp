@@ -1,0 +1,785 @@
+<div class="p-md" ng-controller="SupplierResearchController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加{{_self_module.module_name}}
+				</button>
+			</div>
+		</div> 
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>企业名称</th>
+					<th>法人</th>
+					<th>创立年份</th>
+					<th>经营时间</th>
+					<th>注册资本</th>
+					<th>调研人</th>
+					<th>调研时间</th>
+					<th>审核</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, rsupplier) in rsupplierList">
+					<td>{{i+1}}</td>
+					<td>{{rsupplier.rsupplier_name}}</td>
+					<td>{{rsupplier.rsupplier_legal}}</td>
+					<td>{{rsupplier.rsupplier_found_date}}</td>
+					<td>{{rsupplier.rsupplier_operate_year}}</td>
+					<td>{{rsupplier.rsupplier_capital}}</td>
+					<td>{{employeeHash[rsupplier.employee_id].employee_name}}</td>
+					<td>{{rsupplier.rsupplier_add_datetime}}</td>
+					<td>{{auditingStateExplain[rsupplier.auditing_state]}}</td>
+					<td>
+						<div class="pull-right btn-group">
+							<a ng-click="addEdit('edit', rsupplier, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(rsupplier.rsupplier_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditResearch.html">
+	<div class="aside box-shadow aside-x" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body"> 
+							<ul class="nav nav-tabs" ui-nav>
+								<li class="active" ng-click="tab=1;depot={}">
+									<a href>调研表</a>
+								</li>
+								<li ng-click="tab=2;depot={}">
+									<a href>调研表二</a>
+								</li>
+								<li ng-click="tab=3;depot={}">
+									<a href>调研表三</a>
+								</li>
+							</ul>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==1">
+								<div class="form-group">
+									<label class="col-sm-2">供应商调研表</label>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="p">填表说明</div>
+									<div class="col-sm-10"><textarea class="form-control" rows="2" ng-model="rsupplier.rsupplier_explain"></textarea></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">1.企业基础信息</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">供应商名</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_name" required >
+										</div>
+									</div>
+									<div class="col-sm-8">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">法人代表</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_legal" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">创立年份</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_found_date" 
+												value="{{getDay('yyyy-mm-dd')}}" data-date-format="yyyy-MM-dd" data-date-type="string" 
+												data-autoclose="1" bs-datepicker  />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">经营时间</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_operate_year"  />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">年</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">注册资本</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_capital"  />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">万元</button></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">联系电话</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_phone" >
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司传真</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_fax" >
+										</div>
+									</div>
+									<div class="col-sm-8">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">企业类型</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_type" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">经营范围</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_business" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司主页</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_web" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司地址</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_adress" />
+										</div>
+									</div>
+									<div class="col-sm-2 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">邮政编码</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.rsupplier_postcode" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">2.联系人信息</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('c')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('c')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>职务名称</td>
+													<td>姓名</td>
+													<td>性别</td>
+													<td>办公电话</td>
+													<td>手机号码</td>
+													<td>电子邮件</td>
+													<td>QQ</td>
+													<td>微信号</td>
+												</tr>
+												<tr ng-repeat="i in step['c'].step">
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].title" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].name" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].sex" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].phone" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].mobile" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].email" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].qq" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_contact[i].weixin" /></td>
+												</tr>
+											</table> 
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">3.产品及服务信息</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('p')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('p')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>产品名称</td>
+													<td>主材</td>
+													<td>主材品牌 </td>
+													<td>年产量</td>
+													<td>年销售额</td>
+													<td>占年销售额%</td>
+													<td>产品认证</td>
+													<td>平均交期</td>
+													<td>新产品报价时间</td>
+													<td>新产品开发周期</td>
+													<td class=""><small>技术/质量标准<br>[围标 行标 企标]</small></td>
+												</tr>
+												<tr ng-repeat="i in step['p'].step">
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].name" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].material" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].brand" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].output" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].revenue" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].total_revenue" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].certification" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].delivery_time" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].quotation_time" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_product[i].development_cycle" /></td>
+													<td class="w-thumb-lg">
+														<label class="checkbox-inline">
+														  <input type="checkbox" value="option1" ng-model="rsupplier.rsupplier_product[i].bid_rigging">
+														</label>
+														<label class="checkbox-inline">
+														  <input type="checkbox" value="option1" ng-model="rsupplier.rsupplier_product[i].industry_standard">
+														</label>
+														<label class="checkbox-inline">
+														  <input type="checkbox" value="option1" ng-model="rsupplier.rsupplier_product[i].enterprise_standard">
+														</label>
+													</td>
+												</tr>
+											</table> 
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==2">
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										主营车种
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-5 no-p-r">
+										<div class="input-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" value="option1" ng-model="rsupplier.vehicle_type[0]"> 
+												拖拉机(及其他农用车辆)
+											</label>
+											<label class="checkbox-inline">
+												<input type="checkbox" value="option1" ng-model="rsupplier.vehicle_type[1]">轿车
+											</label>
+											<label class="checkbox-inline">
+												<input type="checkbox" value="option1" ng-model="rsupplier.vehicle_type[2]">卡车
+											</label>
+											<label class="checkbox-inline">
+												<input type="checkbox" value="option1" ng-model="rsupplier.vehicle_type[3]">其它
+											</label>
+											<label class="checkbox-inline">
+												<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[4]" />
+											</label>	
+										</div>
+									</div>
+									<div class="col-sm-7">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">主营车厂</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[5]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">主营发动机</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[6]" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										4.运营及服务信息
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">员工总人数</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[7]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">管理人员</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[8]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">占地面积</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[9]" />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">平方米</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">建筑面积</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[10]" />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">平方米</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">生产面积</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[11]" />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">平方米</button></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[12]">国内
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">营业额占比</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[13]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[14]">国外
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">营业额占比</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[15]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[16]">售后市场
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">营业额占比</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[17]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[18]">主机配
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">营业额占比</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[19]" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[20]">中国内地
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[21]">北美
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[22]">南美
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[23]">东欧
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[24]">西欧
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[25]">东亚
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[26]">东南亚
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[27]">南亚
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[28]">中亚
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[29]">中东
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[30]">非洲
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[31]">大洋洲
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">最主要销售地区/国家</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[32]" />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">该地区占总销售额</button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[33]" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<input type="text" class="form-control" ng-model="rsupplier.vehicle_type[34]" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">5.产品控制信息</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >产品控制部门</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[35]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[36]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[37]">专门的质量管理部门
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[38]">计量宽
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[39]">专门的理化室
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[40]">专门的产品实验室
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">其它</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.vehicle_type[41]">
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >产品执行技术/质量标准</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												见 "3.产品及服务信息"
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >产品认证</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												见 "3.产品及服务信息"
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">品控人数(当年):</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.vehicle_type[42]">
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">品控人数(上一年):</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.vehicle_type[43]">
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >产品执行技术/质量标准</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[44]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[45]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[46]">来料检验报告
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[47]">控制检验报告
+											</label><label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[48]">入库检验报告
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[49]">出货检验报告
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[50]">首件检验报告并保持记录
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">其它</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.vehicle_type[51]">
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >生产现场技术工艺指导书</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[52]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[53]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[54]">产品零件图纸
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[55]">工艺卡
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.vehicle_type[56]">控制计划
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">其它</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.vehicle_type[57]">
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">6.关键生产设备</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('sc')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('sc')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>主要设备名称</td>
+													<td>品牌</td>
+													<td>规格型号</td>
+													<td>数量</td>
+													<td>用途(主要功能)</td>
+												</tr>
+												<tr ng-repeat="i in step['sc'].step">
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_plant[i].name" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_plant[i].brand" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_plant[i].model" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_plant[i].num" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_plant[i].use" /></td>
+												</tr>
+											</table> 
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">7.关键检测设备</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('jc')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('jc')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>主要设备名称</td>
+													<td>品牌</td>
+													<td>规格型号</td>
+													<td>数量</td>
+													<td>精度</td>
+												</tr>
+												<tr ng-repeat="i in step['jc'].step">
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_detection[i].name" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_detection[i].brand" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_detection[i].model" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_detection[i].num" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_detection[i].precision" /></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==3">
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">8.产品控制信息</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >技术开发部分</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[0]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[1]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[2]">产品研发部门
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[3]">工程管理部门
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[4]">型式实验室
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">其它</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.tech_dev[5]">
+										</div>
+									</div>
+									<div class="col-sm-12 m-t">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">产品设计人数</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.tech_dev[6]">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">人</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">工艺工装设计人员人数</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.tech_dev[7]">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">人</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">一般新产品(样件或图纸)开发周期 见("3.产品及服务信息")</button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">设计开发软件</button></span>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[8]">CAD
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[9]">Pro/E
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">其它</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.tech_dev[10]">
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-t">
+									<div class="col-sm-12"><div class="input-group">9.企业管理理念</div></div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v" >经营方针:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[11]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[12]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >质量方针:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[13]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[14]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >中长期发展规划/战略:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[15]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[16]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >贵公司客户评审制度:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[17]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[18]">尚无
+											</label>
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v" >贵公司客户评审制度:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[19]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[20]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >供应商建议与意见通道:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[21]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[22]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >供应投诉通道:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[23]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[24]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >客户建议与意见通道:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[25]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[26]">尚无
+											</label>
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v" >客户投诉通道:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[27]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[28]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >企业员工建议与意见通道:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[29]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[30]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v" >企业员工投诉通道:</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[31]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[32]">尚无
+											</label>
+										</div>
+									</div>
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="checkbox-inline no-padding-v m-t-ln" >质量管理体系:</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[33]">已有
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[34]">尚无
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[35]">ISO9000
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[36]">TS16949
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[37]">OHS18001
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[38]">GB/T28001-2011
+											</label>
+											<label class="checkbox-inline no-padding-v m-t-ln" >
+												<input type="checkbox" value="1" ng-model="rsupplier.tech_dev[39]">ISO14001
+											</label>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">其它</button></span>
+											<input class="form-control" type="text" ng-model="rsupplier.tech_dev[40]">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">10.相关附件</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('wj')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('wj')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>排序</td>
+													<td>主目录</td>
+													<td>序</td>
+													<td>子目录一</td>
+													<td>子目录二</td>
+													<td>命名规范</td>
+													<td>文件名</td>
+													<td>文件路径</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="i in step['wj'].step">
+													<td></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].director" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].order" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].da" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].db" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].name_norm" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].file_name" /></td>
+													<td><input type="text" class="form-control" ng-model="rsupplier.rsupplier_upload[i].file_url" /></td>
+													<td><input type="button" node="{{i}}" class="form-control insertfile" value="选择文件" /></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+			<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html'" ng-if="editType=='edit'"></div>
+		</div>
+	</div>
+</script>
+<!-- AddEditResearch.html.html -->

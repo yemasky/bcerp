@@ -7515,10 +7515,12 @@ KindEditor.plugin('insertfile', function(K) {
 				fieldName : filePostName,
 				url : K.addParam(uploadJson, 'dir=file'),
 				extraParams : extraParams,
-				afterUpload : function(data) {
+				afterUpload : function(data) {//console.log(data) 获取返回值 配合springboot已做修改
 					dialog.hideLoading();
-					if (data.error === 0) {
-						var url = data.url;
+					//if (data.error === 0) {
+					if (data.success) {
+						//var url = data.url;
+						var url = data.item.file.url;
 						if (formatUploadUrl) {
 							url = K.formatUrl(url, 'absolute');
 						}

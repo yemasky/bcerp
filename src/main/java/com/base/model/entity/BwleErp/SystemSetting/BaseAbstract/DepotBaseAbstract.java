@@ -1,7 +1,6 @@
 package com.base.model.entity.BwleErp.SystemSetting.BaseAbstract;
 
 public abstract class DepotBaseAbstract {
-	private Integer depot_father_id;
 	private String depot_name;
 	private String depot_address;
 	private String depot_mobile;
@@ -9,12 +8,6 @@ public abstract class DepotBaseAbstract {
 	private String depot_explain;
 	private String depot_code;
 	private String depot_region;
-	public Integer getDepot_father_id() {
-		return depot_father_id;
-	}
-	public void setDepot_father_id(Integer depot_father_id) {
-		this.depot_father_id = depot_father_id;
-	}
 	public String getDepot_name() {
 		return depot_name;
 	}

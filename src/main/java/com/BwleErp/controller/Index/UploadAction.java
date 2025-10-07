@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.BwleErp.config.Config;
 import com.base.controller.AbstractAction;
 import com.base.model.dto.FileDTO;
+import com.base.model.vo.KEditorUFile;
 import com.base.model.vo.KEditorUImages;
 import com.base.service.BwleErp.UploadService;
 import com.base.type.CheckedStatus;
@@ -57,6 +58,9 @@ public class UploadAction extends AbstractAction {
 		case "deleteImg":
 			this.doDeleteImg(request, response);
 			break;	
+		case "uploadFile":
+			this.doUploadFile(request, response);
+			break;			
 		default:
 			this.doDefault(request, response);
 			break;
@@ -111,6 +115,27 @@ public class UploadAction extends AbstractAction {
 			uploadService.deleteFile(whereRelation);
 		}
 		this.success.setSuccessCode(ErrorCode.__T_SUCCESS);
+	}
+	
+	public void doUploadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ArrayList<FileDTO> fileList = FileUpload.instance().multiSpringUpload(request, Config.uploadPath);
+		int size = fileList.size();
+		if (size > 0) {
+			//
+			String UseType = request.getParameter("UseType");
+			WhereRelation whereRelation = new WhereRelation();
+			whereRelation.EQ("employee_id", this.employee_id).EQ("file_use_type", UseType).setUpdate("file_valid", 0);
+			//uploadService.update(whereRelation);
+			uploadService.saveUploadFileDb(fileList, 0, 0, UseType, "", this.employee_id);
+			KEditorUFile kFiles = new KEditorUFile();
+			kFiles.setUrl(fileList.get(0).getFile_url());
+			this.success.setItem("file", kFiles);
+			this.success.setSuccessCode(ErrorCode.__T_SUCCESS);
+			return;
+		}
+		this.success.setErrorCode(ErrorCode.__F_UPLOAD);
+		
+	
 	}
 	
 }

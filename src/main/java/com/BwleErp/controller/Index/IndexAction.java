@@ -122,6 +122,7 @@ public class IndexAction extends AbstractAction {
 			}
 		}
 		// System.out.println(Encrypt.md5Encrypt(password + "567899585"));
+		this.success.setItem("module_channel", "Setting");
 		this.success.setErrorCode(ErrorCode.__F_NO_MATCH_MEMBER);
 
 	}
@@ -208,7 +209,6 @@ public class IndexAction extends AbstractAction {
 		this.success.setItem("countryList", countryList);
 		this.success.setItem("cityList", cityList);
 		this.success.setItem("employeeMenu", employeeModuleVoList);
-		this.success.setItem("module_channel", "Setting");
 		this.success.setItem("employee", employeeVo);
 		this.success.setItem("employeeSector", employeesVo);
 		this.success.setItem("access", roleModuleAccessList);

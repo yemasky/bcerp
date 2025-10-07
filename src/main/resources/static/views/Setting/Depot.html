@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-md-2">
 				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
-					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加车种分类
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加{{_self_module.module_name}}
 				</button>
 			</div>
 		</div>
@@ -14,8 +14,8 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>序号</th>
-					<th>名称</th>
+					<th>一级科目</th>
+					<th>二级科目</th>
 					<th>编号</th>
 					<th></th>
 					<th></th>
@@ -56,14 +56,14 @@
 						</div>
 						<div class="panel-body">  
 							<ul class="nav nav-tabs" ui-nav>
-								<li class="active" ng-click="tab=1">
+								<li class="active" ng-click="tab=1;depot={}">
 									<a href>仓库设置</a>
 								</li>
-								<li ng-click="tab=2">
-									<a href>添加一级科目</a>
+								<li ng-click="tab=2;depot={}">
+									<a href>一级科目</a>
 								</li>
-								<li ng-click="tab=3">
-									<a href>添加二级科目</a>
+								<li ng-click="tab=3;depot={}">
+									<a href>二级科目</a>
 								</li>
 							</ul>
 							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==1">
@@ -79,41 +79,38 @@
 								<div class="form-group">
 									<label class="col-sm-2 control-label">选择二级科目</label>
 									<div class="col-sm-2">
-										<select class="form-control w-sm" ng-model="depot.depot_id"
-											ng-options="father.depot_id as father.depot_name for father in depotFather" 
-												placeholder="一级科目">
+										<select class="form-control w-sm" ng-model="depot.depot_id" 
+											ng-change="setChange()"
+											ng-options="child.depot_id as child.depot_name for child in depotChild[depot.depot_father_id]" 
+												placeholder="二级科目">
 										</select>
 									</div>
 									<label class="col-sm-1 control-label">仓库编码</label>
-									<div class="col-sm-2">
-										<input type="text" class="form-control" ng-model="depot.depot_code" />
-									</div>
+									<div class="col-sm-2">{{depot.depot_code}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓库功能说明</label>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" ng-model="depot.depot_explain" />
-									</div>
+									<div class="col-sm-5">{{depot.depot_explain}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓库地址</label>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" ng-model="depot.depot_address" />
-									</div>
+									<div class="col-sm-5">{{depot.depot_address}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">联系电话</label>
-									<div class="col-sm-2">
-										<input type="text" class="form-control" ng-model="depot.depot_mobile" />
-									</div>
+									<div class="col-sm-2">{{depot.depot_mobile}}</div>
 									<label class="col-sm-1 control-label">联系人</label>
-									<div class="col-sm-2">
-										<input type="text" class="form-control" ng-model="depot.depot_contact" />
-									</div>
+									<div class="col-sm-2">{{depot.depot_contact}}</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-2 control-label">仓位明细</label>
 									<div class="col-sm-6">
+										<div class="row">
+											<div class="text-center">
+												<a ng-click="addStep('edit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加仓位</a>
+												<a ng-click="reduceStep('edit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少仓位</a>
+											</div>
+										</div>
 										<div class="panel panel-default">
 											<table class="table">
 												<tr>
@@ -122,8 +119,8 @@
 													<td>三级区域</td>
 													<td>仓位编码</td>
 												</tr>
-												<tr>
-													<td><input type="text" class="form-control"  /></td>
+												<tr ng-repeat="i in step['edit'].step">
+													<td><input type="text" class="form-control" ng-model="auditing.examine[i].position_id" /></td>
 													<td><input type="text" class="form-control"  /></td>
 													<td><input type="text" class="form-control"  /></td>
 													<td><input type="text" class="form-control"  /></td>
@@ -152,7 +149,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-sm-2 control-label">二级科目</label>
+									<label class="col-sm-2 control-label">二级科目名称</label>
 									<div class="col-sm-2">
 										<input type="text" class="form-control" ng-model="depot.depot_name" />
 									</div>
@@ -181,27 +178,6 @@
 									<label class="col-sm-1 control-label">联系人</label>
 									<div class="col-sm-2">
 										<input type="text" class="form-control" ng-model="depot.depot_contact" />
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-sm-2 control-label">仓位明细</label>
-									<div class="col-sm-6">
-										<div class="panel panel-default">
-											<table class="table">
-												<tr>
-													<td>一级区域</td>
-													<td>二级区域</td>
-													<td>三级区域</td>
-													<td>仓位编码</td>
-												</tr>
-												<tr>
-													<td><input type="text" class="form-control"  /></td>
-													<td><input type="text" class="form-control"  /></td>
-													<td><input type="text" class="form-control"  /></td>
-													<td><input type="text" class="form-control"  /></td>
-												</tr>
-											</table>
-										</div>
 									</div>
 								</div>
 							</div>

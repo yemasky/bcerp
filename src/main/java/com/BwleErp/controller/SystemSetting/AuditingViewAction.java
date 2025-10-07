@@ -81,7 +81,7 @@ public class AuditingViewAction extends AbstractAction {
 	public void doGetAuditing(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String id = request.getParameter("id");//提出工作流的module的表的id
 		int link_id  = 0;//提出工作流的module的表的id
-		if(!Utility.instance().isNumber(id)) {
+		if(!Utility.instance().isNumber(id) && id.length() > 8) {
 			link_id = EncryptUtiliy.instance().intIDDecrypt(id);
 		} else {
 			link_id = Integer.parseInt(id);

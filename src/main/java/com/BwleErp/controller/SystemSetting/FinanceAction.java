@@ -66,8 +66,6 @@ public class FinanceAction extends AbstractAction {
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.EQ("depot_valid", 1).setTable_clazz(FinanceDepotVo.class);
 		NeedEncrypt needEncrypt = new NeedEncrypt();
-		needEncrypt.setNeedEncrypt(true);
-		needEncrypt.setNeedEncrypt("depot_id", NeedEncrypt._ENCRYPT);
 		List<HashMap<String, Object>> depotList = this.generalService.getList(whereRelation, needEncrypt);
 		//
 		this.success.setItem("depotList", depotList);
@@ -77,7 +75,7 @@ public class FinanceAction extends AbstractAction {
 		String edit_id = request.getParameter("edit_id");
 		int depot_id = 0;
 		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
-			depot_id = EncryptUtiliy.instance().intIDDecrypt(edit_id);
+			depot_id = Integer.parseInt(edit_id);
 		}
 		FinanceDepotVo depotVo = this.modelMapper.map(request.getAttribute("depot"), FinanceDepotVo.class);
 		if(depot_id > 0) {//update
@@ -85,10 +83,13 @@ public class FinanceAction extends AbstractAction {
 			whereRelation.EQ("auditing_id", depot_id).setTable_clazz(Auditing.class);
 			generalService.updateEntity(depotVo, whereRelation);
 		} else {
-			int id = generalService.save(depotVo);
-			edit_id = EncryptUtiliy.instance().intIDEncrypt(id);
+			if(depotVo.getDepot_father_id() == null) {
+				depotVo.setDepot_father_id("0");
+			}
+			depotVo.setDepot_id(null);
+			depot_id = generalService.save(depotVo);
 		}
-		this.success.setItem("depot_id", edit_id);
+		this.success.setItem("depot_id", depot_id);
 	}
 	
 	public void doDeleteDepot(HttpServletRequest request, HttpServletResponse response) throws Exception {

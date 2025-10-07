@@ -151,7 +151,6 @@ public class BwleErpController extends AbstractController {
 			Class<?> controllerClass = Class
 					.forName("com." + this.thisController + ".controller." + module + "." + action);
 			Object controllerAction = SpringContextInvoke.getBean(controllerClass);
-			System.out.println("==>"+controllerClass.getCanonicalName());
 			Method execute = controllerClass.getMethod("execute", HttpServletRequest.class, HttpServletResponse.class);
 			Success tempObj = (Success) execute.invoke(controllerAction, request, response);
 			this.release(request, response);
