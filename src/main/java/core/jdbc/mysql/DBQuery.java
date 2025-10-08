@@ -173,8 +173,8 @@ public abstract class DBQuery {
 			ResultSet rs = this.executeForQuery(preparedStatement, paramters);
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, this.table_class, false);
 			logger.info("查询耗时：" + (System.currentTimeMillis() - start) + " ms" + ",SQL:"+sql);
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return list;
 		} catch (SQLException e) {
@@ -203,8 +203,8 @@ public abstract class DBQuery {
 			logger.debug(sql);
 			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, objectClass, whereRelation.getSelectShow());
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return list;
 		} catch (Exception e) {
@@ -225,8 +225,8 @@ public abstract class DBQuery {
 			logger.debug(sql);
 			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			List<HashMap<String, Object>> list = resultSetToListMap(rs, entityClassT, whereRelation.getSelectShow());
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return list;
 		} catch (Exception e) {
@@ -280,8 +280,8 @@ public abstract class DBQuery {
 			logger.debug(sql);
 			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
@@ -302,8 +302,8 @@ public abstract class DBQuery {
 			logger.debug(sql);
 			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
@@ -324,8 +324,8 @@ public abstract class DBQuery {
 			logger.debug(sql);
 			ResultSet rs = this.executeForQuery(preparedStatement, whereRelation.getWhereParamters());
 			list = this.executeResultSet(entityClassT, rs, list, whereRelation.getSelectShow());
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return (List<T>) list;
 		} catch (Exception e) {
@@ -351,8 +351,8 @@ public abstract class DBQuery {
 			if (rs.next()) {
 				result = rs.getObject(1);
 			}
-			if (rs != null)
-				rs.close();
+			//if (rs != null)
+			//	rs.close();
 			//this.thisReadConnection().close();
 			return result;
 		} catch (SQLException e) {

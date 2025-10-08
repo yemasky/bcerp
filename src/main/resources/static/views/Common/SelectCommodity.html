@@ -1,0 +1,162 @@
+<div class="p-md" ng-controller="CategoryAuditingController">
+	<div class="panel panel-default">
+		<table class="table">
+			<thead>
+				<tr>
+					<td colspan="8">#工作流审核<button type="button" class="close" ng-click="$hide()">&times;</button></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="8">
+						<div class="row p-h-md pull-right">
+							<form name="commitForm" class="form-inline" role="form" ng-submit="commitAuditing(commitForm)" ng-if="auditing.auditing_state<=0">
+								<div class="input-group" ng-if="loginEmployee.id==auditing.employee_id">
+									<input class="form-control w" type="text" ng-model="_self_module.module_name" readonly >
+									<span class="input-group-addon no-radius no-padding no-border"></span>
+									<span class="input-group-addon no-radius">选择需要递交的工作流</span>
+									<select class="form-control w" ng-model="auditing_id" ng-change="selectChange()">
+										<option value="{{auditing.auditing_id}}" ng-repeat="(i, auditing) in auditingList">{{auditing.auditing_name}}</option>
+									</select>
+									<span class="input-group-btn">
+										<div class="btn-group">
+											<button type="submit" class="btn btn-rounded btn-info" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+												trigger-loading="beginLoading"><i class="glyphicon glyphicon-floppy-saved"> </i> 提交工作流</button>
+										</div>
+									</span>
+								</div>
+								<div class="btn-group" ng-if="loginEmployee.id!=auditing.employee_id">
+									<button type="button" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+										trigger-loading="beginLoading"><i class="glyphicon glyphicon-floppy-saved"> </i> 还未提交审核</button>
+								</div>
+							</form>
+							<form name="thisForm" class="form-inline" role="form" ng-submit="cancelAuditing(thisForm)" ng-if="auditing.auditing_state>0">
+								<div class="input-group ">
+									<span class="input-group-addon no-radius">递交时间</span>
+									<input class="form-control w" type="text" value="{{auditing.auditing_date}}" readonly >
+									<span class="input-group-addon no-radius">递交人</span>
+									<input class="form-control w" type="text" value="{{employeeHash[auditing.auditing_employee_id].employee_name}}" readonly >
+									<span class="input-group-btn" ng-if="loginEmployee.id==auditing.employee_id">
+										<div class="btn-group">
+											<button type="submit" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+												trigger-loading="beginLoading"><i class="glyphicon glyphicon-floppy-remove"> </i> 撤回工作流</button>
+										</div>
+									</span>
+								</div>
+							</form>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>步骤</td><td>审核部门</td><td>审核职位</td><td>审核人</td><td>审核说明</td><td>审核状态</td><td>审核时间</td><td>操作</td>
+				</tr>
+				<tr ng-repeat="(i, examines) in examinesList">
+					<form name="thisForm{{i}}" class="form-inline" ng-submit="verifyAuditing()" ng-if="auditing.auditing_state>0">
+					<td>{{i+1}}</td><td>{{sectorHash[examines.sector_id].sector_name}}</td><td>{{sectorHash[examines.position_id].sector_name}}</td>
+					<td>{{employeeHash[examines.audit_employee_id].employee_name}}</td>
+					<td><input class="form-control w" type="text" value="{{examines.audit_content}}" ng-model="examines.audit_content" ></td>
+					<td>{{examinesStateExplain[examines.audit_state]}}</td>
+					<td>{{examines.audit_datetime}}</td>
+					<td>
+						<div class="input-group ">
+							<span class="input-group-btn" ng-if="loginEmployee.id==examines.audit_employee_id && examines.audit_state==1">
+								<div class="btn-group">
+									<button type="button" class="btn btn-rounded btn-default" ng-click="verifyAuditing(-1,i)">
+										<i class="fa fa-times"> </i> 退回</button>
+									<button type="submit" ng-click="verifyAuditing(2,i)" class="btn btn-rounded 
+										btn-info" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+										trigger-loading="beginLoading"><i class="ti-check"> </i> 通过</button>
+								</div>
+							</span>
+							<span class="input-group-btn" ng-if="loginEmployee.id!=examines.audit_employee_id && examines.audit_state==0">
+								<div class="btn-group">
+									<button type="button" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+										trigger-loading="beginLoading"> 等待审核</button>
+								</div>
+							</span>
+							<span class="input-group-btn" ng-if="examines.audit_state!=0">
+								<div class="btn-group">
+									<button type="button" class="btn btn-rounded" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+										trigger-loading="beginLoading"> 无操作</button>
+								</div>
+							</span>
+						</div>
+					</td>
+					</form>
+				</tr>
+				<tr>
+					<td colspan="8">
+						#
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script language="javascript">
+app.controller('CategoryAuditingController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
+	$ocLazyLoad, $alert, $stateParams, $routeParams) {
+		$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
+		__RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION]);
+		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
+		var urlParam = __WEB + 'app.do?channel=' + __AuditingViewUrl+"&c="+$stateParams.channel+'&id='+$rootScope.param.id;
+	$scope.param = {}; $scope.edit_id = "";
+	//定义变量
+	console.log("CategoryAuditing routeParams",$rootScope, $scope);
+	$scope.auditing = $rootScope.param.auditing;
+	$scope.auditingList = [];$scope.auditing_id = 0;$scope.examinesList = [];
+	$scope.examinesStateExplain = {"-1":"已退回","0":"","1":"等待审核","2":"审核通过"};
+	let aside;
+	$httpService.header('method', 'getAuditing');
+	$httpService.post(urlParam, $scope, function(result){
+		$scope.loading.hide();
+		$httpService.deleteHeader('method'); 
+		if(result.data.success == false) {
+			return;
+		} 
+		$scope.auditingList = result.data.item.auditingList;
+		$scope.examinesList = result.data.item.examinesList;
+	})
+
+	$scope.commitAuditing = function(commitForm) {
+		console.log($scope.auditing_id,this.auditing_id);
+		$scope.param = {};$scope.param.auditing_id = this.auditing_id;
+		if(this.auditing_id == null || this.auditing_id == '' || this.auditing_id == 0) {$alert({title: 'Notice', content: '没有选择工作流！', templateUrl: '/modal-warning.html', show: true});return;}
+		$httpService.header('method', 'commitAuditing');
+		$httpService.post(urlParam+'&status=1', $scope, function(result){//status=1 代表遞交審核
+			$scope.loading.hide();
+			$httpService.deleteHeader('method'); 
+			if(result.data.success == false) {
+				return;
+			}
+			$scope.auditingList = result.data.item.auditingList;
+		})
+	}
+	$scope.verifyAuditing = function(state, i) {
+		console.log(this, $scope.examines, $scope.examinesList);
+		let content = $scope.examinesList[i].audit_content;
+		let isNoContent = content =='' || content == null ? true : false;
+		if(state == -1 && isNoContent) {$alert({title: 'Notice', content: '审核说明没有填写！', templateUrl: '/modal-warning.html', show: true});;return;}
+		var message = '您确定要操作流程吗？';
+		$scope.confirm({'content': message,'callback': close});
+		function close() {
+			$scope.param = {};
+			$scope.param.examines = $scope.examinesList[i];
+			$scope.param.examines.audit_state = state;
+			$httpService.header('method', 'verifyAuditing');
+			$httpService.post(urlParam, $scope, function(result){//status=1 代表遞交審核
+				$scope.loading.hide();
+				$httpService.deleteHeader('method'); 
+				if(result.data.success == false) {
+					return;
+				}
+				$scope.examinesList[i].audit_state = state;
+				$scope.examinesList[i].audit_datetime = result.data.date;
+			})
+		}
+	}
+	$scope.selectChange = function() {
+		$scope.auditing_id = angular.copy(this.auditing_id);
+	} 
+});
+</script>

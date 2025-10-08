@@ -1,33 +1,38 @@
 package com.BwleErp.controller.Marketing;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.slf4j.MDC;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+import com.BwleErp.config.Config;
 import com.base.controller.AbstractAction;
 import com.base.model.entity.BwleErp.SystemSetting.MarketingCollection;
+import com.base.model.vo.BwleErp.Marketing.FumamxToken;
 import com.base.model.vo.BwleErp.SystemSetting.MarketingCollectionVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
 import com.base.util.EncryptUtiliy;
+import com.google.gson.Gson;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 @Component
 public class CustomerAction extends AbstractAction {
@@ -76,28 +81,66 @@ public class CustomerAction extends AbstractAction {
 	}
 
 	public void doSyncCustomer(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String url = "https://www.yuque.com/yangzhuzai/fumamx/silvggdk7g3fbzhf";
+		String url = "https://opengw.fumamx.com/auth-server/open/acquire_token";
 		String appid = "I4UfdbMi";
 		String appsecret = "40270f10408f94db496ed96c088ce84d1fc77b98";
-
+		String tonkeCode = "fumamxTonkeCode";
+		CacheManager cacheManager = CacheManager.create();// .getCacheManager(Config.cache24hour);
+		Cache cache = cacheManager.getCache(Config.cache120min);//120分鐘 即2小時
+		String token = "";
 		CloseableHttpClient httpClient = HttpClients.createDefault();
-		HttpPost httpPost = new HttpPost(url);
-		List<NameValuePair> params = new ArrayList<>();
-		params.add(new BasicNameValuePair("appid", appid));
-		params.add(new BasicNameValuePair("appsecret", appsecret));
-		httpPost.setEntity(new UrlEncodedFormEntity(params));
-		CloseableHttpResponse responses = httpClient.execute(httpPost);
-		try {
-			System.out.println(responses.getReasonPhrase());
-			HttpEntity entity = responses.getEntity();
-			if (entity != null) {
-				String result = EntityUtils.toString(entity);
-				System.out.println(result);
-				this.success.setItem("request", result);
+		HttpPost httpPost;
+		JSONObject json;
+		String responses = "";
+		FumamxToken fumamxToken = new FumamxToken();
+		if (cache != null) {
+			Element getGreeting = cache.get(tonkeCode);
+			if (getGreeting != null) {//取出緩存
+				Object obj = getGreeting.getObjectValue();
+				if(obj instanceof FumamxToken) {
+					fumamxToken = (FumamxToken) obj;
+				}
+			} else {
+				httpPost = new HttpPost(url);
+				json = new JSONObject();
+				json.put("appId",appid);
+				json.put("appSecret",appsecret);
+				httpPost.addHeader("Content-Type", "application/json");
+				httpPost.setEntity(new StringEntity(json.toString()));
+				responses = httpClient.execute(httpPost,new BasicHttpClientResponseHandler());
+				fumamxToken = new Gson().fromJson(responses, FumamxToken.class);
+				//token = fumamxToken.getData().getAccessToken();
+				//新緩存
+				Element putGreeting = new Element(tonkeCode, fumamxToken);
+				cache.put(putGreeting);
 			}
-		} finally {
-			responses.close();
+			
 		}
+		token = fumamxToken.getData().getAccessToken();
+		//查詢客戶 http://opengw.fumamx.com/open-platform-server/pure/get_detail_info
+		// 列表 http://opengw.fumamx.com/bill-server/pure/get_page_list
+		String listUrl = "https://opengw.fumamx.com/bill-server/pure/get_page_list";
+		String detailUrl = "http://opengw.fumamx.com/open-platform-server/pure/get_detail_info";
+		httpPost = new HttpPost(listUrl);
+		httpPost.addHeader("Content-Type", "application/json");
+		httpPost.addHeader("accessToken", fumamxToken);
+		//responses = httpClient.execute(httpPost,new BasicHttpClientResponseHandler());
+		
+		Map<String, Integer>map = new HashMap<>();
+		Map<String, Object>params = new HashMap<>();
+		map.put("from", 1);
+		map.put("size", 100);
+		params.put("page", map);
+		params.put("moduleCode", "NewBF001");
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type","application/json");
+		headers.add("accessToken",token);//"b6065984d2de4a1fa47e9a13651dfc0f"
+		RestTemplate template = new RestTemplate();
+		HttpEntity<Object>httpEntity = new HttpEntity<>(params, headers); 
+		Object ret = template.postForObject(listUrl,httpEntity, Object.class); 
+		
+		this.success.setItem("responses", ret);
+		this.success.setItem("token", fumamxToken);
 	}
 
 	public void doGetSalesPayment(HttpServletRequest request, HttpServletResponse response) throws Exception {

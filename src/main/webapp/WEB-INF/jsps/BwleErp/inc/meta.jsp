@@ -10,7 +10,7 @@
 <script language="javascript">
     var __RESOURCE = '${__RESOURCE}'; var __IMGWEB = '${__IMGWEB}';var __WEB = '${__WEB}';
     var __ImagesUploadUrl = '${__ImagesUploadUrl}';var __ImagesManagerUrl = '${__ImagesManagerUrl}';
-    var __AuditingViewUrl = '${__AuditingViewUrl}';
+    var __AuditingViewUrl = '${__AuditingViewUrl}';var __FILEWEB = '${__FILEWEB}';
 //jQuery 插件
 (function ($) {
     $.serializeFormat = function (id) {//取出form的值包括 xxx[yyy]的值
@@ -442,7 +442,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $("#"+_id).hide();$("#"+id).show();
         }
         //初始化变量
-        $scope.__RESOURCE = __RESOURCE;$scope._resource = __RESOURCE;$scope.__WEB = __WEB;$scope.__IMGWEB = __IMGWEB;//'${__IMGWEB}'
+        $scope.__RESOURCE = __RESOURCE;$scope._resource = __RESOURCE;$scope.__WEB = __WEB;$scope.__IMGWEB = __IMGWEB;$scope.__FILEWEB = __FILEWEB;//'${__IMGWEB}'
 		$scope.companyList = {};
 		$scope.auditingProvisoList = [{id:"1",name:"填写"},{id:"2",name:"审核"}];
 		$scope.currencySymbol = [{id:0,currency_name:"港元",currency_sname:"HKD",currency_symbol:"HK$"},
@@ -450,7 +450,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 								 {id:2,currency_name:"欧元",currency_sname:"EUR",currency_symbol:"€"},
 								 {id:3,currency_name:"人民币",currency_sname:"CNY",currency_symbol:"￥"},];
 		//审核状态 1已遞交審核 2審核通過 -1退回 0未遞交
-		$scope.auditingStateExplain = {"":"","-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过"};
+		$scope.auditingStateExplain = {"":"","-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过","3":"审核完结"};
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
 		let noLogin = "${noLogin}";

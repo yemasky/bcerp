@@ -93,9 +93,9 @@ public class CategoryAction extends AbstractAction {
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("category_id", NeedEncrypt._ENCRYPT);
-		List<HashMap<String, Object>> companyList = this.generalService.getList(whereRelation, needEncrypt);
+		List<HashMap<String, Object>> categoryList = this.generalService.getList(whereRelation, needEncrypt);
 		//
-		this.success.setItem("categoryList", companyList);
+		this.success.setItem("categoryList", categoryList);
 	}
 	
 	public void doSaveCategory(HttpServletRequest request, HttpServletResponse response) throws Exception {

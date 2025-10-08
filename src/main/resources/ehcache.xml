@@ -15,7 +15,7 @@
     <!-- 这里的 users 缓存空间是为了下面的 demo 做准备 -->
     <!-- cache-30min  -->
     <cache
-            name="cache-30min"
+            name="cache30min"
             eternal="false"
             maxElementsInMemory="1000"
             overflowToDisk="true"
@@ -25,7 +25,7 @@
             memoryStoreEvictionPolicy="LRU" />
     <!-- cache-30min  -->
     <cache
-            name="cache-120min"
+            name="cache120min"
             eternal="false"
             maxElementsInMemory="1000"
             overflowToDisk="true"
@@ -35,7 +35,7 @@
             memoryStoreEvictionPolicy="LRU" />
     <!-- cache-24hour  -->
     <cache
-            name="cache-24hour"
+            name="cache24hour"
             eternal="false"
             maxElementsInMemory="10000"
             maxEntriesLocalDisk="1"
@@ -46,7 +46,7 @@
             memoryStoreEvictionPolicy="LRU" />
             
    <cache
-            name="cache-forever"
+            name="cacheforever"
             eternal="true"
             maxElementsInMemory="10000"
             maxEntriesLocalDisk="1"

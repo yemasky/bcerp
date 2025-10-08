@@ -1,11 +1,15 @@
 app.controller('ProductController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-		$ocLazyLoad.load([__RESOURCE+"vendor/libs/md5.min.js",__RESOURCE + "vendor/libs/utils.js"]);
+		$ocLazyLoad.load([__RESOURCE + "vendor/modules/angular-ui-select/select.min.js?" + __VERSION,
+						  __RESOURCE + "vendor/modules/angular-ui-select/select.min.css?" + __VERSION,
+						  __RESOURCE+"editor/kindeditor/kindeditor-all.js?"+__VERSION,__RESOURCE+"editor/kindeditor/themes/default/default.css"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0;$scope.edit_index = 0;$scope.editType = "";
 	//定义变量
 	$scope.box = {};$scope.boxList = {};
+	$scope.systypeList = [];$scope.systypeHash = {};//系统分类
+	$scope.commodityList = [];
 	let aside;
 	$httpService.header('method', 'getBox');
 	$httpService.post(urlParam, $scope, function(result){
@@ -14,7 +18,10 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		if(result.data.success == false) {
 			return;
 		} 
-		$scope.boxList = result.data.item.boxList;//部门职位
+		$scope.boxList = result.data.item.boxList;//
+		$scope.systypeList = result.data.item.systypeList;//
+		for (var key in $scope.systypeList) {$scope.systypeHash[$scope.systypeList[key].systype_id] = $scope.systypeList[key];}
+		$scope.categoryList = result.data.item.categoryList;//
 		//$scope.$apply();//刷新数据
 	})
 	
@@ -28,13 +35,15 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		$scope.setActionNavName($stateParams.id, "添加/编辑");
 		$scope.action = '添加/编辑';
 		aside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'center',animation:'am-fade-and-slide-top',
-				backdrop:"static",container:'#MainController', templateUrl: 'AddEditBoxStandard.html'});
+				backdrop:"static",container:'#MainController', templateUrl: 'AddEditProduct.html'});
 		aside.$promise.then(function() {
 			aside.show();
 			$(document).ready(function(){
 				
 			});
 		})
+		//工作流审核相关
+		$rootScope.param = {};$rootScope.param.auditing = $scope.box;$rootScope.param.id = 0;//$scope.box.box_id;
 	}
 
 	$scope.saveData = function() {
@@ -85,4 +94,43 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 			});
 		}
 	}
+	$scope.selectCommodity = function() {
+		asideSector = $aside({scope: $scope,title: $scope.action_nav_name,placement: 'center',animation: 'am-fade-and-slide-top',backdrop: "static",
+			container: '#MainController',templateUrl: 'SelectCommodity.html'
+		});
+		asideSector.$promise.then(function() {
+			asideSector.show();
+			$(document).ready(function() {
+				$scope.setImage();
+			});
+		})
+	}
+	//<!--图片上传及操作-->
+	//images
+	$scope.setImage = function() {
+		//$scope.__WEB+'app.do?method=uploadCompanyLogo&channel='+$rootScope.__ImagesUploadUrl;
+		var uploadJsonUrl = $scope.__WEB+'index/uploadCompanyLogo?channel='+__ImagesUploadUrl+"&UseType=CompanyLogo";
+		var fileManagerJsonUrl = $scope.__WEB+'index/fileManager?channel='+__ImagesManagerUrl;
+		window.K = KindEditor;
+		var editor = K.editor({
+			uploadJson : uploadJsonUrl,fileManagerJson : fileManagerJsonUrl,allowFileManager : true,formatUploadUrl: false
+		});
+		let keditor = K('.set_image_src');
+		keditor.click(function() {
+			let _this = this;
+			editor.loadPlugin('image', function() {
+				editor.plugin.imageDialog({
+					//clickFn : function(url, title, width, height, border, align) {
+					clickFn : function(url) {
+						editor.hideDialog();
+						$(_this).src = url;
+						let node = $(_this).attr('node');
+						if(typeof($scope.images[node]) == 'undefined') $scope.images[node] = {};
+						$scope.images[node].attribute_val = url;
+						$scope.$apply();//刷新数据
+					}
+				});
+			});
+		});
+	} 
 });

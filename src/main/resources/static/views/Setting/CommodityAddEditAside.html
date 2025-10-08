@@ -298,7 +298,7 @@
 					</div>
 				</div>
 				<footer class="panel-footer text-right bg-white">
-					<div class="btn-group" ng-if="commodity.auditing_state==0">
+					<div class="btn-group" ng-if="commodity.auditing_state<=0">
 						<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
 						<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
 							trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
