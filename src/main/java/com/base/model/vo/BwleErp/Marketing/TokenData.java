@@ -1,6 +1,12 @@
 package com.base.model.vo.BwleErp.Marketing;
 
-public class TokenData {
+import java.io.Serializable;
+
+public class TokenData implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3320813896120573387L;
 	private String companyId;
 	private String appId;
 	private String accessToken;

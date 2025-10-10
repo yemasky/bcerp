@@ -1,0 +1,36 @@
+import org.json.CDL;
+import org.json.JSONArray;
+import org.json.JSONTokener;
+
+public class JSONDemo {
+   public static void main(String[] args) {
+      String csvData = "INDIA, UK, USA";
+
+      //案例 1:CSV 转 JSON 数组
+      JSONArray jsonArray = CDL.rowToJSONArray(new JSONTokener(csvData));        
+      System.out.println(jsonArray);
+
+      //案例 2:JSONArray 转 CSV
+      System.out.println(CDL.rowToString(jsonArray));
+
+      //案例 3:CSV 到 JSON 对象数组
+      csvData = "empId, name, age 
+" +
+         "1, Mark, 22 
+" +
+         "2, Robert, 35 
+" +
+         "3, Julia, 18";
+      System.out.println(CDL.toJSONArray(csvData));
+
+      //情况 4:无标题的 CSV
+      jsonArray = new JSONArray();
+      jsonArray.put("empId");
+      jsonArray.put("name");
+      jsonArray.put("age");
+      csvData = "1, Mark, 22 
+" + "2, Robert, 35 
+" + "3, Julia, 18";
+      System.out.println(CDL.toJSONArray(jsonArray,csvData));
+   }
+}

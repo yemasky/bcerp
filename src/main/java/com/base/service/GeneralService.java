@@ -18,6 +18,8 @@ public interface GeneralService  extends BaseService {
 	
 	<T> int batchSave(List<T> objectList) throws Exception;
 	
+	<T> int batchSave(List<T> objectList, String insertType) throws Exception;
+	
 	void delete(WhereRelation whereRelation) throws Exception;
 	
 	void closeConnection() throws SQLException;

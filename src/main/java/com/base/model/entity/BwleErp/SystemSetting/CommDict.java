@@ -7,6 +7,7 @@ import core.custom_interface.Table;
 public class CommDict {
 	@Column(name = "dict_id", primary_key = true, auto_increment = true)
 	private Integer dict_id;
+	private Integer dict_father_id;
 	private String dict_val;
 	private String dict_enval;
 	private String dict_field;
@@ -19,6 +20,12 @@ public class CommDict {
 	}
 	public void setDict_id(Integer dict_id) {
 		this.dict_id = dict_id;
+	}
+	public Integer getDict_father_id() {
+		return dict_father_id;
+	}
+	public void setDict_father_id(Integer dict_father_id) {
+		this.dict_father_id = dict_father_id;
 	}
 	public String getDict_val() {
 		return dict_val;

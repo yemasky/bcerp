@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
+import com.base.model.entity.BwleErp.SystemSetting.CommDict;
 import com.base.model.entity.BwleErp.SystemSetting.Country;
 import com.base.model.entity.BwleErp.SystemSetting.CountryCity;
 import com.base.model.entity.BwleErp.SystemSetting.RoleModule;
@@ -205,6 +206,10 @@ public class IndexAction extends AbstractAction {
 		whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(Country.class);
 		List<Country> countryList = generalService.getEntityList(whereRelation);
+		//获取字典
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(CommDict.class);
+		List<CommDict> commDictList = this.generalService.getEntityList(whereRelation);
 		//
 		this.success.setItem("countryList", countryList);
 		this.success.setItem("cityList", cityList);
@@ -215,6 +220,7 @@ public class IndexAction extends AbstractAction {
 		this.success.setItem("companyList", companyList);
 		this.success.setItem("employeeList", employeeList);
 		this.success.setItem("sectorList", sectorList);
+		this.success.setItem("commDictList", commDictList);
 	}
 
 }

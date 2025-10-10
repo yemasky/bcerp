@@ -193,6 +193,13 @@ public class GeneralDao extends BaseDao {
 		return 0;
 	}
 	
+	public <T> int batchSave(List<T> objectList, String insertType) throws Exception {
+		//需转换成long java 默认从mysql int取出来是 BigInteger
+		BigInteger _id = (BigInteger) dBQueryDao.setDsn(this.jdbcDsn).batchInsertObject(objectList, insertType);
+		if(_id != null) return _id.intValue();
+		return 0;
+	}
+	
 	public int increase(WhereRelation whereRelation) throws SQLException {
 		return dBQueryDao.table(whereRelation.getTable_clazz()).increase(whereRelation);
 	}

@@ -1,0 +1,61 @@
+String url = "https://opengw.fumamx.com/auth-server/open/acquire_token";
+		String appid = "I4UfdbMi";
+		String appsecret = "40270f10408f94db496ed96c088ce84d1fc77b98";
+		String tonkeCode = "fumamxTonkeCode";
+		CacheManager cacheManager = CacheManager.create();// .getCacheManager(Config.cache24hour);
+		Cache cache = cacheManager.getCache(Config.cache120min);//120分鐘 即2小時
+		String token = "";
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpPost httpPost;
+		JSONObject json;
+		String responses = "";
+		FumamxToken fumamxToken = new FumamxToken();
+		if (cache != null) {
+			Element getGreeting = cache.get(tonkeCode);
+			if (getGreeting != null) {//取出緩存
+				Object obj = getGreeting.getObjectValue();
+				if(obj instanceof FumamxToken) {
+					fumamxToken = (FumamxToken) obj;
+				}
+			} else {
+				httpPost = new HttpPost(url);
+				json = new JSONObject();
+				json.put("appId",appid);
+				json.put("appSecret",appsecret);
+				httpPost.addHeader("Content-Type", "application/json");
+				httpPost.setEntity(new StringEntity(json.toString()));
+				responses = httpClient.execute(httpPost,new BasicHttpClientResponseHandler());
+				fumamxToken = new Gson().fromJson(responses, FumamxToken.class);
+				//token = fumamxToken.getData().getAccessToken();
+				//新緩存
+				Element putGreeting = new Element(tonkeCode, fumamxToken);
+				cache.put(putGreeting);
+			}
+			
+		}
+		token = fumamxToken.getData().getAccessToken();
+		//查詢客戶 http://opengw.fumamx.com/open-platform-server/pure/get_detail_info
+		// 列表 http://opengw.fumamx.com/bill-server/pure/get_page_list
+		String listUrl = "https://opengw.fumamx.com/bill-server/pure/get_page_list";
+		String detailUrl = "http://opengw.fumamx.com/open-platform-server/pure/get_detail_info";
+		httpPost = new HttpPost(listUrl);
+		httpPost.addHeader("Content-Type", "application/json");
+		httpPost.addHeader("accessToken", fumamxToken);
+		//responses = httpClient.execute(httpPost,new BasicHttpClientResponseHandler());
+		
+		Map<String, Integer>map = new HashMap<>();
+		Map<String, Object>params = new HashMap<>();
+		map.put("from", 1);
+		map.put("size", 10);
+		params.put("page", map);
+		params.put("moduleCode", "NewBF001");
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type","application/json");
+		headers.add("accessToken",token);//"b6065984d2de4a1fa47e9a13651dfc0f"
+		RestTemplate template = new RestTemplate();
+		HttpEntity<Object>httpEntity = new HttpEntity<>(params, headers); 
+		Object ret = template.postForObject(listUrl,httpEntity, Object.class); 
+		
+		this.success.setItem("responses", ret);
+		this.success.setItem("token", fumamxToken);
+	}

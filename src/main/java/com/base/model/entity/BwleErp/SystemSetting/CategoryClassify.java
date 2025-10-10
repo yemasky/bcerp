@@ -7,7 +7,7 @@ import core.custom_interface.Table;
 
 @Table(name = "category_classify", isAnnotationField = true)
 public class CategoryClassify extends ClassifyBaseAbstract{
-	@Column(name = "classify", primary_key = true, auto_increment = true)
+	@Column(name = "classify_id", primary_key = true, auto_increment = true)
 	private Integer classify_id;
 
 	public Integer getClassify_id() {

@@ -18,6 +18,7 @@ app.controller('CommDictController', function($rootScope, $scope, $httpService, 
 		let dictModuleList = result.data.item.dictModuleList;
 		let moduleList = result.data.item.moduleList;
 		let dictList = result.data.item.dictList;
+		let moduleFatherHash = {};
 		moduleList.forEach(item => {
 			$scope.moduleHash[item.module_id] = { ...item };
 		});
@@ -25,15 +26,20 @@ app.controller('CommDictController', function($rootScope, $scope, $httpService, 
 			let dictModule = dictModuleList[i];
 			let module_father_name = $scope.moduleHash[dictModule.module_father_id].module_name;
 			let module_name = $scope.moduleHash[dictModule.module_id].module_name;
-			$scope.moduleFather.push({'module_id':dictModule.module_father_id,'module_name':module_father_name});
+			//$scope.moduleFather.push({'module_id':dictModule.module_father_id,'module_name':module_father_name});
+			moduleFatherHash[dictModule.module_father_id] = {'module_id':dictModule.module_father_id,'module_name':module_father_name};
 			if(typeof($scope.module[dictModule.module_father_id]) == 'undefined') 
-				$scope.module[dictModule.module_father_id] = [];
-			$scope.module[dictModule.module_father_id].push({'module_id':dictModule.module_id,'module_name':module_name});
+				$scope.module[dictModule.module_father_id] = {};
+			$scope.module[dictModule.module_father_id][dictModule.module_id] = {'module_id':dictModule.module_id,'module_name':module_name};
 			if(typeof($scope.field[dictModule.module_id]) == 'undefined')
 				$scope.field[dictModule.module_id] = [];
 			$scope.field[dictModule.module_id].push({'field_id':dictModule.dict_field,'field_name':dictModule.dict_field_name});
 			$scope.fieldHash[dictModule.dict_field] = dictModule.dict_field_name;
 		}
+		for(item in moduleFatherHash){
+			$scope.moduleFather.push(moduleFatherHash[item]);
+		};
+		console.log($scope.moduleFather);		
 		if(angular.isDefined(dictList) && dictList != '') $scope.dictList = $scope.arrayToTree(dictList);
 		console.log($scope.dictList);
 		//$scope.$apply();//刷新数据
@@ -41,6 +47,7 @@ app.controller('CommDictController', function($rootScope, $scope, $httpService, 
 
 	$scope.addEdit = function(editType, dict, i) {
 		$scope.editType = editType;
+		$scope.dict = {};
 		if (editType == 'edit' && typeof (dict) != 'undefined') {
 			$scope.dict = dict;
 			$scope.edit_id = angular.copy(dict.dict_id);
@@ -81,11 +88,11 @@ app.controller('CommDictController', function($rootScope, $scope, $httpService, 
 
 			if ($scope.editType == "add") {
 				//$scope.param.city.city_id = result.data.item.city_id;
-				//$scope.cityList.push(angular.copy($scope.param.city));
-				//Array.prototype.push.apply($scope.cityList, $scope.param.city);
+				//$scope.dictList.push(angular.copy($scope.param.dict));
+				Array.prototype.push.apply($scope.dictList, $scope.param.dict);
 			}
 			if ($scope.editType == "edit") {
-				//$scope.cityList[$scope.edit_index] = angular.copy($scope.param.city);
+				$scope.dictList[$scope.edit_index] = angular.copy($scope.param.dict);
 			}
 			$scope.dict = {};
 			$scope.edit_id = 0;
@@ -118,6 +125,8 @@ app.controller('CommDictController', function($rootScope, $scope, $httpService, 
 				map[item.module_father_id][item.module_id] = {};
 				map[item.module_father_id][item.module_id][item.dict_field] = [];
 			}
+			if(!angular.isDefined(map[item.module_father_id][item.module_id][item.dict_field])) 
+				map[item.module_father_id][item.module_id][item.dict_field] = [];
 			map[item.module_father_id][item.module_id][item.dict_field].push(item);
 		});
 		return map;

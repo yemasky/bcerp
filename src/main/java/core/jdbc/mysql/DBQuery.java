@@ -609,9 +609,17 @@ public abstract class DBQuery {
 	public Object intInsertObject(Object object) throws Exception {
 		return this.excuteInsertObject(object, "INSERT INTO ");
 	}
+	
+	public Object intInsertObject(Object object, String insertType) throws Exception {
+		return this.excuteInsertObject(object, insertType);
+	}
 
 	public <T> Object batchInsertObject(List<T> objectList) throws Exception {
 		return this.excuteBatchInsertObject(objectList, "INSERT INTO ");
+	}
+	
+	public <T> Object batchInsertObject(List<T> objectList, String insertType) throws Exception {
+		return this.excuteBatchInsertObject(objectList, insertType);
 	}
 
 	private <T> Object excuteBatchInsertObject(List<T> objectList, String insertType) throws Exception {
@@ -775,7 +783,9 @@ public abstract class DBQuery {
 				// if (fieldName.equalsIgnoreCase(columnName)) {//找到对应字段
 				//if(annotationFileIdMap.containsKey(columnName)) 
 					//columnName = annotationFileIdMap.get(columnName);
+				//System.out.println("columnName====>"+columnName);
 				if (fieldHashMap.containsKey(columnName)) {
+					
 					Field field = fieldHashMap.get(columnName);
 					field.setAccessible(true);
 					Object value = rs.getObject(j);

@@ -569,7 +569,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
         $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
-        $scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};
+        $scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};$scope.commDictHash = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -608,6 +608,15 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common.countryList) != 'undefined') {
 					common.countryList.forEach(function(item) {
 						$scope.countryHash[item.country_id] = {...item};
+					})
+				}
+				if(typeof(common.commDictList) != 'undefined') {
+					common.commDictList.forEach(function(item) {
+						if(!angular.isDefined($scope.commDictHash[item.module_id]))
+							$scope.commDictHash[item.module_id] = {};
+						if(!angular.isDefined($scope.commDictHash[item.module_id][item.dict_field]))
+							$scope.commDictHash[item.module_id][item.dict_field] = [];
+						$scope.commDictHash[item.module_id][item.dict_field].push(item);
 					})
 				}
 				$rootScope.__ImagesUploadUrl = __ImagesUploadUrl;
@@ -780,6 +789,15 @@ app.directive('pageSelect', function() {
           });
         }
       }
+}).directive('stRatio',function(){
+    return {
+      link:function(scope, element, attr){
+        var ratio=+(attr.stRatio);
+
+        element.css('width',ratio+'%');
+
+      }
+    };
 });
 angular.module("app").directive("uiNav", ["$timeout", function() {
     return {

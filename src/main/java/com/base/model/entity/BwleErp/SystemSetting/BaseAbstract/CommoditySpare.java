@@ -4,7 +4,7 @@ public class CommoditySpare {
 	private String enname;
 	private String name;
 	private String node;
-	private String sources;
+	private Integer sources;
 	public String getEnname() {
 		return enname;
 	}
@@ -23,10 +23,10 @@ public class CommoditySpare {
 	public void setNode(String node) {
 		this.node = node;
 	}
-	public String getSources() {
+	public Integer getSources() {
 		return sources;
 	}
-	public void setSources(String sources) {
+	public void setSources(Integer sources) {
 		this.sources = sources;
 	}
 	

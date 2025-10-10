@@ -108,6 +108,12 @@ public class GeneralServiceImpl  implements GeneralService{
 	}
 	
 	@Override
+	public <T> int batchSave(List<T> objectList, String insertType) throws Exception {
+		// TODO Auto-generated method stub
+		return this.genernalDao.batchSave(objectList, insertType);
+	}
+	
+	@Override
 	public void delete(WhereRelation whereRelation) throws Exception {
 		// TODO Auto-generated method stub
 		this.genernalDao.delete(whereRelation);

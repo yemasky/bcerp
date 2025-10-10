@@ -1,6 +1,12 @@
 package com.base.model.vo.BwleErp.Marketing;
 
-public class FumamxToken {
+import java.io.Serializable;
+
+public class FumamxToken implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String code;
 	private TokenData data;
 	public String getCode() {

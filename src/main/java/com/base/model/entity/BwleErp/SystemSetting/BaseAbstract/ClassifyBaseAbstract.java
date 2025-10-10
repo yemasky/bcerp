@@ -1,11 +1,13 @@
 package com.base.model.entity.BwleErp.SystemSetting.BaseAbstract;
 
+import java.sql.Date;
+
 public abstract class ClassifyBaseAbstract {
 	private String classify_name;
 	private String classify_enname;
 	private Integer category_id;
 	private Integer country_id;
-	private String classify_found;
+	private Date classify_found;
 	private String classify_operating;
 	private String classify_belong_company;
 	private String classify_introduce;
@@ -35,10 +37,10 @@ public abstract class ClassifyBaseAbstract {
 	public void setCountry_id(Integer country_id) {
 		this.country_id = country_id;
 	}
-	public String getClassify_found() {
+	public Date getClassify_found() {
 		return classify_found;
 	}
-	public void setClassify_found(String classify_found) {
+	public void setClassify_found(Date classify_found) {
 		this.classify_found = classify_found;
 	}
 	public String getClassify_operating() {

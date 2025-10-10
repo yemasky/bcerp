@@ -9,8 +9,12 @@ import org.springframework.stereotype.Component;
 import com.base.controller.AbstractAction;
 import com.base.model.entity.BwleErp.SystemSetting.Auditing;
 import com.base.model.entity.BwleErp.SystemSetting.CategoryBoxSandard;
+import com.base.model.entity.BwleErp.SystemSetting.CategoryClassify;
+import com.base.model.entity.BwleErp.SystemSetting.CategoryCommodity;
+import com.base.model.entity.BwleErp.SystemSetting.CategoryCommodityAttribute;
 import com.base.model.entity.BwleErp.SystemSetting.CategorySystype;
 import com.base.model.entity.BwleErp.SystemSetting.CategoryUnit;
+import com.base.model.entity.BwleErp.SystemSetting.VehicleModel;
 import com.base.model.vo.BwleErp.SystemSetting.CategoryVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
@@ -40,15 +44,27 @@ public class ProductLibAction extends AbstractAction {
 			method = "";
 		//
 		switch (method) {
-		case "getBox":
-			this.doGetBox(request, response);
+		case "getProduct":
+			this.doGetgetProduct(request, response);
 			break;
-		case "saveBox":
-			this.doSaveBox(request, response);
+		case "savegetProduct":
+			this.doSaveProduct(request, response);
 			break;
-		case "deleteBox":
-			this.doDeleteBox(request, response);
+		case "deletegetProduct":
+			this.doDeleteProduct(request, response);
 			break;
+		case "getCommodity":
+			this.doGetCommodity(request, response);
+			break;	
+		case "getCommodityAttr":
+			this.doGetCommodityAttr(request, response);
+			break;	
+		case "getClassify":
+			this.doGetClassify(request, response);
+			break;	
+		case "getVehicleModel":
+			this.doGetVehicleModel(request, response);
+			break;		
 		default:
 			this.doDefault(request, response);
 			break;
@@ -66,12 +82,8 @@ public class ProductLibAction extends AbstractAction {
 
 	}
 
-	public void doGetBox(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void doGetgetProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		WhereRelation whereRelation = new WhereRelation();
-		whereRelation.setTable_clazz(CategoryBoxSandard.class);
-		List<CategoryBoxSandard> boxList = this.generalService.getEntityList(whereRelation);
-		//
-		whereRelation = new WhereRelation();
 		whereRelation.EQ("systype_valid", 1).setTable_clazz(CategorySystype.class);
 		List<CategorySystype> systypeList = this.generalService.getEntityList(whereRelation);
 		//
@@ -86,11 +98,10 @@ public class ProductLibAction extends AbstractAction {
 		//
 		this.success.setItem("categoryList", categoryList);
 		this.success.setItem("systypeList", systypeList);
-		this.success.setItem("boxList", boxList);
 		this.success.setItem("unitList", unitList);
 	}
 	
-	public void doSaveBox(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void doSaveProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String edit_id = request.getParameter("edit_id");
 		int box_id = 0;
 		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
@@ -108,7 +119,7 @@ public class ProductLibAction extends AbstractAction {
 		this.success.setItem("box_id", box_id);
 	}
 	
-	public void doDeleteBox(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void doDeleteProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String delete_id = (String) request.getAttribute("delete_id");
 		int box_id = 0;
 		if(delete_id != null && !delete_id.equals("") && !delete_id.equals("undefined") && !delete_id.equals("0")) {
@@ -121,4 +132,40 @@ public class ProductLibAction extends AbstractAction {
 		}
 	}
 	
+	public void doGetCommodity(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.EQ("commodity_valid", 1).setTable_clazz(CategoryCommodity.class);
+		List<CategoryCommodity> commodityList = this.generalService.getEntityList(whereRelation);
+		//
+		this.success.setItem("commodityList", commodityList);
+	}
+	
+	public void doGetCommodityAttr(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String commodity_id = (String) request.getParameter("commodity_id");
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.EQ("commodity_id", commodity_id).setTable_clazz(CategoryCommodityAttribute.class);
+		List<CategoryCommodityAttribute> commodityAttrList = this.generalService.getEntityList(whereRelation);
+		//
+		this.success.setItem("commodityAttrList", commodityAttrList);
+	}
+	
+	public void doGetClassify(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.EQ("classify_valid", 1).setTable_clazz(CategoryClassify.class);
+		List<CategoryClassify> classifyList = this.generalService.getEntityList(whereRelation);
+		//
+		this.success.setItem("classifyList", classifyList);
+	}
+	
+	public void doGetVehicleModel(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		WhereRelation whereRelation = new WhereRelation();
+		whereRelation.EQ("vehicle_valid", 1).setTable_clazz(VehicleModel.class);
+		List<VehicleModel> vehicleModelList = this.generalService.getEntityList(whereRelation);
+		whereRelation = new WhereRelation();
+		whereRelation.EQ("classify_valid", 1).setTable_clazz(CategoryClassify.class);
+		List<CategoryClassify> classifyList = this.generalService.getEntityList(whereRelation);
+		//
+		this.success.setItem("classifyList", classifyList);
+		this.success.setItem("vehicleModelList", vehicleModelList);
+	}
 }

@@ -31,25 +31,25 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(i, box) in boxList">
+				<tr ng-repeat="(i, product) in productList">
 					<td>{{i+1}}</td>
-					<td>{{box.box_no}}</td>
-					<td>{{box.box_name}}</td>
-					<td>{{box.box_enname}}</td>
-					<td>{{box.box_qty_ctn}}</td>
-					<td>{{box.box_unit}}</td>
-					<td>{{box.box_gw_ctn_kg}}</td>
-					<td>{{box.box.box_nw_ctn_kg}}</td>
-					<td>{{box.box.box_l}}</td>
-					<td>{{box.box_w}}</td>
-					<td>{{box.box_h}}</td>
-					<td>{{box.box_weight_pcs}}</td>
-					<td>{{box.box_volume_pcs}}</td>
-					<td>{{box.box_pcontract}}</td>
+					<td>{{product.product_no}}</td>
+					<td>{{product.product_name}}</td>
+					<td>{{product.product_enname}}</td>
+					<td>{{product.product_qty_ctn}}</td>
+					<td>{{product.product_unit}}</td>
+					<td>{{product.product_gw_ctn_kg}}</td>
+					<td>{{product.product.product_nw_ctn_kg}}</td>
+					<td>{{product.product.product_l}}</td>
+					<td>{{product.product_w}}</td>
+					<td>{{product.product_h}}</td>
+					<td>{{product.product_weight_pcs}}</td>
+					<td>{{product.product_volume_pcs}}</td>
+					<td>{{product.product_pcontract}}</td>
 					<td>
 						<div class="pull-right btn-group">
-							<a ng-click="addEdit('edit', box, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
-							<a ng-click="delete(box.box_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
+							<a ng-click="addEdit('edit', product, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(product.product_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
 						</div>
 					</td>
 				</tr>
@@ -69,319 +69,370 @@
 					<button type="button" class="close" ng-click="$hide()">&times;</button>
 				</div>
 				<div class="panel-body p-md">
-					<div class="form-group m-b-xs">
-						<div class="col-sm-8">
-							<div class="input-group no-border">
-								<span class="input-group-btn"><button class="btn btn-default" type="button">LM货号</button></span>
-								<input type="text" class="form-control w-thumb-lg" ng-model="box.box_name" required>
-								<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-								<span class="input-group-btn"><button class="btn btn-default" type="button">旧货号</button></span>
-								<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="box.box_enname" />
-								<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-								<span class="input-group-btn"><button class="btn btn-default" type="button">准确LM货号</button></span>
-								<input type="text" class="form-control btn-default" ng-model="box.box_node" placeholder="准确LM货号">
+					<ul class="nav nav-tabs" ui-nav>
+						<li class="active" ng-click="tab=1;">
+							<a href>产品明细</a>
+						</li>
+						<li ng-click="tab=2;">
+							<a href>组件、配套及SKU相关</a>
+						</li>
+						<li ng-click="tab=3;">
+							<a href>总成、组件、配套及SKU相关汇总</a>
+						</li>
+					</ul>
+					<div class="p b-a no-b-t bg-white m-b" ng-if="tab==1">
+						<div class="form-group m-b-xs">
+							<div class="col-sm-8">
+								<div class="input-group no-border">
+									<span class="input-group-btn"><button class="btn btn-default" type="button">LM货号</button></span>
+									<input type="text" class="form-control" value="L{{product.systype_id.systype_code}}.{{product.systype_id.systype_id}}" >
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">旧货号</button></span>
+									<input type="text" class="form-control" ng-model="product.product_lm_old" />
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">准确LM货号</button></span>
+									<input type="text" class="form-control btn-default" ng-model="product.product_lm_exact" placeholder="准确LM货号">
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-10">
+								<div class="input-group">
+									<span class="input-group-btn"><button class="btn btn-default" type="button">车种</button></span>
+									<select class="form-control w-sm" name="category_id" id="category_id" ng-model="product.category_id"
+										ng-options="category.category_id as category.category_name for category in categoryList" required>
+									</select>
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">产品系统</button></span>
+									<span class="input-group-btn"><ui-select ng-model="product.systype_id" theme="bootstrap" ng-change="selectSystype()" 
+										ng-disabled="disabled" required>
+									  <ui-select-match placeholder="选择系统">
+										{{$select.selected.systype_name}}
+									  </ui-select-match>
+									  <ui-select-choices group-by="'group'" 
+										repeat="systype in systypeList | propsFilter: {systype_name: $select.search}">
+										<div ng-bind-html="systype.systype_name | highlight: $select.search"></div>
+									  </ui-select-choices>
+									</ui-select></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">英文</button></span>
+									<input type="text" class="form-control" value="{{product.systype_id.systype_enname}}" readonly />
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">系统分类</button></span>
+									<input type="text" class="form-control" value="{{product.systype_id.systype_belong}}" readonly>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">英文</button></span>
+									<input type="text" class="form-control" value="{{product.systype_id.systype_belong_en}}" readonly />
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-10">
+								<div class="input-group">
+									<div class="input-group-btn dropdown">
+										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="selectCommodity()">
+											品名 <span class="caret"></span></button>
+									</div>
+									<input type="hidden" ng-model="product.commodity_id" />
+									<input type="text" class="form-control" ng-model="commodity.commodity_name" placeholder="品名" ng-click="selectCommodity()" />
+									<span class="input-group-btn"><button class="btn btn-default" type="button">品名英文</button></span>
+									<input type="text" class="form-control btn-default" ng-model="commodity.commodity_enname" placeholder="品名英文" readonly>
+									<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">单位</button></span>
+									<input type="text" class="form-control" ng-model="commodity.unit_id" placeholder="单位" readonly>
+									<span class="input-group-btn"><button class="btn btn-default" type="button">单位英文</button></span>
+									<input type="text" class="form-control" ng-model="commodity.unit_id" placeholder="单位英文" readonly>
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-3">
+								<div class="input-group">
+									<span class="input-group-btn"><button class="btn btn-default" type="button">推广品名</button></span>
+									<input type="text" class="form-control" ng-model="product.product_spread_name"  placeholder="推广品名" readonly />
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-10">
+								<div class="input-group">
+									<span class="input-group-btn"><button class="btn btn-default" type="button">海关编码</button></span>
+									<input type="text" class="form-control" ng-model="commodity.commodity_hs_code"  placeholder="海关编码" readonly />
+									<span class="input-group-btn"><button class="btn btn-default" type="button">退税率</button></span>
+									<input type="text" class="form-control" ng-model="commodity.tax_refund_rate"  placeholder="退税率" readonly />
+									<span class="input-group-btn"><button class="btn btn-default" type="button">报关品名</button></span>
+									<input type="text" class="form-control" ng-model="commodity.commodity_hs_name"  placeholder="报关品名" readonly />
+									<span class="input-group-btn"><button class="btn btn-default" type="button">报关单位</button></span>
+									<input type="text" class="form-control" ng-model="commodity.commodity_unit_seaport"  placeholder="报关单位" readonly />
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-striped bg-white">
+									<thead>
+										<tr class="bg-light">
+											<th colspan="7" style="padding:1px;"></th>
+										</tr>
+										<tr class="bs-sidebar hidden-print">
+											<th class="w" colspan="7">
+												<div class="w-xs">产品信息</div>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td colspan="7">
+												产品属性
+											</td>
+										</tr>
+										<tr>
+											<td class="w-xs">属性</td>
+											<td class="">值(描述)</td>
+											<td class="w-xs">单位</td>
+											<td class="w-xs text-nowrap">属性[英文]</td>
+											<td class="text-nowrap">值(描述)[英文]</td>
+											<td>单位[英文]</td>
+											<td>是否必填</td>
+										</tr>
+										<tr ng-repeat="attr in commodityAttrList[commodity.commodity_id]['attr']">
+											<td>{{attr.attribute_key}}</td>
+											<td class="p-xxs">
+												<input type="text" class="form-control btn-default" placeholder="输入值(描述)" required="attr.attribute_check=='1'"
+													ng-model="productAttrList[attr.attribute_id].attribute_val" >
+											</td>
+											<td>{{attr.attribute_val}}</td>
+											<td>{{attr.attribute_enkey}}</td>
+											<td class="p-xxs">
+												<input type="text" class="form-control btn-default" placeholder="输入值(描述)[英文]" required="attr.attribute_check=='1'"
+													ng-model="productAttrList[attr.attribute_id].attribute_enval" ></td>
+											<td>{{attr.attribute_enval}}</td>
+											<td><i class="fa fa-check-circle text-info" ng-if="attr.attribute_check=='1'"></i></td>
+										</tr> 
+										<tr>
+											<td colspan="7">产品图片</td>
+										</tr>
+										<tr>
+											<td>主视图</td>
+											<td colspan="6"></td>
+										</tr>
+										<tr>
+											<td class="text-center">
+												<div>
+													<table>
+														<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.m.attribute_mark" placeholder="主视图"></td></tr>
+														<tr><td>
+														<img id="img_m" node="m" ng-src="{{__IMGWEB + images.m.attribute_val}}" width="120" height="120"
+															class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+														</td></tr>
+													</table>
+												</div>
+											</td>
+											<td colspan="6">
+												<div class="col-sm-2">
+													<table>
+														<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.x.attribute_mark" placeholder="细节图"></td></tr>
+														<tr><td>
+														<img id="img_x" node="x" ng-src="{{__IMGWEB + images.x.attribute_val}}" width="120" height="120"
+															class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+														</td></tr>
+													</table>
+												</div>
+												<div class="col-sm-2">
+													<table>
+														<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.a.attribute_mark" placeholder="安装图"></td></tr>
+														<tr><td>
+														<img id="img_a" node="a" ng-src="{{__IMGWEB + images.a.attribute_val}}" width="120" height="120"
+															class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+														</td></tr>
+													</table>
+												</div>
+												<div class="col-sm-2">
+													<table>
+														<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.b.attribute_mark" placeholder="副视图"></td></tr>
+														<tr><td>
+														<img id="img_b" node="b" ng-src="{{__IMGWEB + images.b.attribute_val}}" width="120" height="120"
+															class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+														</td></tr>
+													</table>
+												</div>
+												<div class="col-sm-2">
+													<table>
+														<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.c.attribute_mark" placeholder="副视图"></td></tr>
+														<tr><td>
+														<img id="img_c" node="c" ng-src="{{__IMGWEB + images.c.attribute_val}}" width="120" height="120"
+															class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+														</td></tr>
+													</table>
+												</div>
+												<div class="col-sm-2" ng-repeat="i in images[img]">
+													<table>
+														<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images[i].attribute_mark" placeholder="副视图"></td></tr>
+														<tr><td>
+														<img id="img_d{{i}}" node="{{i}}" ng-src="{{__IMGWEB + images[i].attribute_val}}" width="120" height="120"
+															class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+														</td></tr>
+													</table>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-6">
+								<div class="input-group">
+									<label class="control-label">车厂信息</label>
+									<div class="input-group-btn">
+										<!-- <a ng-click="addStep('ccc')" class="btn btn-sm btn-rounded">
+											<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+										<a ng-click="reduceStep('ccc')" class="btn btn-sm btn-rounded">
+											<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a> -->
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12">	
+								<div class="panel panel-default">
+									<table class="table">
+										<tr class="cursor">
+											<td class="w-thumb-xs"></td>
+											<td class="w-xxs">排序</td>
+											<td class="w-xl" ng-click="selectVehicleModel(i)">车厂<span class="m-xs pull-right caret"></span></td>
+											<td ng-click="selectVehicleModel(i)">车型 <span class="m-xs pull-right caret"></span></td>
+											<td>OEM号<span class="m-xs pull-right caret"></span></td> 
+										</tr>
+										<tr ng-if="productVehicle==''">
+											<td></td>
+											<td>{{i+1}}</td>
+											<td class="form-group has-default has-feedback" >
+												<div class="col-sm-12">
+													<input type="text" class="form-control btn-default" 
+														value="{{productClassify[i].classify.classify_enname}} {{productClassify[i].classify.classify_name}}" 
+														placeholder="输入车厂" >
+													<span class="m caret form-control-feedback" style=""></span>
+												</div>
+											</td>
+											<td ng-click="selectVehicleModel(i)"><input type="text" class="form-control btn-default" placeholder="车型" ></td>
+											<td><input type="text" class="form-control btn-default" placeholder="OEM号" ></td>
+										</tr>
+										<tr ng-repeat="(i, vehicle) in productVehicle">
+											<td></td>
+											<td></td>
+											<td>{{classifyHash[vehicle.classify_id].classify_enname}}</td>
+											<td>
+												<div ng-repeat="(i, childen) in vehicle.childen">{{childen.vehicle_model}}</div>
+											</td>
+											<td><input type="text" class="form-control btn-default" placeholder="OEM号" ></td>
+										</tr>
+									</table> 
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12">
+								<div class="panel panel-default">
+									<table class="table">
+										<tr>
+											<td class="w-md">
+												<button type="button" class="btn btn-rounded btn-info" ><i class="ti-package"> </i> 显示库存信息</button>
+											</td>
+											<td class="w-xl p-v">产品开发类型</td>
+											<td><span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-model="product.product_dev_type" ng-change="changeDefFrom()"
+														data-html="1" data-toggle="true" bs-options="sources.dict_id as sources.dict_val for sources in dict_product_dev_type" bs-select placeholder="选择产品开发类型" ng-change="">
+														Action <span class="caret"></span>
+													</button>
+												</span>
+												<!-- <select class="form-control w-sm" ng-model="product.product_dev_type" ng-change="changeDefFrom()"
+													ng-options="sources.dict_id as sources.dict_val for sources in dict_product_dev_type" required>
+												</select> -->
+											</td>
+											<td class="p-v">产品开发来源</td> 
+											<td>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-model="product.product_dev_from" 
+														data-html="1" data-toggle="true" bs-options="sources.dict_id as sources.dict_val for sources in commodity_name_sources" bs-select placeholder="选择产品开发来源" ng-change="">
+														Action <span class="caret"></span>
+													</button>
+												</span>
+											</td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td class="p-v">产品状态</td>
+											<td colspan="6">
+												<div class="col-sm-12">
+													<div class="input-group">
+														<label class="radio-inline no-padding-v m-t-ln">
+															<input type="radio" value="1" ng-model="product.product_perfect"> 信息完善
+														</label>
+														<label class="checkbox-inline no-padding-v m-t-ln">
+															<input type="radio" value="0" ng-model="product.product_perfect"> 信息待完善
+														</label>
+														<label class="checkbox-inline no-padding-v m-t-ln">
+															<input type="checkbox" value="1" ng-model="product.product_pause" > 暂停销售, 原因
+														</label>
+														<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+														<input type="text" class="form-control" placeholder="暂停销售原因" ng-model="product.product_pause_reason" >
+													</div>
+												</div>
+											</td>
+										</tr>
+									</table> 
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-6">
+								<div class="input-group">
+									<label class="control-label">参考号库</label>
+									<div class="input-group-btn">
+										<a ng-click="addStep('ckhk')" class="btn btn-sm btn-rounded">
+											<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+										<a ng-click="reduceStep('ckhk')" class="btn btn-sm btn-rounded">
+											<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12">	
+								<div class="panel panel-default">
+									<table class="table">
+										<tr>
+											<td class="w-thumb-xs">序</td>
+											<td class="w-xxs">分类</td>
+											<td class="w-xl">厂商</td>
+											<td>车厂号</td> 
+											<td>发动机号</td>
+										</tr>
+										<tr ng-repeat="(i, x) in step['ckhk']">
+											<td>{{i+1}}</td>
+											<td><input type="text" class="form-control btn-default" placeholder="分类" ></td>
+											<td><input type="text" class="form-control btn-default" placeholder="厂商" ></td> 
+											<td><input type="text" class="form-control btn-default" placeholder="车厂号" ></td>
+											<td><input type="text" class="form-control btn-default" placeholder="发动机号" ></td>
+										</tr>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="form-group m-b-xs">
-						<div class="col-sm-10">
-							<div class="input-group">
-								<span class="input-group-btn"><button class="btn btn-default" type="button">车种</button></span>
-								<select class="form-control w-sm" name="classify_id" id="classify_id" ng-model="classify.category_id"
-									ng-options="category.category_id as category.category_name for category in categoryList" required>
-								</select>
-								<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-								<span class="input-group-btn"><button class="btn btn-default" type="button">产品系统</button></span>
-								<ui-select ng-model="box.systype_id" theme="bootstrap" ng-change="selectSystype()" 
-									ng-disabled="disabled" required>
-								  <ui-select-match placeholder="选择系统">
-									{{$select.selected.systype_name}}
-								  </ui-select-match>
-								  <ui-select-choices group-by="'group'" 
-									repeat="systype in systypeList | propsFilter: {systype_name: $select.search}">
-									<div ng-bind-html="systype.systype_name | highlight: $select.search"></div>
-								  </ui-select-choices>
-								</ui-select>
-								<span class="input-group-btn"><button class="btn btn-default" type="button">英文</button></span>
-								<input type="text" class="form-control" value="{{box.systype_id.systype_enname}}" readonly />
-								<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-								<span class="input-group-btn"><button class="btn btn-default" type="button">系统分类</button></span>
-								<input type="text" class="form-control" value="{{box.systype_id.systype_belong}}" readonly>
-								<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-								<span class="input-group-btn"><button class="btn btn-default" type="button">英文</button></span>
-								<input type="text" class="form-control" value="{{box.systype_id.systype_belong_en}}" readonly />
+					<div class="p b-a no-b-t bg-white m-b" ng-if="tab==2">
+						<div class="form-group m-b-xs">
+							<div class="col-sm-4 no-p-r">
+								组件信息
 							</div>
 						</div>
 					</div>
-					<div class="form-group m-b-xs">
-						<div class="col-sm-10">
-							<div class="input-group">
-								<span class="input-group-btn"><button class="btn btn-default" type="button">品名</button></span>
-								<input type="text" class="form-control" ng-click="selectCommodity()" readonly />
-								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-							</div>
-						</div>
-					</div>
-						<div class="p-h">
-							<div class="row p-h">
-								<div class="form-group m-b-xs">
-									<div class="input-group no-border">
-										<span class="input-group-btn"><button class="btn btn-default" type="button">品名名称</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="box.box_name" required>
-										<span class="input-group-btn"><button class="btn btn-default" type="button">品名英文</button></span>
-										<input type="text" class="form-control w-thumb-lg" style="float:left;" ng-model="box.box_enname" required />
-										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-										<input type="text" class="form-control btn-default" ng-model="box.box_node" placeholder="选择理由">
-									</div>
-								</div>
-								<div class="form-group m-b-xs p-h has-feedback">
-									<div class="input-group">
-										<span class="input-group-btn"><button class="btn btn-default" type="button">单位</button></span>
-										<div class="col-sm-5 no-padding">
-											<ui-select ng-model="box.unit_id" theme="bootstrap" ng-change="selectUnit()" 
-												ng-disabled="disabled" required>
-											  	<ui-select-match placeholder="选择单位">
-													{{$select.selected.unit_name}}
-											  	</ui-select-match>
-											  	<ui-select-choices group-by="'group'" 
-													repeat="unit in unitList | propsFilter: {unit_name: $select.search}">
-													<div ng-bind-html="unit.unit_name | highlight: $select.search"></div>
-											  	</ui-select-choices>
-											</ui-select>
-										</div>
-										<div class="col-sm-1 no-padding">
-											<input type="text" class="form-control btn-default" value="{{box.unit_id.unit_enname}}" 
-												style="width:100px" placeholder="单位英文" readonly>
-										</div>
-										<span class="input-group-btn">
-											<button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}"
-												trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
-										</span>
-									</div>
-								</div>
-							</div>
-							<div class="row p-h">
-								<div class="form-group m-b-xs">
-									<div class="input-group">
-										<span class="input-group-btn no-border"><button class="btn btn-default no-border" type="button">备选</button></span>
-										<a ng-click="addStep('spare')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
-										<a ng-click="reduceStep('spare')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
-									</div>
-								</div>
-							</div>
-							<div class="row p-h" ng-repeat="i in step['spare'].step">
-								<div class="form-group m-b-xs">
-									<div class="input-group">
-										<span class="input-group-btn"><button class="btn btn-default" type="button">备选品名</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="box.box_spare[i].name">
-										<span class="input-group-btn"><button class="btn btn-default" type="button">备选英文</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="box.box_spare[i].enname" />
-										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-										<span class="input-group-btn">
-											<button type="button" class="btn btn-default" ng-model="box.box_spare[i].sources" 
-												data-html="1" data-toggle="true" bs-options="sources.id as sources.name for sources in box_name_sources" bs-select placeholder="备选来源" ng-change="">
-												Action <span class="caret"></span>
-											</button>
-										</span>
-										<input type="text" class="form-control btn-default" ng-model="box.box_spare[i].node" placeholder="备选理由">
-									</div>
-								</div>
-							</div>
-							<div class="row p-h" style="padding-top: 15px;">
-								<div class="form-group m-b-xs">
-									<div class="col-sm-9 input-group control-label">
-										<span class="input-group-btn"><button class="btn btn-default" type="button">关联样品号</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="box.box_sample">
-										<span class="input-group-btn"><button class="btn btn-default" type="button">关联OEM号</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="box.box_oem" />
-										<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
-										<span class="input-group-btn"><button class="btn btn-default" type="button">关联厂商号</button></span>
-										<input type="text" class="form-control w-thumb-lg" ng-model="box.box_factory" />										
-									</div>
-									<div class="col-sm-3 pull-right">
-										<label class="radio-inline">
-								          <input type="radio" name="improve" id="improve1" ng-model="box.box_improve" value="1"
-								          	ng-checked="box.box_improve==1"> 已完善
-								        </label>
-								        <label class="radio-inline">
-								          <input type="radio" name="improve" id="improve2" ng-model="box.box_improve" value="0"
-											ng-checked="box.box_improve==0"> 未完善
-								        </label>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="table-responsive scroll-x p-h" style="padding-bottom:36px;">
-							<table class="table table-bordered table-striped bg-white text-nowrap">
-								<thead>
-									<tr class="bg-light">
-										<th class="w" style="padding:1px;"></th>
-										<th class="w" style="padding:1px;"></th>
-										<th class="w-xs" style="padding:1px;"></th>
-										<th class="w-xs col-sm-1 b-r" style="padding:1px;">
-											<div class="w-xs"></div>
-										</th>
-										<th style="padding:1px;"></th>
-									</tr>
-									<tr class="bs-sidebar hidden-print">
-										<th class="w" colspan="6">
-											<div class="w-xs">产品信息</div>
-										</th>
-									</tr>
-								</thead>
-								<!--房型列表-->
-								<tbody>
-									<tr>
-										<td colspan="6">
-											产品描述 
-											<a ng-click="addStep('attr')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加项</a>
-											<a ng-click="reduceStep('attr')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少项</a>
-										</td>
-									</tr>
-									<tr>
-										<td>项</td>
-										<td>项[英文]</td>
-										<td>描述(单位)</td>
-										<td>描述(单位)[英文]</td>
-										<td colspan="2">是否必填</td>
-									</tr>
-									<tr ng-repeat="i in step['attr'].step">
-										<td class="w-xs no-padding panel">
-											<input type="text" class="form-control btn-default no-border" ng-model="attribute[i].attribute_key" placeholder="输入项"></td>
-										<td class="w-xs no-padding panel">
-											<input type="text" class="form-control btn-default no-border" ng-model="attribute[i].attribute_enkey" placeholder="输入项[英文]"></td>
-										<td class="no-padding">
-											<input type="text" class="form-control btn-default no-border" ng-model="attribute[i].attribute_val" placeholder="输入描述(单位)"></td>
-										<td class="no-padding">
-											<input type="text" class="form-control btn-default no-border" ng-model="attribute[i].attribute_enval" placeholder="输入描述(单位)[英文]"></td>
-										<td colspan="2">
-											<label class="ui-switch bg-info"><input type="checkbox" ng-model="attribute[i].attribute_check"><i></i></label>
-										 </td>
-									</tr>
-									<tr>
-										<td colspan="6">产品图片
-											<a ng-click="addStep('images')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加图</a>
-											<a ng-click="reduceStep('images')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少图</a>
-											是否需要尺寸图 <label class="ui-switch bg-info"><input type="checkbox" ng-model="box.box_needsize"><i></i></label>
-										</td>
-									</tr>
-									<tr>
-										<td>主视图</td>
-										<td colspan="5"></td>
-									</tr>
-									<tr>
-										<td class="text-center">
-											<div class="col-sm-12">
-												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.m.attribute_mark" placeholder="主视图"></td></tr>
-													<tr><td>
-													<img id="img_m" node="m" ng-src="{{__IMGWEB + images.m.attribute_val}}" width="120" height="120"
-														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
-													</td></tr>
-												</table>
-											</div>
-										</td>
-										<td colspan="5">
-											<div class="col-sm-2">
-												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.x.attribute_mark" placeholder="细节图"></td></tr>
-													<tr><td>
-													<img id="img_x" node="x" ng-src="{{__IMGWEB + images.x.attribute_val}}" width="120" height="120"
-														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
-													</td></tr>
-												</table>
-											</div>
-											<div class="col-sm-2">
-												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.a.attribute_mark" placeholder="安装图"></td></tr>
-													<tr><td>
-													<img id="img_a" node="a" ng-src="{{__IMGWEB + images.a.attribute_val}}" width="120" height="120"
-														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
-													</td></tr>
-												</table>
-											</div>
-											<div class="col-sm-2">
-												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.b.attribute_mark" placeholder="副视图"></td></tr>
-													<tr><td>
-													<img id="img_b" node="b" ng-src="{{__IMGWEB + images.b.attribute_val}}" width="120" height="120"
-														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
-													</td></tr>
-												</table>
-											</div>
-											<div class="col-sm-2">
-												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images.c.attribute_mark" placeholder="副视图"></td></tr>
-													<tr><td>
-													<img id="img_c" node="c" ng-src="{{__IMGWEB + images.c.attribute_val}}" width="120" height="120"
-														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
-													</td></tr>
-												</table>
-											</div>
-											<div class="col-sm-2" ng-repeat="i in step['images'].step">
-												<table>
-													<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images[i].attribute_mark" placeholder="副视图"></td></tr>
-													<tr><td>
-													<img id="img_d{{i}}" node="{{i}}" ng-src="{{__IMGWEB + images[i].attribute_val}}" width="120" height="120"
-														class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
-													</td></tr>
-												</table>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>财务部审核</td><td colspan="5"></td>
-									</tr>
-									<tr>
-										<td>报关品名</td><td>海关编码</td><td>退税率</td><td>报关单位</td><td colspan="2">海关数据来源</td>
-									</tr>
-									<tr>
-										<td class="w-xs no-padding panel">
-											<input type="text" class="form-control btn-default no-border" ng-model="box.box_hs_name" placeholder="输入报关品名"></td>
-										<td class="w-xs no-padding panel">
-											<input type="text" class="form-control btn-default no-border" ng-model="box.box_hs_code" placeholder="输入海关编码"></td>
-										<td class="no-padding">
-											<input type="text" class="form-control btn-default no-border" ng-model="box.tax_refund_rate" placeholder="输入退税率"></td>
-										<td class="no-padding">
-											<input type="text" class="form-control btn-default no-border" ng-model="box.box_unit_seaport" placeholder="输入报关单位(个 千克)"></td>
-										<td class="no-padding" colspan="2">
-											<input type="text" class="form-control btn-default no-border" ng-model="box.box_hs_datasource" placeholder="输入海关数据来源"></td>
-									</tr>
-									<tr>
-										<td colspan="6">
-											申报要素
-											<a ng-click="addStep('hs')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加项</a>
-											<a ng-click="reduceStep('hs')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少项</a>
-											
-										</td>
-									</tr>
-									<tr>
-										<td>项目</td>
-										<td>内容</td>
-										<td></td>
-										<td></td>
-										<td colspan="2"></td>
-									</tr>
-									<tr ng-repeat="i in step['hs'].step">
-										<td class="w-xs no-padding panel">
-											<input type="text" class="form-control btn-default" ng-model="hs[i].attribute_key" placeholder="输入项目"></td>
-										<td class="w-xs no-padding panel">
-											<input type="text" class="form-control btn-default" ng-model="hs[i].attribute_val" placeholder="输入内容"></td>
-										<td class="no-padding"></td>
-										<td class="no-padding"></td>
-										<td colspan="2"></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
 				</div>
 				<footer class="panel-footer text-right bg-white">
-					<div class="btn-group" ng-if="box.auditing_state<=0">
+					<div class="btn-group" ng-if="product.auditing_state<=0 || product.auditing_state==null">
 						<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
 						<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
 							trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
 					</div>
-					<div class="btn-group" ng-if="box.auditing_state>0">
+					<div class="btn-group" ng-if="product.auditing_state>0">
 						<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()">已递交工作流审核</button>
 					</div>
 				</footer>
@@ -389,6 +440,209 @@
 			</form>
 		</div>
 		<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html'" ng-if="editType=='edit'"></div>
+	</div>
+</div>
+</script>
+<!--SelectCommodity.html-->
+<script type="text/ng-template" id="SelectCommodity.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">选择品名</span>
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+			</div>
+		</div>
+		<div class="p">
+			<table st-table="commodityList" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th st-ratio="20" st-sort="commodity_name">品名</th>
+						<th st-ratio="20" st-sort="commodity_enname">英文</th>
+						<th st-ratio="20" st-sort="unit_id">单位</th>
+						<th st-ratio="20" st-sort="unit_id">单位</th>
+						<th st-ratio="20" width="50"></th>
+					</tr>
+					<tr>
+						<th colspan="5">
+							<div class="form-group">
+								<div class="col-sm-6">
+									<div class="input-group no-border">
+										<span class="input-group-btn"><button class="btn btn-default" type="button">输入关键字</button></span>
+										<input st-search="" class="form-control" placeholder="全局搜索 ..." type="text"/>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">每页显示</button></span>
+										<input class="form-control" name="items" id="items" type="number" ng-model="itemsByPage" >
+										<span class="input-group-btn"><button class="btn btn-default" type="button">条</button></span>
+									</div>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="commodity in commodityList" class="cursor" ng-click="choiceCommodity(commodity)">
+						<td>{{commodity.commodity_name}}</td>
+						<td>{{commodity.commodity_enname}}</td>
+						<td>{{commodity.unit_id}}</td>
+						<td>{{commodity.unit_id}}</td>
+						<td></td>
+					</tr>
+				</tbody>
+				<tfoot>
+				  <tr>
+					<td colspan="5" class="text-center">
+					  <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="2" class="no-margin"></div>
+					</td>
+				  </tr>
+				</tfoot>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+			</div>
+		</footer>
+	</div>
+</div>
+</script>
+<!--SelectClassify.html-->
+<script type="text/ng-template" id="SelectClassify.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">选择车厂</span>
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+			</div>
+		</div>
+		<div class="p">
+			<table st-table="classifyList" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th st-ratio="20" st-sort="classify_name">车厂中文</th>
+						<th st-ratio="20" st-sort="classify_enname">车厂英文</th>
+						<th st-ratio="20" st-sort="category_id">车种</th>
+						<th st-ratio="20" width="50">国家</th>
+					</tr>
+					<tr>
+						<th colspan="4">
+							<div class="form-group">
+								<div class="col-sm-6">
+									<div class="input-group no-border">
+										<span class="input-group-btn"><button class="btn btn-default" type="button">输入关键字</button></span>
+										<input st-search="" class="form-control" placeholder="全局搜索 ..." type="text"/>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">每页显示</button></span>
+										<input class="form-control" name="items" id="items" type="number" ng-model="itemsByPage" >
+										<span class="input-group-btn"><button class="btn btn-default" type="button">条</button></span>
+									</div>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="classify in classifyList" class="cursor" ng-click="choiceClassify(classify)">
+						<td>{{classify.classify_name}}</td>
+						<td>{{classify.classify_enname}}</td>
+						<td>{{categoryHash[classify.category_id].category_name}}</td>
+						<td>{{countryHash[classify.country_id].country_name}}</td>
+						<td></td>
+					</tr>
+				</tbody>
+				<tfoot>
+				  <tr>
+					<td colspan="5" class="text-center">
+					  <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="2" class="no-margin"></div>
+					</td>
+				  </tr>
+				</tfoot>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+			</div>
+		</footer>
+	</div>
+</div>
+</script>
+<!--SelectVehicleModel.html-->
+<script type="text/ng-template" id="SelectVehicleModel.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">选择车型</span>
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+			</div>
+		</div>
+		<div class="p">
+			<table st-table="vehicleModelList" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th st-ratio="5" st-sort="choice">选择</th>
+						<th st-ratio="5" st-sort="order">序</th>
+						<th st-ratio="20" st-sort="classify_id">车厂</th>
+						<th st-ratio="15" st-sort="vehicle_model">车型</th>
+						<th st-ratio="15" st-sort="vehicle_series">系列</th>
+						<th st-ratio="10" st-sort="vehicle_motor">马力[HP]</th>
+						<th st-ratio="10" st-sort="vehicle_begin_date">开始生产年份</th>
+						<th st-ratio="10" st-sort="vehicle_end_date">结束生产年份</th>
+						<th st-ratio="10" st-sort="vehicle_engine">引擎号</th>
+					</tr>
+					<tr>
+						<th colspan="9">
+							<div class="form-group">
+								<div class="col-sm-6">
+									<div class="input-group no-border">
+										<span class="input-group-btn"><button class="btn btn-default" type="button">输入关键字</button></span>
+										<input st-search="" class="form-control" placeholder="全局搜索 ..." type="text"/>
+										<span class="input-group-btn"><button class="btn btn-default" type="button">每页显示</button></span>
+										<input class="form-control" name="items" id="items" type="number" ng-model="itemsByPage" >
+										<span class="input-group-btn"><button class="btn btn-default" type="button">条</button></span>
+									</div>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(i, vehicleModel) in vehicleModelList" class="cursor">
+						<td>
+							<label class="checkbox-inline no-padding-v m-t-ln">
+								<input type="checkbox" value="{{vehicleModel.vehicle_model_id}}" ng-click="choiceVehicleModel(vehicleModel)"
+									ng-model="checkVehicle[vehicleModel.vehicle_model_id].choice" 
+									class="ng-pristine ng-untouched ng-valid ng-empty"> 
+							</label>
+						</td>
+						<td>{{i+1}}</td>
+						<td>{{classifyHash[vehicleModel.classify_id].classify_enname}}</td>
+						<td>{{vehicleModel.vehicle_model}}</td>
+						<td>{{vehicleModel.vehicle_series}}</td>
+						<td>{{vehicleModel.vehicle_motor}}</td>
+						<td>{{vehicleModel.vehicle_begin_date}}</td>
+						<td>{{vehicleModel.vehicle_end_date}}</td>
+						<td>{{vehicleModel.vehicle_engine}}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+				  <tr>
+					<td colspan="9" class="text-center">
+					  <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="2" class="no-margin"></div>
+					</td>
+				  </tr>
+				</tfoot>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+				<button type="button" class="btn btn-rounded btn-primary" ng-click="choiceVehicleOk()"><i class="fa fa-save"> </i> 确定</button>
+			</div>
+		</footer>
 	</div>
 </div>
 </script>

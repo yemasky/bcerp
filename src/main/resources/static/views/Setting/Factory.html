@@ -15,9 +15,9 @@
 				<tr>
 					<th>序号</th>
 					<th>车种</th>
-					<th>车厂</th>
-					<th>国别</th>
+					<th>车厂英文</th>
 					<th>中文名称</th>
+					<th>国别</th>
 					<th>创立时间</th>
 					<th>经营状态</th>
 					<th>隶属公司</th>
@@ -31,8 +31,8 @@
 					<td>{{i+1}}</td>
 					<td>{{categoryHash[classify.category_id].category_name}}</td>
 					<td>{{classify.classify_enname}}</td>
-					<td>{{countryHash[classify.country_id].country_name}}</td>
 					<td>{{classify.classify_name}}</td>
+					<td>{{countryHash[classify.country_id].country_name}}</td>
 					<td>{{classify.classify_found}}</td>
 					<td>{{classify.classify_operating}}</td>
 					<td>{{classify.classify_belong_company}}</td>
@@ -70,9 +70,15 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">车厂</label>
+								<label class="col-sm-3 control-label">车厂英文</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" ng-model="classify.classify_enname" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">中文名称</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="classify.classify_name" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -81,12 +87,6 @@
 									<select class="form-control w-sm" name="country_id" id="country_id" ng-model="classify.country_id"
 										ng-options="country.country_id as country.country_name for country in countryList" required>
 									</select>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-3 control-label">中文名称</label>
-								<div class="col-sm-4">
-									<input type="text" class="form-control" ng-model="classify.classify_name" />
 								</div>
 							</div>
 							<div class="form-group">

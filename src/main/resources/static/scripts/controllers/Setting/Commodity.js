@@ -6,7 +6,7 @@ app.controller('CommodityController', function($rootScope, $scope, $httpService,
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];$scope.__IMGWEB = __IMGWEB;
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = "";
-	$scope.commodity_name_sources = [{'id':'1','name':'知名经销商'},{'id':'2','name':'专业书籍'},{'id':'3','name':'网络'}];
+	$scope.commodity_name_sources = $scope.commDictHash[$stateParams.id]['commodity_name_sources'];
 	$scope.commodity = {};
 	//定义变量
 	$scope.step = {};$scope.step['spare'] = {};$scope.step['attr'] = {};$scope.step['images'] = {}; $scope.step['hs'] = {};
