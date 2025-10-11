@@ -57,7 +57,7 @@ public class DbcpPool {
 
 	public int getActiveConnectionNum() {
 		if (this.config.getDrive().equals("HikariCP")) {
-			return this.hikariCPdataSource.getMinimumIdle();
+			return this.hikariCPdataSource.getMaximumPoolSize();//.getMinimumIdle();
 		}
 		return this.dbcpDataSource.getNumActive();
 	}

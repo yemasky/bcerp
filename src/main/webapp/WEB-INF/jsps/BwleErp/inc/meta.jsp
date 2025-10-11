@@ -569,7 +569,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
         $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
-        $scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};$scope.commDictHash = {};
+        $scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};$scope.commDictHash = {};$scope.dictValHash = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -617,6 +617,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 						if(!angular.isDefined($scope.commDictHash[item.module_id][item.dict_field]))
 							$scope.commDictHash[item.module_id][item.dict_field] = [];
 						$scope.commDictHash[item.module_id][item.dict_field].push(item);
+						$scope.dictValHash[item.dict_id] = item;
 					})
 				}
 				$rootScope.__ImagesUploadUrl = __ImagesUploadUrl;

@@ -296,34 +296,43 @@
 										<tr class="cursor">
 											<td class="w-thumb-xs"></td>
 											<td class="w-xxs">排序</td>
-											<td class="w-xl" ng-click="selectVehicleModel(i)">车厂<span class="m-xs pull-right caret"></span></td>
-											<td ng-click="selectVehicleModel(i)">车型 <span class="m-xs pull-right caret"></span></td>
-											<td>OEM号<span class="m-xs pull-right caret"></span></td> 
+											<td class="w-xl" ng-click="selectVehicleModel()">
+												<label class="control-label">车厂</label>
+												<span class="m-xs pull-right caret"></span> 
+											</td>
+											<td ng-click="selectVehicleModel()">车型 <span class="m-xs pull-right caret"></span></td>
+											<td>OEM号</td> 
 										</tr>
 										<tr ng-if="productVehicle==''">
 											<td></td>
 											<td>{{i+1}}</td>
 											<td class="form-group has-default has-feedback" >
 												<div class="col-sm-12">
-													<input type="text" class="form-control btn-default" 
-														value="{{productClassify[i].classify.classify_enname}} {{productClassify[i].classify.classify_name}}" 
+													<input type="text" class="form-control btn-default"  ng-click="selectVehicleModel()"
 														placeholder="输入车厂" >
-													<span class="m caret form-control-feedback" style=""></span>
+													<span class="m caret form-control-feedback"></span>
 												</div>
 											</td>
-											<td ng-click="selectVehicleModel(i)"><input type="text" class="form-control btn-default" placeholder="车型" ></td>
-											<td><input type="text" class="form-control btn-default" placeholder="OEM号" ></td>
+											<td ng-click="selectVehicleModel()"><input type="text" class="form-control btn-default" placeholder="车型" ></td>
+											<td></td>
 										</tr>
 										<tr ng-repeat="(i, vehicle) in productVehicle">
 											<td></td>
 											<td></td>
 											<td>{{classifyHash[vehicle.classify_id].classify_enname}}</td>
 											<td>
-												<div ng-repeat="(i, childen) in vehicle.childen">{{childen.vehicle_model}}</div>
+												<div class="col-sm-2 text-nowrap" ng-repeat="(i, childen) in vehicle.childen">
+													{{childen.vehicle_model}} 
+												</div>
 											</td>
-											<td><input type="text" class="form-control btn-default" placeholder="OEM号" ></td>
+											<td ng-click="showVehicleOEM(i)">
+												<input ng-if="oem[i]==''" type="text" class="form-control btn-default" placeholder="OEM号" >
+												<div class="col-sm-2 text-nowrap" ng-repeat="(j, e) in oem[i]">
+													{{e}} 
+												</div>
+											</td>
 										</tr>
-									</table> 
+									</table>
 								</div>
 							</div>
 						</div>
@@ -335,36 +344,47 @@
 											<td class="w-md">
 												<button type="button" class="btn btn-rounded btn-info" ><i class="ti-package"> </i> 显示库存信息</button>
 											</td>
-											<td class="w-xl p-v">产品开发类型</td>
-											<td><span class="input-group-btn">
-													<button type="button" class="btn btn-default" ng-model="product.product_dev_type" ng-change="changeDefFrom()"
-														data-html="1" data-toggle="true" bs-options="sources.dict_id as sources.dict_val for sources in dict_product_dev_type" bs-select placeholder="选择产品开发类型" ng-change="">
-														Action <span class="caret"></span>
-													</button>
-												</span>
-												<!-- <select class="form-control w-sm" ng-model="product.product_dev_type" ng-change="changeDefFrom()"
-													ng-options="sources.dict_id as sources.dict_val for sources in dict_product_dev_type" required>
-												</select> -->
-											</td>
-											<td class="p-v">产品开发来源</td> 
 											<td>
-												<span class="input-group-btn">
-													<button type="button" class="btn btn-default" ng-model="product.product_dev_from" 
-														data-html="1" data-toggle="true" bs-options="sources.dict_id as sources.dict_val for sources in commodity_name_sources" bs-select placeholder="选择产品开发来源" ng-change="">
-														Action <span class="caret"></span>
-													</button>
-												</span>
+												<div class="col-sm-3">
+													<div class="input-group">
+														<label class="input-group-btn"><button class="btn btn-default" type="button">产品开发类型</button></label>
+														<button type="button" class="btn btn-default" ng-model="product.product_dev_type" ng-change="changeDefFrom()"
+															data-html="1" data-toggle="true" bs-options="sources.dict_id as sources.dict_val for sources in dict_product_dev_type" bs-select placeholder="选择产品开发类型">
+															Action <span class="caret"></span>
+														</button>
+														<!-- <select class="form-control w-sm" ng-model="product.product_dev_type" ng-change="changeDefFrom()"
+															ng-options="sources.dict_id as sources.dict_val for sources in dict_product_dev_type" required>
+														</select> -->
+													</div>
+												</div>
+												<div class="col-sm-3">
+													<div class="input-group">
+														<label class="input-group-btn"><button class="btn btn-default" type="button">产品开发来源</button></label>
+														<button type="button" class="btn btn-default" ng-model="product.product_dev_from" 
+															data-html="1" data-toggle="true" bs-options="from.dict_id as from.dict_val for from in dev_from[product.product_dev_type]" bs-select placeholder="选择产品开发来源" >
+															Action <span class="caret"></span>
+														</button>
+													</div>
+												</div>		
 											</td>
-											<td></td>
-											<td></td>
-											<td></td>
 										</tr>
 										<tr>
 											<td></td>
-											<td class="p-v">产品状态</td>
-											<td colspan="6">
-												<div class="col-sm-12">
+											<td>
+												<div class="col-sm-3">
 													<div class="input-group">
+														<label class="input-group-btn"><button class="btn btn-default" type="button">产品推广</button></label>
+														<input type="text" class="form-control" ng-model="product.product_spread" readonly />
+														<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+														<label class="input-group-btn"><button class="btn btn-default" type="button">产品报价</button></label>
+														<input type="text" class="form-control" ng-model="product.product_offer" readonly />
+													</div>
+												</div>
+												<div class="col-sm-9">
+													<div class="input-group">
+														<label class="radio-inline no-padding-v m-t-ln">
+															产品状态
+														</label>
 														<label class="radio-inline no-padding-v m-t-ln">
 															<input type="radio" value="1" ng-model="product.product_perfect"> 信息完善
 														</label>
@@ -376,18 +396,25 @@
 														</label>
 														<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 														<input type="text" class="form-control" placeholder="暂停销售原因" ng-model="product.product_pause_reason" >
+														<span class="input-group-btn">
+															<button type="button" class="btn btn-default" ng-model="product.prereason"
+																data-html="1" data-toggle="true" bs-options="dict.dict_id as dict.dict_val for dict in dict_product_pause_reason" bs-select 
+																ng-change="selectPauseReason()" placeholder="选择暂停销售原因">
+																Action <span class="caret"></span>
+															</button>
+														</span>
 													</div>
 												</div>
 											</td>
 										</tr>
-									</table> 
+									</table>
 								</div>
 							</div>
 						</div>
 						<div class="form-group m-b-xs">
 							<div class="col-sm-6">
 								<div class="input-group">
-									<label class="control-label">参考号库</label>
+									<label class="control-label">参考厂商库号</label>
 									<div class="input-group-btn">
 										<a ng-click="addStep('ckhk')" class="btn btn-sm btn-rounded">
 											<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
@@ -401,17 +428,46 @@
 									<table class="table">
 										<tr>
 											<td class="w-thumb-xs">序</td>
-											<td class="w-xxs">分类</td>
+											<td class="w-xsm">分类</td>
 											<td class="w-xl">厂商</td>
 											<td>车厂号</td> 
+											<td class="w-thumb-xs"></td> 
 											<td>发动机号</td>
+											<td class="w-thumb-xs"></td> 
 										</tr>
 										<tr ng-repeat="(i, x) in step['ckhk']">
 											<td>{{i+1}}</td>
-											<td><input type="text" class="form-control btn-default" placeholder="分类" ></td>
-											<td><input type="text" class="form-control btn-default" placeholder="厂商" ></td> 
-											<td><input type="text" class="form-control btn-default" placeholder="车厂号" ></td>
-											<td><input type="text" class="form-control btn-default" placeholder="发动机号" ></td>
+											<td>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-model="pfactory.dict_id[i]" 
+														ng-change="changeDictFactory(i)"
+														data-html="1" data-toggle="true" 
+														bs-options="dict.dict_id as dict.dict_val for dict in dict_product_factory" 
+														bs-select placeholder="分类" >
+														Action <span class="caret"></span>
+													</button>
+												</span>
+											</td>
+											<td>
+												<input type="text" class="form-control btn-default" placeholder="厂商" ng-if="dictFactory[pfactory.dict_id[i]]==''">
+												<button type="button" class="btn btn-default" ng-model="pfactory.factory_name[i]" ng-if="dictFactory[pfactory.dict_id[i]]!=''"
+													data-html="1" data-toggle="true" bs-options="dict.dict_id as dict.dict_val for dict in dictFactory[pfactory.dict_id[i]]" bs-select placeholder="选择厂商">
+													Action <span class="caret"></span>
+												</button>
+											</td> 
+											<td ng-click="showFactoryNum(i)">
+												<div class="col-sm-2 text-nowrap" ng-repeat="(j, e) in factoryNum[i]">
+													{{e}} 
+												</div>
+											</td>
+											<td ng-click="showFactoryNum(i)"><a><i class="fa fa-fw fa-plus m-r-xs"></i></a></td>
+											<td ng-click="showEngineNum(i)">
+												<input type="text" class="form-control btn-default" placeholder="发动机号" ng-if="engineNum[i]==''" />
+												<div class="col-sm-2 text-nowrap" ng-repeat="(j, e) in engineNum[i]">
+													{{e}} 
+												</div>
+											</td>
+											<td ng-click="showEngineNum(i)"><a><i class="fa fa-fw fa-plus m-r-xs"></i></a></td>
 										</tr>
 									</table>
 								</div>
@@ -610,7 +666,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="(i, vehicleModel) in vehicleModelList" class="cursor">
+					<tr ng-repeat="(i, vehicleModel) in vehicleModelList">
 						<td>
 							<label class="checkbox-inline no-padding-v m-t-ln">
 								<input type="checkbox" value="{{vehicleModel.vehicle_model_id}}" ng-click="choiceVehicleModel(vehicleModel)"
@@ -643,6 +699,119 @@
 				<button type="button" class="btn btn-rounded btn-primary" ng-click="choiceVehicleOk()"><i class="fa fa-save"> </i> 确定</button>
 			</div>
 		</footer>
+	</div>
+</div>
+</script>
+<!--SelectVehicleOEM.html-->
+<script type="text/ng-template" id="SelectVehicleOEM.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<form name="oemForm" class="form-horizontal form-validation" role="form" ng-submit="oemOk(oemI)">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">输入OEM</span>
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+			</div>
+		</div>
+		<div class="p">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>
+							<a ng-click="addStep('oem'+oemI)" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+							<a ng-click="reduceStep('oem'+oemI)" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<td class="col-sm-12">
+						<input type="text" class="form-control col-sm-2 btn-default w-xsm" ng-repeat="(o, e) in step['oem'+oemI]" ng-model="oem[oemI][o]" required>
+					</td>
+				</tbody>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+				<button type="submit" class="btn btn-rounded btn-primary"><i class="fa fa-save"> </i> 确定</button>
+			</div>
+		</footer>
+		</form>
+	</div>
+</div>
+</script>
+<!--SelectFactoryNum.html-->
+<script type="text/ng-template" id="SelectFactoryNum.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<form name="factoryForm" class="form-horizontal form-validation" role="form" ng-submit="factoryNumOk(ftI)">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">输入车厂号</span>
+			</div>
+		</div>
+		<div class="p">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>
+							<a ng-click="addStep('ft'+ftI)" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+							<a ng-click="reduceStep('ft'+ftI)" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<td class="col-sm-12">
+						<input type="text" class="form-control col-sm-2 btn-default w-xsm" ng-repeat="(o, e) in step['ft'+ftI]" ng-model="factoryNum[ftI][o]" required>
+					</td>
+				</tbody>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="submit" class="btn btn-rounded btn-primary"><i class="fa fa-save"> </i> 确定</button>
+			</div>
+		</footer>
+		</form>
+	</div>
+</div>
+</script>
+<!--SelectEngineNum.html-->
+<script type="text/ng-template" id="SelectEngineNum.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<form name="engineForm" class="form-horizontal form-validation" role="form" ng-submit="engineNumOk(enI)">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">输入发动机号</span>
+			</div>
+		</div>
+		<div class="p">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>
+							<a ng-click="addStep('en'+enI)" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+							<a ng-click="reduceStep('en'+enI)" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<td class="col-sm-12">
+						<input type="text" class="form-control col-sm-2 btn-default w-xsm" ng-repeat="(o, e) in step['en'+enI]" ng-model="engineNum[enI][o]" required>
+					</td>
+				</tbody>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="submit" class="btn btn-rounded btn-primary"><i class="fa fa-save"> </i> 确定</button>
+			</div>
+		</footer>
+		</form>
 	</div>
 </div>
 </script>

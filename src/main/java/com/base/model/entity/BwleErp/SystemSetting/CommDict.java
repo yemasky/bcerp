@@ -11,6 +11,7 @@ public class CommDict {
 	private String dict_val;
 	private String dict_enval;
 	private String dict_field;
+	private String dict_linkage;
 	private String dict_node;
 	private Integer module_id;
 	private Integer module_father_id;
@@ -44,6 +45,12 @@ public class CommDict {
 	}
 	public void setDict_field(String dict_field) {
 		this.dict_field = dict_field;
+	}
+	public String getDict_linkage() {
+		return dict_linkage;
+	}
+	public void setDict_linkage(String dict_linkage) {
+		this.dict_linkage = dict_linkage;
 	}
 	public String getDict_node() {
 		return dict_node;

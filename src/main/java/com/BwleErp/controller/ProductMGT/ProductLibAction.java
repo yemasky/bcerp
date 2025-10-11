@@ -47,10 +47,10 @@ public class ProductLibAction extends AbstractAction {
 		case "getProduct":
 			this.doGetgetProduct(request, response);
 			break;
-		case "savegetProduct":
+		case "saveProduct":
 			this.doSaveProduct(request, response);
 			break;
-		case "deletegetProduct":
+		case "deleteProduct":
 			this.doDeleteProduct(request, response);
 			break;
 		case "getCommodity":
@@ -103,31 +103,31 @@ public class ProductLibAction extends AbstractAction {
 	
 	public void doSaveProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String edit_id = request.getParameter("edit_id");
-		int box_id = 0;
+		int product_id = 0;
 		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
-			box_id = Integer.parseInt(edit_id);
+			product_id = Integer.parseInt(edit_id);
 		}
 		CategoryBoxSandard box = this.modelMapper.map(request.getAttribute("box"), CategoryBoxSandard.class);
-		if(box_id > 0) {//update
+		if(product_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("box_id", box_id).setTable_clazz(Auditing.class);
+			whereRelation.EQ("product_id", product_id).setTable_clazz(Auditing.class);
 			generalService.updateEntity(box, whereRelation);
 		} else {
 			box.setBox_id(null);
-			box_id = generalService.save(box);
+			product_id = generalService.save(box);
 		}
-		this.success.setItem("box_id", box_id);
+		this.success.setItem("product_id", product_id);
 	}
 	
 	public void doDeleteProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String delete_id = (String) request.getAttribute("delete_id");
-		int box_id = 0;
+		int product_id = 0;
 		if(delete_id != null && !delete_id.equals("") && !delete_id.equals("undefined") && !delete_id.equals("0")) {
-			box_id = Integer.parseInt(delete_id);
+			product_id = Integer.parseInt(delete_id);
 		}
-		if(box_id > 0) {//update
+		if(product_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();
-			whereRelation.EQ("box_id", box_id).setUpdate("box_valid", 0).setTable_clazz(CategoryBoxSandard.class);
+			whereRelation.EQ("product_id", product_id).setUpdate("box_valid", 0).setTable_clazz(CategoryBoxSandard.class);
 			generalService.update(whereRelation);
 		}
 	}

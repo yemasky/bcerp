@@ -6,9 +6,12 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0;$scope.edit_index = 0;$scope.editType = "";
 	//定义变量
+	$scope.dict_product_pause_reason =  $scope.commDictHash[$stateParams.id]['product_pause_reason'];
 	$scope.dict_product_dev_type =  $scope.commDictHash[$stateParams.id]['product_dev_type'];
 	$scope.dict_product_dev_from =  $scope.commDictHash[$stateParams.id]['product_dev_from'];
-	$scope.productList = {};$scope.product = {};$scope.productAttrList = {};$scope.productVehicle = [];$scope.images = {};
+	$scope.dict_product_factory =  $scope.commDictHash[$stateParams.id]['product_factory'];
+	$scope.dict_factory_name =  $scope.commDictHash[$stateParams.id]['factory_name'];
+	$scope.productList = [];$scope.product = {};$scope.productAttrList = {};$scope.productVehicle = [];$scope.images = {};
 	$scope.systypeList = [];$scope.systypeHash = {};//系统分类
 	$scope.commodityList = [];$scope.commodity = {};$scope.commodityAttrList = {};
 	$scope.tab = 1;
@@ -56,15 +59,20 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 			$alert({title: 'Notice', content: '没有数据保存！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
-		if(!angular.isDefined(this.product.product_name)) {
-			$alert({title: 'Notice', content: '名称必须填写！', templateUrl: '/modal-warning.html', show: true});
+		if(!angular.isDefined(this.product.commodity_id)) {
+			$alert({title: 'Notice', content: '品名必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
 		$scope.param.product = angular.copy(this.product);
+		$scope.param.productAttr = $scope.productAttrList;
+		$scope.param.images = $scope.images;
+		$scope.param.productVehicle = $scope.productVehicle;
+		$scope.param.oem = $scope.oem;
 		$httpService.header('method', 'saveProduct');
 		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
+			console.log($scope.param);
 		    $httpService.deleteHeader('method');
 			if(result.data.success == false) { 
 				return; 
@@ -79,7 +87,7 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 			}
 			$scope.product = {};
 			$scope.edit_id = 0;
-			aside.hide(); 
+			aside.hide();
 		});
 	}
 	$scope.delete = function(delete_id, i) {
@@ -134,6 +142,7 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 	}
 	$scope.choiceCommodity = function(commodity) {
 		$scope.commodity = commodity;
+		$scope.product.commodity_id = commodity.commodity_id;
 		asideSector.hide(); 
 		if(typeof($scope.commodityAttrList[commodity.commodity_id]) == 'undefined') {
 			$httpService.header('method', 'getCommodityAttr');
@@ -206,9 +215,7 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		$scope.productClassify[$scope.classifyI].classify = classify;
 	}
 	//selectVehicleModel ////////////////////////////
-	$scope.vehicleI = 0;
-	$scope.selectVehicleModel = function(i) {
-		$scope.vehicleI = i;
+	$scope.selectVehicleModel = function() {
 		if($scope.vehicleModelList.length == 0) {
 			$httpService.header('method', 'getVehicleModel');
 			$httpService.post(urlParam, $scope, function(result){
@@ -247,24 +254,167 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 	$scope.choiceVehicle = {};$scope.checkVehicle = {};
 	$scope.choiceVehicleModel  = function(vehicle) {
 		$scope.choiceVehicle[vehicle.vehicle_model_id] = vehicle;
-		console.log(this);
+		//console.log(this);
 	}
+	$scope.oem = {};
 	$scope.choiceVehicleOk = function() {
 		$scope.productVehicle = {};
 		asideVehicleModel.hide();
 		for(id in $scope.choiceVehicle) {
-			let choice = $scope.choiceVehicle[id];
+			let choice = angular.copy($scope.choiceVehicle[id]);
 			if($scope.checkVehicle[id]) {
 				if(!angular.isDefined($scope.productVehicle[choice.classify_id])) {
-					$scope.productVehicle[choice.classify_id] = choice;
+					$scope.productVehicle[choice.classify_id] = {};
+					$scope.productVehicle[choice.classify_id].classify_id = choice.classify_id;
 					$scope.productVehicle[choice.classify_id].childen = [];
 				}
 				$scope.productVehicle[choice.classify_id].childen.push(choice);	
+				$scope.oem[choice.classify_id] = [];
 			} else {
 				delete $scope.choiceVehicle[id];
 			}
 		}
 		console.log($scope.productVehicle);
+	}
+	////SelectVehicleOEM.html
+	let asideVehicleOEM = {};
+	$scope.oemI = 0;
+	$scope.showVehicleOEM = function(i) {
+		$scope.oemI = i;
+		asideVehicleOEM = $aside({scope: $scope,title: $scope.action_nav_name,placement: 'center',animation: 'am-fade-and-slide-top',backdrop: "static",
+			container: '#MainController',templateUrl: 'SelectVehicleOEM.html'
+		});
+		asideVehicleOEM.$promise.then(function() {
+			asideVehicleOEM.show();
+			$(document).ready(function() {
+			});
+		})
+	}
+	$scope.oemOk = function(i) {
+		asideVehicleOEM.hide();
+		let setp_length = $scope.step['oem'+i].length;
+		let oem_length = Object.keys($scope.oem[i]).length;
+		console.log(setp_length, oem_length);
+		if(oem_length > setp_length) {
+			let cha = oem_length - setp_length;
+			for(j=0;j<cha;j++) {
+				//delete $scope.oem[i][setp_length + j];
+				$scope.oem[i].pop();
+			}
+		}
+		console.log($scope.oem, $scope.step['oem'+i])
+	}
+	//
+	let asideFactoryNum = {};
+	$scope.factoryNum = [];
+	$scope.ftI = 0;
+	$scope.showFactoryNum = function(i) {
+		$scope.ftI = i;
+		asideFactoryNum = $aside({scope: $scope,title: $scope.action_nav_name,placement: 'center',animation: 'am-fade-and-slide-top',backdrop: "static",
+			container: '#MainController',templateUrl: 'SelectFactoryNum.html'
+		});
+		asideFactoryNum.$promise.then(function() {
+			asideFactoryNum.show();
+			$(document).ready(function() {
+			});
+		})
+	}
+	$scope.factoryNumOk = function(i) {
+		asideFactoryNum.hide();
+		let setp_length = $scope.step['ft'+i].length;
+		let fn_length = Object.keys($scope.factoryNum[i]).length;
+		if(fn_length > setp_length) {
+			let cha = fn_length - setp_length;
+			for(j=0;j<cha;j++) {
+				delete $scope.factoryNum[i][setp_length + j];
+			}
+		}
+		console.log(setp_length+"==="+i+"===="+fn_length,$scope.factoryNum,$scope.step['ft'+i]);
+	}
+	//
+	let asideEngineNum = {};
+	$scope.enI = 0;
+	$scope.engineNum = {};
+	$scope.showEngineNum = function(i) {
+		$scope.enI = i;
+		asideEngineNum = $aside({scope: $scope,title: $scope.action_nav_name,placement: 'center',animation: 'am-fade-and-slide-top',backdrop: "static",
+			container: '#MainController',templateUrl: 'SelectEngineNum.html'
+		});
+		asideEngineNum.$promise.then(function() {
+			asideEngineNum.show();
+			$(document).ready(function() {
+			});
+		})
+	}
+	$scope.engineNumOk = function(i) {
+		asideEngineNum.hide();
+		let setp_length = $scope.step['en'+i].length;
+		let en_length = Object.keys($scope.engineNum[i]).length;
+		if(en_length > setp_length) {
+			let cha = en_length - setp_length;
+			for(j=0;j<cha;j++) {
+				delete $scope.engineNum[i][setp_length + j];
+			}
+		}
+		console.log($scope.engineNum,$scope.step['en'+i]);
+	}
+	//
+	$scope.pre_product_pause_reason = "";
+	$scope.reasonHash = [];
+	$scope.selectPauseReason = function() {
+		if($scope.reasonHash == '') {
+			let reason = $scope.dict_product_pause_reason;
+			for(i in reason) {
+				$scope.reasonHash[reason[i].dict_id] = reason[i];
+			}
+		}
+		if(!angular.isDefined($scope.product.product_pause_reason)) {
+			$scope.product.product_pause_reason = $scope.reasonHash[$scope.product.prereason].dict_val;
+		} else {
+			$scope.product.product_pause_reason += $scope.reasonHash[$scope.product.prereason].dict_val;
+		}
+	}
+	//$scope.dict_product_dev_from
+	$scope.dev_from = {};
+	$scope.changeDefFrom = function() {
+		//console.log($scope.product);
+		let type = $scope.product.product_dev_type;
+		if(angular.isDefined(type)) {
+			let from = $scope.dictValHash[type].dict_val;
+			if(from == "我司集样" || from == "我司收集产品信息") {
+				if(!angular.isDefined($scope.dev_from[type])) {
+					$scope.dev_from[type] = [];
+					for(i in $scope.dict_product_dev_from) {
+						let linkage = $scope.dict_product_dev_from[i].dict_linkage;
+						if(linkage == from) {
+							$scope.dev_from[type].push($scope.dict_product_dev_from[i]);
+						}
+					}
+				}
+			}
+		}
+	}
+	$scope.dictFactory = {};
+	$scope.pfactory = {};
+	$scope.pfactory.dict_id = {};
+	$scope.pfactory.factory_name = {};
+	$scope.changeDictFactory = function(i) {
+		console.log($scope.pfactory.dict_id);
+		let dict_id = $scope.pfactory.dict_id[i];
+		if(angular.isDefined(dict_id)) {
+			let from = $scope.dictValHash[dict_id].dict_val;
+			if(from == "厂商1" || from == "厂商2" || from == "厂商3") {
+				if(!angular.isDefined($scope.dictFactory[dict_id])) {
+					$scope.dictFactory[dict_id] = [];
+					for(i in $scope.dict_factory_name) {
+						let linkage = $scope.dict_factory_name[i].dict_linkage;
+						if(linkage == from) {
+							$scope.dictFactory[dict_id].push($scope.dict_factory_name[i]);
+						}
+					}
+				}
+			}
+		} 
 	}
 	//<!--图片上传及操作-->
 	//images
@@ -305,8 +455,5 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 	$scope.reduceStep = function(key) {
 		if($scope.step[key].length < 1) {$alert({title: 'Notice', content: '最少需要1个', templateUrl: '/modal-warning.html', show: true});return;}
 		$scope.step[key].pop();console.log($scope.step);
-	}
-	$scope.changeDefFrom = function() {
-		console.log($scope.product);
 	}
 });

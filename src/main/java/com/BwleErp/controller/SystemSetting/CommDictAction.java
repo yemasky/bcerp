@@ -92,6 +92,8 @@ public class CommDictAction extends AbstractAction {
 			dict_id = Integer.parseInt(edit_id);
 		}
 		CommDict dict = this.modelMapper.map(request.getAttribute("dict"), CommDict.class);	
+		if(dict.getDict_val() != null) dict.setDict_val(dict.getDict_val().trim());
+		if(dict.getDict_linkage() != null) dict.setDict_linkage(dict.getDict_linkage().trim());
 		if(dict_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();
 			whereRelation.EQ("dict_id", dict_id).setTable_clazz(CommDict.class);

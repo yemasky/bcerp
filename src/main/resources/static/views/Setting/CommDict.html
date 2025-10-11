@@ -16,9 +16,10 @@
 					<th class="w-xs">#</th>
 					<th class="w">属于</th>
 					<th class="w">对应类别</th>
-					<th class="w">对应字段</th>
+					<th class="w">字段</th>
 					<th class="w">值</th>
 					<th class="w">英文</th>
+					<th class="w">关联字段值</th>
 					<th>备注</th>
 					<th class="w"></th>
 				</tr>
@@ -27,7 +28,7 @@
 				<tr ng-repeat="(i, dicts) in dictList"> 
 					<td></td>
 					<td>{{moduleHash[i].module_name}}</td>
-					<td colspan="5" class="no-padding panel">
+					<td colspan="6" class="no-padding panel">
 						<table class="table no-margin">
 							<tr class="row" ng-repeat="(j, dict) in dicts">
 								<td class="w">{{moduleHash[j].module_name}}</td>
@@ -43,6 +44,9 @@
 														</td>
 														<td class="w">
 															{{d.dict_enval}}
+														</td>
+														<td class="w">
+															{{d.dict_linkage}}
 														</td>
 														<td>
 															{{d.dict_node}}
@@ -88,11 +92,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">选择子类</label>
+								<label class="col-sm-3 control-label">选择次类</label>
 								<div class="col-sm-4">
 									<select class="form-control w-sm" ng-model="dict.module_id"
 										ng-options="child.module_id as child.module_name for child in module[dict.module_father_id]" 
-											placeholder="子类">
+											placeholder="次类">
 									</select>
 								</div>
 							</div>
@@ -115,6 +119,12 @@
 								<label class="col-sm-3 control-label">输入英文</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" ng-model="dict.dict_enval" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">关联字段值</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" ng-model="dict.dict_linkage" />
 								</div>
 							</div>
 							<div class="form-group">
