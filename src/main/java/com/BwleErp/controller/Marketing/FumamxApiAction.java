@@ -40,12 +40,12 @@ public class FumamxApiAction implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		
 		try {
 			FumamxToken fumamxToken = this.getToken();
 			this.getCustomerList(fumamxToken, 5, 1000);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
@@ -102,7 +102,7 @@ public class FumamxApiAction implements Runnable {
 			HttpClientResponseHandler<String> responseHandler = new HttpResponseHandler();
 			responses = httpClient.execute(httpPost, responseHandler);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -137,7 +137,7 @@ public class FumamxApiAction implements Runnable {
 		try {
 			this.generalService.batchSave(fumamxApiList);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		int totalNum = list.getInt("totalNum");
@@ -146,7 +146,7 @@ public class FumamxApiAction implements Runnable {
 		try {
 			Thread.sleep(5000);//休息5秒
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		this.getCustomerList(fumamxToken, from, page);
@@ -168,7 +168,7 @@ public class FumamxApiAction implements Runnable {
 			HttpClientResponseHandler<String> responseHandler = new HttpResponseHandler();
 			responses = httpClient.execute(httpPost, responseHandler);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -193,7 +193,7 @@ public class FumamxApiAction implements Runnable {
 		try {
 			Thread.sleep(5000);//休息5秒
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		//System.out.println("------>"+customerList.toString());
@@ -205,7 +205,7 @@ public class FumamxApiAction implements Runnable {
 class HttpResponseHandler implements HttpClientResponseHandler<String> {
 	@Override
 	public String handleResponse(ClassicHttpResponse response) throws HttpException, IOException {
-		// TODO Auto-generated method stub
+		
 		int status = response.getCode();
 		if (status >= 200 && status < 300) {
 			org.apache.hc.core5.http.HttpEntity entity = response.getEntity();

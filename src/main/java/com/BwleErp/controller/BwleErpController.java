@@ -36,7 +36,7 @@ public class BwleErpController extends AbstractController {
 
 	@Override
 	public void beforeCheck(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		
 		String eidDecryptHeader = request.getHeader(this.employeeCookieName);
 		String eidDecryptCookie = this.getCookie(request, this.employeeCookieName);
 		String eidDecrypt = eidDecryptHeader == null || eidDecryptHeader.equals("") ? eidDecryptCookie : eidDecryptHeader;	
@@ -50,14 +50,14 @@ public class BwleErpController extends AbstractController {
 			}
 			request.setAttribute("employee_id", employee_id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

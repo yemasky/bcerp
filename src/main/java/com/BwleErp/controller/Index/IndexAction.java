@@ -42,7 +42,7 @@ public class IndexAction extends AbstractAction {
 
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		
 		System.out.println("action check");
 		int employee_id = (int)request.getAttribute("employee_id");
 		try {
@@ -50,7 +50,7 @@ public class IndexAction extends AbstractAction {
 				this.employee_id = employee_id;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return this.status;
@@ -58,7 +58,7 @@ public class IndexAction extends AbstractAction {
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null)
 			method = "";
@@ -84,12 +84,12 @@ public class IndexAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void doDefault(HttpServletRequest request, HttpServletResponse response) throws Exception {

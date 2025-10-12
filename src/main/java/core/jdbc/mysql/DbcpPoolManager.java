@@ -212,7 +212,7 @@ public class DbcpPoolManager {
 		try {
 			this.loadDrivers();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			logger.log(Level.SEVERE, "读取数据库配置文件出错！", e);
 			System.exit(0);// 退出运行

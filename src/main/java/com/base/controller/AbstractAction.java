@@ -94,11 +94,11 @@ public abstract class AbstractAction {
 				this.rollbackAllConnection();
 				this.freeAllConnection();
 			} catch (Exception ex) {
-				// TODO Auto-generated catch block
+				
 				MDC.put("APP_NAME", "default_error");
 				logger.error(success.getMessage(), ex);
 			}
-			// TODO Auto-generated catch block
+			
 			MDC.put("APP_NAME", "default_error");
 			logger.error(success.getMessage(), e);
 		}

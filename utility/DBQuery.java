@@ -135,7 +135,7 @@ public abstract class DBQuery {
 				try {
 					method = entityClassSource.getDeclaredMethod(methodName);
 				} catch (NoSuchMethodException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 					MDC.put("APP_NAME", "mysql_error");
 					logger.error("error SQL NoSuchMethodException==>:", methodName, e);

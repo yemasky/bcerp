@@ -28,13 +28,13 @@ public class MarketingAction extends AbstractAction {
 	
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null) method = "";
 		//
@@ -65,18 +65,18 @@ public class MarketingAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 		
 	public void doGetSalesCollection(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		//
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(MarketingCollectionVo.class);
@@ -93,7 +93,7 @@ public class MarketingAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit_id = EncryptUtiliy.instance().intIDDecrypt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		MarketingCollectionVo collection = this.modelMapper.map(request.getAttribute("collection"), MarketingCollectionVo.class);
 		WhereRelation whereRelation = new WhereRelation();
 		collection.setEmployee_id((Integer) request.getAttribute("employee_id"));
@@ -122,7 +122,7 @@ public class MarketingAction extends AbstractAction {
 	}
 	
 	public void doGetBuyerPayment(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		//
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(BuyerPaymentVo.class);
@@ -139,7 +139,7 @@ public class MarketingAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit_id = EncryptUtiliy.instance().intIDDecrypt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		BuyerPaymentVo payment = this.modelMapper.map(request.getAttribute("payment"), BuyerPaymentVo.class);
 		WhereRelation whereRelation = new WhereRelation();
 		payment.setEmployee_id((Integer) request.getAttribute("employee_id"));

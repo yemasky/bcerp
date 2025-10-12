@@ -32,7 +32,7 @@ public class test {
 							+ ObjectUtils.isEmpty(tempObj));
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}

@@ -27,7 +27,7 @@ public class UploadAction extends AbstractAction {
 
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub    
+		    
 		int employee_id = (int)request.getAttribute("employee_id");
 		if (employee_id > 0) {
 			this.employee_id = employee_id;
@@ -41,7 +41,7 @@ public class UploadAction extends AbstractAction {
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if(method == null) method = "";
 		//
@@ -69,13 +69,13 @@ public class UploadAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	

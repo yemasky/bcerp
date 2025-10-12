@@ -14,42 +14,37 @@
 			<thead>
 				<tr>
 					<td>#</td>
-					<td>LM No.</td>
-					<td>品名</td>
-					<td>品名[英文]</td>
-					<td>Qty/Ctn</td>
-					<td>Unit</td>
-					<td>G.W/Ctn(KG)</td>
-					<td>N.W/Ctn(KG)</td>
-					<td>L(CM)</td>
-					<td>W(CM)</td>
-					<td>H(CM)</td>
-					<td>Weight/Pcs(KG)</td>
-					<td>Volume/Pcs(CBM)</td>
-					<td>采购合同</td>
+					<td>车种</td>
+					<td>系统所属</td>
+					<td>产品系统</td>
+					<td>品名中文</td>
+					<td>品名英文</td>
+					<td>LM货号</td>
+					<td>单位</td>
+					<td>推广状态</td>
+					<td>制作人</td>
+					<td>制作时间</td>
+					<td>审核</td>
 					<td></td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="(i, product) in productList">
 					<td>{{i+1}}</td>
-					<td>{{product.product_no}}</td>
-					<td>{{product.product_name}}</td>
-					<td>{{product.product_enname}}</td>
-					<td>{{product.product_qty_ctn}}</td>
-					<td>{{product.product_unit}}</td>
-					<td>{{product.product_gw_ctn_kg}}</td>
-					<td>{{product.product.product_nw_ctn_kg}}</td>
-					<td>{{product.product.product_l}}</td>
-					<td>{{product.product_w}}</td>
-					<td>{{product.product_h}}</td>
-					<td>{{product.product_weight_pcs}}</td>
-					<td>{{product.product_volume_pcs}}</td>
-					<td>{{product.product_pcontract}}</td>
+					<td>{{product.category_id}}</td>
+					<td>{{product.systype_id}}</td>
+					<td>{{product.commodity_id}}</td>
+					<td>{{product.commodity_id}}</td>
+					<td>{{product.commodity_id}}</td>
+					<td>LM{{product.commodity_id}}.{{product.product_id}}</td>
+					<td>{{product.commodity_id}}</td>
+					<td>{{product.product_spread}}</td>
+					<td>{{product.employee_id}}</td>
+					<td>{{product.product_add_date}}</td>
+					<td>{{product.auditing_state}}</td>
 					<td>
 						<div class="pull-right btn-group">
 							<a ng-click="addEdit('edit', product, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
-							<a ng-click="delete(product.product_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
 						</div>
 					</td>
 				</tr>
@@ -392,7 +387,7 @@
 															<input type="radio" value="0" ng-model="product.product_perfect"> 信息待完善
 														</label>
 														<label class="checkbox-inline no-padding-v m-t-ln">
-															<input type="checkbox" value="1" ng-model="product.product_pause" > 暂停销售, 原因
+															<input type="checkbox" value="1" ng-model="product.product_ispause" > 暂停销售, 原因
 														</label>
 														<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
 														<input type="text" class="form-control" placeholder="暂停销售原因" ng-model="product.product_pause_reason" >
@@ -439,7 +434,7 @@
 											<td>{{i+1}}</td>
 											<td>
 												<span class="input-group-btn">
-													<button type="button" class="btn btn-default" ng-model="pfactory.dict_id[i]" 
+													<button type="button" class="btn btn-default" ng-model="pfactory[i].dict_id" 
 														ng-change="changeDictFactory(i)"
 														data-html="1" data-toggle="true" 
 														bs-options="dict.dict_id as dict.dict_val for dict in dict_product_factory" 
@@ -449,9 +444,9 @@
 												</span>
 											</td>
 											<td>
-												<input type="text" class="form-control btn-default" placeholder="厂商" ng-if="dictFactory[pfactory.dict_id[i]]==''">
-												<button type="button" class="btn btn-default" ng-model="pfactory.factory_name[i]" ng-if="dictFactory[pfactory.dict_id[i]]!=''"
-													data-html="1" data-toggle="true" bs-options="dict.dict_id as dict.dict_val for dict in dictFactory[pfactory.dict_id[i]]" bs-select placeholder="选择厂商">
+												<input type="text" class="form-control btn-default" placeholder="厂商" ng-if="dictFactory[pfactory[i].dict_id]==''">
+												<button type="button" class="btn btn-default" ng-model="pfactory[i].factory_dict_id" ng-if="dictFactory[pfactory[i].dict_id]!=''" ng-change="setFactoryName(i)"
+													data-html="1" data-toggle="true" bs-options="dict.dict_id as dict.dict_val for dict in dictFactory[pfactory[i].dict_id]" bs-select placeholder="选择厂商">
 													Action <span class="caret"></span>
 												</button>
 											</td> 

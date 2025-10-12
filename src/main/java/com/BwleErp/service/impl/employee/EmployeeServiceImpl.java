@@ -20,7 +20,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 	@Override
 	public EmployeePermissionDto permissionCheck(int module_id, int employee_id) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		EmployeePermissionDto employeePermission = new EmployeePermissionDto();
 		GeneralService generalService = new GeneralServiceImpl();
 		// 获取用户权限

@@ -19,7 +19,7 @@ public class ReadProperties {
 			try {
 				this.readToProperties(propertiesFile);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}

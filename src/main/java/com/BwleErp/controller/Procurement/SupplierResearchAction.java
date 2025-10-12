@@ -36,13 +36,13 @@ public class SupplierResearchAction extends AbstractAction {
 
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null)
 			method = "";
@@ -65,18 +65,18 @@ public class SupplierResearchAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	public void doGetResearch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		//
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(SupplierResearch.class);

@@ -11,14 +11,14 @@ public class IndexAction extends AbstractAction {
 	
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		
 		System.out.println("action check"); 
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		//
 		switch (method) {
@@ -36,12 +36,12 @@ public class IndexAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 	
 	public void doLogin(HttpServletRequest request, HttpServletResponse response) {

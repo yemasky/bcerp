@@ -13,7 +13,7 @@ public class ErrorController extends AbstractController {
 
 	@Override
 	public void beforeCheck(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class ErrorController extends AbstractController {
 	@RequestMapping(value = {"**","/"})
 	public String defaultAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		model.addAttribute("__RESOURCE", "/resource/");
-		// TODO Auto-generated method stub
+		
 		return "404";
 	}
 

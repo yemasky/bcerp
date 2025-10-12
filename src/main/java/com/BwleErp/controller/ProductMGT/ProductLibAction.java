@@ -1,5 +1,7 @@
 package com.BwleErp.controller.ProductMGT;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.base.controller.AbstractAction;
+import com.base.model.entity.BwleErp.ProductMGT.Product;
+import com.base.model.entity.BwleErp.ProductMGT.ProductAttribute;
+import com.base.model.entity.BwleErp.ProductMGT.ProductClassify;
+import com.base.model.entity.BwleErp.ProductMGT.ProductFactory;
 import com.base.model.entity.BwleErp.SystemSetting.Auditing;
 import com.base.model.entity.BwleErp.SystemSetting.CategoryBoxSandard;
 import com.base.model.entity.BwleErp.SystemSetting.CategoryClassify;
@@ -18,6 +24,9 @@ import com.base.model.entity.BwleErp.SystemSetting.VehicleModel;
 import com.base.model.vo.BwleErp.SystemSetting.CategoryVo;
 import com.base.service.GeneralService;
 import com.base.type.CheckedStatus;
+import com.base.util.Utility;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import core.jdbc.mysql.NeedEncrypt;
 import core.jdbc.mysql.WhereRelation;
@@ -32,13 +41,13 @@ public class ProductLibAction extends AbstractAction {
 	private GeneralService generalService;
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null)
 			method = "";
@@ -73,12 +82,12 @@ public class ProductLibAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -95,10 +104,16 @@ public class ProductLibAction extends AbstractAction {
 		whereRelation = new WhereRelation();
 		whereRelation.EQ("unit_valid", 1).setTable_clazz(CategoryUnit.class);
 		List<CategoryUnit> unitList = this.generalService.getEntityList(whereRelation);
+		//产品
+		whereRelation = new WhereRelation();
+		whereRelation.setTable_clazz(Product.class);
+		List<Product> productList = this.generalService.getEntityList(whereRelation);
+		
 		//
 		this.success.setItem("categoryList", categoryList);
 		this.success.setItem("systypeList", systypeList);
 		this.success.setItem("unitList", unitList);
+		this.success.setItem("productList", productList);
 	}
 	
 	public void doSaveProduct(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -107,15 +122,65 @@ public class ProductLibAction extends AbstractAction {
 		if(edit_id != null && !edit_id.equals("") && !edit_id.equals("undefined") && !edit_id.equals("0")) {
 			product_id = Integer.parseInt(edit_id);
 		}
-		CategoryBoxSandard box = this.modelMapper.map(request.getAttribute("box"), CategoryBoxSandard.class);
+		Product product = this.modelMapper.map(request.getAttribute("product"), Product.class);
+		Type type = new TypeToken<HashMap<String, ProductAttribute>>() {}.getType();
+		Type pcType = new TypeToken<HashMap<String, ProductClassify>>() {}.getType();
+		Type pfType = new TypeToken<HashMap<String, ProductFactory>>() {}.getType();
+		Type stringType = new TypeToken<HashMap<String, HashMap<String, String>>>() {}.getType();
+		Type listType = new TypeToken<List<HashMap<String, String>>>() {}.getType();
+		Type stringListType = new TypeToken<HashMap<String, List<String>>>() {}.getType();
+		HashMap<String, ProductAttribute> imagesAttr = this.modelMapper.map(request.getAttribute("images"), type);
+		HashMap<String, ProductAttribute> productAttr = this.modelMapper.map(request.getAttribute("productAttr"), type);
+		HashMap<String, ProductClassify> productClassify = this.modelMapper.map(request.getAttribute("classify"), pcType);
+		HashMap<String, List<String>> oems = this.modelMapper.map(request.getAttribute("oem"), stringListType);
+		List<HashMap<String, String>> factoryNum = this.modelMapper.map(request.getAttribute("factoryNum"), listType);
+		HashMap<String, HashMap<String, String>> engineNum = this.modelMapper.map(request.getAttribute("engineNum"), stringType);
+		HashMap<String,ProductFactory> pfactory = this.modelMapper.map(request.getAttribute("pfactory"), pfType);
+		Gson gson = new Gson();
+		this.generalService.setTransaction(true);
 		if(product_id > 0) {//update
 			WhereRelation whereRelation = new WhereRelation();
 			whereRelation.EQ("product_id", product_id).setTable_clazz(Auditing.class);
-			generalService.updateEntity(box, whereRelation);
+			this.generalService.updateEntity(product, whereRelation);
 		} else {
-			box.setBox_id(null);
-			product_id = generalService.save(box);
+			product.setProduct_id(null);
+			product.setEmployee_id((int)request.getAttribute("employee_id"));
+			product.setProduct_add_date(Utility.instance().getTodayDate());
+			product_id = this.generalService.save(product);
+			List<ProductAttribute> attrList = new ArrayList<>();
+			for(String key : imagesAttr.keySet()) {
+				ProductAttribute attr = imagesAttr.get(key);
+				attr.setProduct_id(product_id);
+				attrList.add(attr);
+			}
+			for(String key : productAttr.keySet()) {
+				ProductAttribute attr = productAttr.get(key);
+				attr.setProduct_id(product_id);
+				attr.setAttribute_type("attr");
+				attr.setAttribute_id(Integer.parseInt(key));
+				attrList.add(attr);
+			}
+			this.generalService.batchSave(attrList);
+			List<ProductClassify> classifyList = new ArrayList<>();
+			for(String key : productClassify.keySet()) {
+				ProductClassify attr = productClassify.get(key);
+				attr.setProduct_id(product_id);
+				attr.setOems(gson.toJson(oems.get(key)));
+				classifyList.add(attr);
+			}
+			this.generalService.batchSave(classifyList);
+			List<ProductFactory> pfactoryList = new ArrayList<>();
+			
+			for(String key : pfactory.keySet()) {
+				ProductFactory attr = pfactory.get(key);
+				attr.setProduct_id(product_id);
+				attr.setEngine_num(gson.toJson(engineNum.get(key)));
+				attr.setFactory_num(gson.toJson(factoryNum.get(Integer.parseInt(key))));
+				pfactoryList.add(attr);
+			};
+			this.generalService.batchSave(pfactoryList);
 		}
+		this.generalService.commit();
 		this.success.setItem("product_id", product_id);
 	}
 	

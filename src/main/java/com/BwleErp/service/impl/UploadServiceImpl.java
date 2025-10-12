@@ -29,31 +29,31 @@ public class UploadServiceImpl implements UploadService {
 
 	@Override
 	public int save(Object object) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int update(WhereRelation whereRelation) throws SQLException {
 		return 0;
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public Object getEntityByObject(Object object) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public <T> List<T> getEntityList(Object object) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<HashMap<String, Object>> getList(Object object, String fieId) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return genernalDao.getList(object, fieId, null);
 	}
 
@@ -88,7 +88,7 @@ public class UploadServiceImpl implements UploadService {
 	
 	@Override
 	public int batchSaveUploadFile(List<UploadFile> uploadFileList) throws Exception {
-		// TODO Auto-generated method stub
+		
 		 return genernalDao.batchSave(uploadFileList);
 	}
 	
@@ -110,26 +110,26 @@ public class UploadServiceImpl implements UploadService {
 
 	@Override
 	public <T> List<T> getEntityList(WhereRelation whereRelation) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return genernalDao.getEntityList(whereRelation);
 	}
 
 	@Override
 	public int updateEntity(Object object, WhereRelation whereRelation) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public List<HashMap<String, Object>> getList(WhereRelation whereRelation, NeedEncrypt needEncrypt) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return genernalDao.getList(whereRelation, needEncrypt);
 	}
 
 
 	@Override
 	public Object getEntity(WhereRelation whereRelation) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

@@ -33,13 +33,13 @@ public class CountrySetupAction extends AbstractAction {
 	
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null)
 			method = "";
@@ -74,18 +74,18 @@ public class CountrySetupAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	
 	public void doGetCountry(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(Country.class);
 		List<Country> countryList = generalService.getEntityList(whereRelation);
@@ -98,7 +98,7 @@ public class CountrySetupAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit = Integer.parseInt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		Country country = this.modelMapper.map(request.getAttribute("country"), Country.class);
 		System.out.println(new Gson().toJson(country));
 		WhereRelation whereRelation = new WhereRelation();
@@ -116,7 +116,7 @@ public class CountrySetupAction extends AbstractAction {
 	}
 	
 	public void doGetSeaport(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		//
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.ORDER_ASC("country_enname").setTable_clazz(Country.class);
@@ -135,7 +135,7 @@ public class CountrySetupAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit = Integer.parseInt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		Seaport seaport = this.modelMapper.map(request.getAttribute("seaport"), Seaport.class);
 		WhereRelation whereRelation = new WhereRelation();
 		if(edit > 0) {//update
@@ -148,7 +148,7 @@ public class CountrySetupAction extends AbstractAction {
 	}
 	
 	public void doGetCurrencyRate(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		//
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(CurrencyRateVo.class);
@@ -179,7 +179,7 @@ public class CountrySetupAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit_id = Integer.parseInt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		CurrencyRate currencyRate = this.modelMapper.map(request.getAttribute("currencyRate"), CurrencyRate.class);
 		WhereRelation whereRelation = new WhereRelation();
 		if(edit_id > 0) {//update

@@ -48,7 +48,7 @@ public class WebSocketTaobaoCrawlerServer extends AbstractAction {
 	private static HashMap<String, String> captchaHash = new HashMap<>();
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		
 		MDC.put("APP_NAME", "socket_info");
 		this.status.setStatus(true);
 		return this.status;
@@ -56,17 +56,17 @@ public class WebSocketTaobaoCrawlerServer extends AbstractAction {
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	/**

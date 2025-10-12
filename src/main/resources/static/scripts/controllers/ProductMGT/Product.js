@@ -6,7 +6,8 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;
 	$scope.param = {}; $scope.edit_id = 0;$scope.edit_index = 0;$scope.editType = "";
 	//定义变量
-	$scope.dict_product_pause_reason =  $scope.commDictHash[$stateParams.id]['product_pause_reason'];
+	let channel_id = $stateParams.id;
+	$scope.dict_product_pause_reason =  $scope.commDictHash[channel_id]['product_pause_reason'];
 	$scope.dict_product_dev_type =  $scope.commDictHash[$stateParams.id]['product_dev_type'];
 	$scope.dict_product_dev_from =  $scope.commDictHash[$stateParams.id]['product_dev_from'];
 	$scope.dict_product_factory =  $scope.commDictHash[$stateParams.id]['product_factory'];
@@ -65,10 +66,13 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		}
 		$scope.loading.show();
 		$scope.param.product = angular.copy(this.product);
+		$scope.param.product.systype_id = angular.copy(this.product.systype_id.systype_id);
 		$scope.param.productAttr = $scope.productAttrList;
 		$scope.param.images = $scope.images;
-		$scope.param.productVehicle = $scope.productVehicle;
 		$scope.param.oem = $scope.oem;
+		$scope.param.factoryNum = $scope.factoryNum;
+		$scope.param.engineNum = $scope.engineNum;
+		$scope.param.pfactory = $scope.pfactory;
 		$httpService.header('method', 'saveProduct');
 		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
@@ -256,7 +260,7 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 		$scope.choiceVehicle[vehicle.vehicle_model_id] = vehicle;
 		//console.log(this);
 	}
-	$scope.oem = {};
+	$scope.oem = {};$scope.param.classify = {};
 	$scope.choiceVehicleOk = function() {
 		$scope.productVehicle = {};
 		asideVehicleModel.hide();
@@ -267,8 +271,12 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 					$scope.productVehicle[choice.classify_id] = {};
 					$scope.productVehicle[choice.classify_id].classify_id = choice.classify_id;
 					$scope.productVehicle[choice.classify_id].childen = [];
+					$scope.param.classify[choice.classify_id] = {};
+					$scope.param.classify[choice.classify_id].classify_id = choice.classify_id;
+					$scope.param.classify[choice.classify_id].vehicle_model_ids = [];
 				}
 				$scope.productVehicle[choice.classify_id].childen.push(choice);	
+				$scope.param.classify[choice.classify_id].vehicle_model_ids.push(choice.vehicle_model_id);
 				$scope.oem[choice.classify_id] = [];
 			} else {
 				delete $scope.choiceVehicle[id];
@@ -290,7 +298,7 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 			});
 		})
 	}
-	$scope.oemOk = function(i) {
+	$scope.oemOk = function(i) { 
 		asideVehicleOEM.hide();
 		let setp_length = $scope.step['oem'+i].length;
 		let oem_length = Object.keys($scope.oem[i]).length;
@@ -396,11 +404,11 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 	}
 	$scope.dictFactory = {};
 	$scope.pfactory = {};
-	$scope.pfactory.dict_id = {};
-	$scope.pfactory.factory_name = {};
+	//$scope.pfactory.dict_id = {};
+	//$scope.pfactory.factory_name = {};
 	$scope.changeDictFactory = function(i) {
-		console.log($scope.pfactory.dict_id);
-		let dict_id = $scope.pfactory.dict_id[i];
+		//console.log($scope.pfactory.dict_id);
+		let dict_id = $scope.pfactory[i].dict_id;
 		if(angular.isDefined(dict_id)) {
 			let from = $scope.dictValHash[dict_id].dict_val;
 			if(from == "厂商1" || from == "厂商2" || from == "厂商3") {
@@ -415,6 +423,11 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 				}
 			}
 		} 
+	}
+	$scope.setFactoryName = function(i) {
+		let dict_id = $scope.pfactory[i].factory_dict_id;
+		let name = $scope.dictValHash[dict_id].dict_val;
+		$scope.pfactory[i].factory_name = name;
 	}
 	//<!--图片上传及操作-->
 	//images

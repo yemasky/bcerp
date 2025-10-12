@@ -25,25 +25,25 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public int save(Object object) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public Object getEntityByObject(Object object) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public <T> List<T> getEntityList(Object object) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<HashMap<String, Object>> getList(Object object, String fieId) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Cacheable(value="cache-24hour", key="'AllCategory'")
 	@Override
 	public List<Category> getAllCategoryList() throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return categoryDao.getAllCategoryList(true);
 	}
 	
@@ -76,32 +76,32 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
 	public <T> List<T> getEntityList(WhereRelation whereRelation) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int update(WhereRelation whereRelation) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int updateEntity(Object object, WhereRelation whereRelation) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public List<HashMap<String, Object>> getList(WhereRelation whereRelation, NeedEncrypt needEncrypt)
 			throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Object getEntity(WhereRelation whereRelation) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

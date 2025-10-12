@@ -53,7 +53,7 @@ class MongoDbQueryTest {
 			System.out.println(new ObjectId());
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}

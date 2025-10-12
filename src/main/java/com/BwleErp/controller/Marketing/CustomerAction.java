@@ -41,13 +41,13 @@ public class CustomerAction extends AbstractAction {
 
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null)
 			method = "";
@@ -70,13 +70,13 @@ public class CustomerAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -87,7 +87,7 @@ public class CustomerAction extends AbstractAction {
 	}
 
 	public void doGetSalesPayment(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		//
 		WhereRelation whereRelation = new WhereRelation();
 		whereRelation.setTable_clazz(MarketingCollectionVo.class);
@@ -104,7 +104,7 @@ public class CustomerAction extends AbstractAction {
 		if (_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit_id = EncryptUtiliy.instance().intIDDecrypt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		MarketingCollectionVo collection = this.modelMapper.map(request.getAttribute("collection"),
 				MarketingCollectionVo.class);
 		WhereRelation whereRelation = new WhereRelation();

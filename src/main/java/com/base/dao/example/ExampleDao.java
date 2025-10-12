@@ -15,7 +15,7 @@ public class ExampleDao extends BaseDao {
 	DBQueryDao dBQueryDao;
 	public ExampleDao(String jdbcDsn) throws SQLException {
 		super(jdbcDsn);
-		// TODO Auto-generated constructor stub
+		
 		dBQueryDao = new DBQueryDao(jdbcDsn);
 	}
 
@@ -35,7 +35,7 @@ public class ExampleDao extends BaseDao {
 	
 
 	public List<Test> geTest(Test test) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		return dBQueryDao.setDsn(this.jdbcDsn).getEntityList(Test.class, test);
 	}
 	

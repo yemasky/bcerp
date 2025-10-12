@@ -27,13 +27,13 @@ public class CompanyAction extends AbstractAction {
 	private GeneralService generalService;
 	@Override
 	public CheckedStatus check(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return this.status;
 	}
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 		String method = (String) request.getAttribute("method");
 		if (method == null)
 			method = "";
@@ -56,12 +56,12 @@ public class CompanyAction extends AbstractAction {
 
 	@Override
 	public void release(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void rollback(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -105,7 +105,7 @@ public class CompanyAction extends AbstractAction {
 		if(_edit_id != null && !_edit_id.equals("") && !_edit_id.equals("undefined") && !_edit_id.equals("null")) {
 			edit = Integer.parseInt(_edit_id);
 		}
-		// TODO Auto-generated method stub
+		
 		Bank bank = this.modelMapper.map(request.getAttribute("bank"), Bank.class);
 		WhereRelation whereRelation = new WhereRelation();
 		if(edit > 0) {//update

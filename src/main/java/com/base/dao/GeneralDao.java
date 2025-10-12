@@ -17,7 +17,7 @@ public class GeneralDao extends BaseDao {
 
 	public GeneralDao(String jdbcDsn) throws SQLException {
 		super(jdbcDsn);
-		// TODO Auto-generated constructor stub
+		
 		dBQueryDao = new DBQueryDao(jdbcDsn);
 	}
 
@@ -81,7 +81,7 @@ public class GeneralDao extends BaseDao {
 									String unique_id = EncryptUtiliy.instance().getUniqueId((int) value);
 									mapValue.put(val, unique_id);
 								} catch (Exception e) {
-									// TODO Auto-generated catch block
+									
 									e.printStackTrace();
 								}
 							} else if(mapValue.containsKey(val)) {//把key的value加密后放到val
