@@ -1,0 +1,870 @@
+<div class="p-md" ng-controller="SupplierController">
+	<div class="panel panel-default">
+		<div class="panel-heading row">
+			<div class="col-md-10">
+				<span class="no-margin" ng-bind-html="action_nav"></span>
+			</div>
+			<div class="col-md-2">
+				<button ng-if="hashAccess[_self_module.module_id]>1" ng-click="addEdit('add')" class="btn btn-rounded btn-info btn-sm">
+					<i class="fa fa-fw m-r-xs fa-plus"></i> 添加{{_self_module.module_name}}
+				</button>
+			</div>
+		</div> 
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>供应商代码</th>
+					<th>供应商简称</th>
+					<th>公司名称</th>
+					<th>主营产品</th>
+					<th>品质等级</th>
+					<th>城市</th>
+					<th>审核</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, supplier) in supplierList">
+					<td>{{i+1}}</td>
+					<td>{{supplier.supplier_code}}</td>
+					<td>{{supplier.supplier_sname}}</td>
+					<td>{{supplier.supplier_name}}</td>
+					<td>{{supplier.commodity_id}}</td>
+					<td>{{supplier.quality_grade}}</td>
+					<td>{{supplier.city_id}}</td>
+					<td>{{auditingStateExplain[supplier.auditing_state]}}</td>
+					<td>
+						<div class="pull-right btn-group">
+							<a ng-click="addEdit('edit', supplier, i)" class="btn btn-sm btn-rounded"><i class="ti-layers"></i> </a>
+							<a ng-click="delete(supplier.supplier_id, i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/ng-template" id="AddEditResearch.html">
+	<div class="aside box-shadow aside-x" tabindex="-1" role="dialog">
+		<div class="aside-dialog">
+			<div class="aside-content">
+				<form name="thisForm" class="form-horizontal form-validation" id="thisForm" ng-submit="saveData()">
+					<div class="panel panel-default">
+						<div class="panel-heading bg-white">
+							<i class="fa fa-building-o"> </i>
+							<span class="no-margin" ng-bind-html="action_nav_aside"></span>
+							<button type="button" class="close" ng-click="$hide()">&times;</button>
+						</div>
+						<div class="panel-body"> 
+							<ul class="nav nav-tabs" ui-nav>
+								<li class="active" ng-click="tab=1">
+									<a href>供应商资料</a>
+								</li>
+								<li ng-click="tab=2">
+									<a href>供应商图片</a>
+								</li>
+								<li ng-click="tab=3">
+									<a href>供应商产品相关</a>
+								</li>
+								<li ng-click="tab=4">
+									<a href>供应商相关附件</a>
+								</li>
+							</ul>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==1">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">企业基础信息</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">供应商名</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_name" required >
+										</div>
+									</div>
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">供应商简称</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_sname"  />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">企业类型</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_business_type" />
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">经营范围</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_business" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">法人代表</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_legal" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">成立日期</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_found_date" 
+												value="{{getDay('yyyy-mm-dd')}}" data-date-format="yyyy-MM-dd" data-date-type="string" 
+												data-autoclose="1" bs-datepicker  />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">年</button></span>
+										</div>
+									</div>
+									<div class="col-sm-8">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">注册资本</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_capital"  />
+											<span class="input-group-btn"><button class="btn btn-default" type="button">万元</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">联系电话</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_phone" >		
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司传真</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_fax" >
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司主页</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_web" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司地址</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_adress" />
+										</div>
+									</div>
+									<div class="col-sm-5 no-p-r">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">邮政编码</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_postcode" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">公司曾用名</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_former_name" />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">员工总人数</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_employees_num" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">经营与业务信息</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-3 no-p-r">
+										<div class="input-group">		
+											<span class="input-group-btn"><button class="btn btn-default" type="button">品质等级</button></span>
+											<input type="text" class="form-control" ng-model="supplier.supplier_quality_grade"  />
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn" ng-click="selectCommodity()"><button class="btn btn-default" type="button">主营产品</button></span>
+										</div>
+									</div>
+									<div class="col-sm-9 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectCommodity()" ng-if="isEmptyObject(supplier_business['commodity'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['commodity'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(commodity_id, commodity) in supplier_business.commodity">
+													<button type="button" class="btn no-border btn-default">{{commodity.commodity_name}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('commodity', commodity_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-1 w-auto no-p-r"> 
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">主营车种</button></span>
+										</div>
+									</div>
+									<div class="col-sm-4 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectCategory()" ng-if="isEmptyObject(supplier_business['category'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['category'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(category_id, category) in supplier_business.category">
+													<button type="button" class="btn no-border btn-default">{{category.category_name}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('category', category_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-1 no-p-r w-auto">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">主营车厂</button></span>
+										</div>
+									</div>
+									<div class="col-sm-4 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectClassify()" ng-if="isEmptyObject(supplier_business['classify'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['classify'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(classify_id, classify) in supplier_business.classify">
+													<button type="button" class="btn no-border btn-default">{{classify.classify_name}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('classify', classify_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-2 no-p-l">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">主营发动机</button></span>
+											<button type="button" class="btn btn-default" ng-model="supplier_business['engine'][0]" ng-change="changeDefFrom()"
+												data-html="1" data-toggle="true" bs-options="sources.dict_id as sources.dict_val for sources in dict_engine" bs-select placeholder="选择主营发动机">
+												Action <span class="caret"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-1 w-auto no-p-r"> 
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">制造类型</button></span>
+										</div>
+									</div>
+									<div class="col-sm-4 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectCrafting_type()" ng-if="isEmptyObject(supplier_business['crafting_type'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['crafting_type'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(i, dict) in supplier_business.crafting_type">
+													<button type="button" class="btn no-border btn-default">{{dict.dict_val}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('crafting_type', dict.dict_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-1 no-p-r w-auto">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">经营市场</button></span>
+										</div>
+									</div>
+									<div class="col-sm-3 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectOperate_market()" ng-if="isEmptyObject(supplier_business['operate_market'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['operate_market'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(i, dict) in supplier_business.operate_market">
+													<button type="button" class="btn no-border btn-default">{{dict.dict_val}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('operate_market', dict.dict_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-1 no-p-r w-auto">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">最主要销售地区/国家</button></span>
+										</div>
+									</div>
+									<div class="col-sm-5 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectCountry()" ng-if="isEmptyObject(supplier_business['country'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['country'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(country_id, country) in supplier_business.country">
+													<button type="button" class="btn no-border btn-default">{{country.country_name}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('country', country.country_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-1 no-p-r w-auto">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">相关认证</button></span>
+										</div>
+									</div>
+									<div class="col-sm-4 no-p-l">
+										<div class="input-group w-full">
+											<input type="text" class="form-control" ng-click="selectCertification_system()" ng-if="isEmptyObject(supplier_business['certification_system'])" > 
+											<div class="list-group no-radius" ng-if="!isEmptyObject(supplier_business['certification_system'])">
+												<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(i, dict) in supplier_business.certification_system">
+													<button type="button" class="btn no-border btn-default">{{dict.dict_val}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteCheckboxData('certification_system', dict.dict_id)"> </a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">诉讼信息</button></span>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">风险等级</button></span>
+											<select class="form-control w-xsm" ng-model="supplier.supplier_risk_level">
+												<option value="2">高</option>
+												<option value="1">中</option>
+												<option value="0">低</option>
+											</select>
+											<div class="input-group-btn">
+												<a ng-click="addStep('lawsuit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('lawsuit')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>原告</td>
+													<td>被告</td>
+													<td>涉案金额</td>
+													<td>宣判日期</td>
+													<td>记录日期</td>
+													<td>备注</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i,v) in step['lawsuit']">
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_lawsuit[i].plaintiff" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_lawsuit[i].defendant" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_lawsuit[i].amount" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_lawsuit[i].judgment_date" 
+														value="{{getDay('yyyy-mm-dd')}}" data-date-format="yyyy-MM-dd" data-date-type="string" 
+														data-autoclose="1" bs-datepicker  /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_lawsuit[i].record_date" 
+														value="{{getDay('yyyy-mm-dd')}}" data-date-format="yyyy-MM-dd" data-date-type="string" 
+														data-autoclose="1" bs-datepicker  /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_lawsuit[i].remark" /></td>
+													<td><a ng-click="reduceStep('lawsuit', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">联系人信息</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('c')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('c')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>职务名称</td>
+													<td>姓名</td>
+													<td class="w-thumb-lg text-nowrap">性别</td>
+													<td>办公电话</td>
+													<td>手机号码</td>
+													<td>电子邮件</td>
+													<td>QQ</td>
+													<td>微信号</td>
+													<td>寄送地址</td>
+													<td class="text-nowrap">默认</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i,v) in step['c']">
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].title" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].name" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].sex" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].phone" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].mobile" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].email" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].qq" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].weixin" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_contact[i].address" /></td>
+													<td>
+														<label class="radio-inline m-t-ln">
+															<input type="radio" value="{{i}}" ng-model="supplier.supplier_contact_default" />
+														</label>
+													</td>
+													<td><a ng-click="reduceStep('c', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table> 
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<label class="control-label">合作信息</label>
+									</div>
+									<div class="col-sm-6 m-t-sm">
+										<div class="input-group">
+											<span class="input-group-btn"><button class="btn btn-default" type="button">开发状态</button></span>
+											<select class="form-control w-xsm" ng-model="supplier.supplier_teamwork_status">
+												<option value="基础信息收集完成">基础信息收集完成</option>
+												<option value="初筛完成">初筛完成</option>
+												<option value="样件确认完成">样件确认完成</option>
+												<option value="现场审评完成">现场审评完成</option>
+											</select>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">开发结论</button></span>
+											<select class="form-control w-xsm" ng-model="supplier.supplier_teamwork_verdict">
+												<option value="优良">优良</option>
+												<option value="合格，可接受">合格，可接受</option>
+												<option value="不合格，可接受">不合格，可接受</option>
+												<option value="不合格">不合格</option>
+											</select>
+											<span class="input-group-btn"><button class="btn btn-default no-padding" type="button"></button></span>
+											<span class="input-group-btn"><button class="btn btn-default" type="button">合作状态</button></span>
+											<select class="form-control w-xsm" ng-model="supplier.supplier_teamwork_result">
+												<option value="未合作">未合作</option>
+												<option value="已合作">已合作</option>
+												<option value="暂停使用">暂停使用</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-2 no-p-r">
+										<div class="input-group">
+											<label class="control-label">付款方式</label>												
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-7">
+										<div class="panel panel-default">
+											<table class="table">
+												<tr ng-click="selectPayment()">
+													<td>付款方式全称 <a><i class="fa fa-fw fa-plus m-r-xs small"></i><i class="fa fa-fw fa-minus m-r-xs small"></i></a></td>
+													<td>付款方式简称 </td>
+													<td class="w-xxs">默认</td>
+													<td class="w-xxs">暂停</td>
+												</tr>
+												<tr ng-if="paymentList.length==0">
+													<td class="p-xxs" ng-click="selectPayment()"><input type="text" class="form-control" /></td>
+													<td class="p-xxs" ng-click="selectPayment()"><input type="text" class="form-control" /></td>
+													<td class="p-sm">
+														<label class="radio-inline no-padding-v m-t-ln">
+															<input type="radio" value="{{i}}" />
+														</label>
+													</td>
+													<td class="p-sm">
+														<label class="checkbox-inline no-padding-v m-t-ln">
+															<input type="checkbox" value="1" />
+														</label>
+													</td>
+												</tr>
+												<tr ng-repeat="(i, payment) in paymentList" ng-if="checkPayment[payment.payment_id]">
+													<td class="p-xxs" ng-click="selectPayment()">
+														<input type="text" class="form-control" ng-model="payment.payment_desc" />
+													</td>
+													<td class="p-xxs" ng-click="selectPayment()"><input type="text" class="form-control" ng-model="payment.payment_sdesc" /></td>
+													<td class="p-sm">
+														<label class="radio-inline no-padding-v m-t-ln">
+															<input type="radio" value="{{payment.payment_id}}" ng-model="supplier.supplier_payment_default" />
+														</label>
+													</td>
+													<td class="p-sm">
+														<label class="checkbox-inline no-padding-v m-t-ln">
+															<input type="checkbox" value="1" ng-model="supplier.supplier_payment[payment.payment_id].pause" />
+														</label>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">银行账号</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('p')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('p')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>账号类型</td>
+													<td>收款单位</td>
+													<td>开户名称</td>
+													<td>开户账号</td>
+													<td>开户地址</td>
+													<td>银行行号/SWIFT No.</td>
+													<td>备注</td>
+													<td class="w-xxs">默认</td>
+													<td class="w-xxs">暂停</td>
+													<td>暂停原因</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i,v) in step['p']">
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].type" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].payee" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].name" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].account" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].address" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].swift_no" /></td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].node" /></td>
+													<td>
+														<label class="radio-inline no-padding-v m-t-ln">
+															<input type="radio" value="{{i}}" ng-model="supplier.supplier_bank_default" />
+														</label>
+													</td>
+													<td>
+														<label class="checkbox-inline no-padding-v m-t-ln">
+															<input type="checkbox" value="{{i}}" ng-model="supplier.supplier_bank[i].pause" />
+														</label>
+													</td>
+													<td class="p-xxs"><input type="text" class="form-control" ng-model="supplier.supplier_bank[i].pause_reason" /></td>
+													<td><a ng-click="reduceStep('p', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table> 
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==2">
+								<div class="form-group m-b-xs">
+									<div class="col-sm-4 no-p-r">
+										供应商图片
+									</div>
+									<div class="col-sm-8">
+										<a ng-click="addStep('imgs')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加图</a>
+										<a ng-click="reduceStep('imgs')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少图</a>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-1 no-p-r" ng-repeat="(i, o) in step.imgs">
+										<table>
+											<tr><td><input type="text" class="form-control btn-default w-xsm" ng-model="images[i].attribute_mark" placeholder="供应商图片"></td></tr>
+											<tr><td>
+											<img id="set_image_src{{i}}" node="{{i}}" ng-src="{{__IMGWEB + images[i].attribute_val}}" width="120" height="120"
+												class="b p-xs set_image_src" onerror="this.src='/static/images/0ps.jpg'" />
+											</td></tr>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==3">
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<label class="control-label">产品汇总</label>
+										<div class="input-group-btn">
+											<a ng-click="addStep('summary')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+											<a ng-click="reduceStep('summary')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr class="small">
+													<td>LM货号</td>
+													<td>供应商使用OEM号</td>
+													<td>供应商使用厂商号</td>
+													<td>供应商货号</td>
+													<td>采购次数</td>
+													<td>采购总数量</td>
+													<td>询价次数</td>
+													<td>询价总量</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i, o) in step['summary']" class="small">
+													<td><input type="text" class="form-control" ng-model="summary[i].lm" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].oem" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].number" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].supplier" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].times" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].total" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].inquiry" /></td>
+													<td><input type="text" class="form-control" ng-model="summary[i].inquiry_total" /></td>
+													<td><a ng-click="reduceStep('summary', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<label class="control-label">供应商目录导入</label>
+										<div class="input-group-btn">
+											<a ng-click="addStep('directory')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+											<a ng-click="reduceStep('directory')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr class="small">
+													<td>LM货号</td>
+													<td>供应商使用OEM号</td>
+													<td>供应商使用厂商号</td>
+													<td>供应商货号</td>
+													<td>品名[中文]</td>
+													<td>品名[英文]</td>
+													<td>供应商报价</td>
+													<td>备注</td>
+													<td>审核</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i, o) in step['directory']" class="small">
+													<td><input type="text" class="form-control" ng-model="directory[i].lm" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].oem" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].number" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].supplier" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].times" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].total" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].inquiry" /></td>
+													<td><input type="text" class="form-control" ng-model="directory[i].inquiry_total" /></td>
+													<td>审核</td>
+													<td><a ng-click="reduceStep('directory', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<label class="control-label">手动咨询明细</label>
+										<div class="input-group-btn">
+											<a ng-click="addStep('manual')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+											<a ng-click="reduceStep('manual')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr class="small">
+													<td>LM货号</td>
+													<td>供应商使用OEM号</td>
+													<td>供应商使用厂商号</td>
+													<td>供应商货号</td>
+													<td>供货商报价单价</td>
+													<td>录入时间</td>
+													<td>备注</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i, o) in step['manual']" class="small">
+													<td><input type="text" class="form-control" ng-model="manual[i].lm" /></td>
+													<td><input type="text" class="form-control" ng-model="manual[i].oem" /></td>
+													<td><input type="text" class="form-control" ng-model="manual[i].number" /></td>
+													<td><input type="text" class="form-control" ng-model="manual[i].supplier" /></td>
+													<td><input type="text" class="form-control" ng-model="manual[i].prie" /></td>
+													<td><input type="text" class="form-control" ng-model="manual[i].date" /></td>
+													<td><input type="text" class="form-control" ng-model="manual[i].node" /></td>
+													<td>审核</td>
+													<td><a ng-click="reduceStep('manual', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<label class="control-label">采购合同明细</label>
+										<div class="input-group-btn">
+											<a ng-click="addStep('contract')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+											<a ng-click="reduceStep('contract')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr class="small">
+													<td>LM货号</td>
+													<td>供应商使用OEM号</td>
+													<td>供应商使用厂商号</td>
+													<td>品名[中文]</td>
+													<td>采购合同号</td>
+													<td>签订日期</td>
+													<td>采购数量</td>
+													<td>采购单价</td>
+													<td>合计</td>
+													<td>产品描述</td>
+													<td>产品包装</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i, o) in step['contract']" class="small">
+													<td><input type="text" class="form-control" ng-model="contract[i].lm" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].oem" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].number" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].commodity" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].contract" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].date" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].inquiry" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].inquiry_price" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].total" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].desc" /></td>
+													<td><input type="text" class="form-control" ng-model="contract[i].pack" /></td>
+													<td><a ng-click="reduceStep('contract', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group m-b-xs">
+									<div class="col-sm-12">
+										<label class="control-label">询价明细</label>
+										<div class="input-group-btn">
+											<a ng-click="addStep('inquiry')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+											<a ng-click="reduceStep('inquiry')" class="btn btn-sm btn-rounded">
+												<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr class="small">
+													<td>LM货号</td>
+													<td>供应商使用OEM号</td>
+													<td>供应商使用厂商号</td>
+													<td>品名[中文]</td>
+													<td>询价单号</td>
+													<td>询价日期</td>
+													<td>询价数量</td>
+													<td>起订单</td>
+													<td>成本价</td>
+													<td>产品描述</td>
+													<td>产品包装</td>
+													<td>采购员意见</td>
+													<td>交货天数</td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i, o) in step['inquiry']" class="small">
+													<td><input type="text" class="form-control" ng-model="inquiry[i].lm" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].oem" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].number" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].commodity" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].inquiry_no" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].date" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].inquiry_number" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].quantity" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].cost_price" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].desc" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].pack" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].opinion" /></td>
+													<td><input type="text" class="form-control" ng-model="inquiry[i].delivery_days" /></td>
+													<td><a ng-click="reduceStep('inquiry', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="p b-a no-b-t bg-white m-b" ng-if="tab==4">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<div class="input-group">
+											<label class="control-label">供应商相关附件</label>
+											<div class="input-group-btn">
+												<a ng-click="addStep('file')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('file')" class="btn btn-sm btn-rounded">
+													<i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12">	
+										<div class="panel panel-default">
+											<table class="table">
+												<tr>
+													<td>排序</td>
+													<td>主目录</td>
+													<td>序</td>
+													<td>子目录一</td>
+													<td>子目录二</td>
+													<td>命名规范</td>
+													<td>文件名</td>
+													<td>文件路径</td>
+													<td></td>
+													<td></td>
+												</tr>
+												<tr ng-repeat="(i, o) in step['file']">
+													<td></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].director" /></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].order" /></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].da" /></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].db" /></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].name_norm" /></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].file_name" /></td>
+													<td><input type="text" class="form-control" ng-model="supplier.supplier_upload[i].file_url" 
+														ng-if="supplier.supplier_upload[i].file_url==''" />
+														<a href="{{__FILEWEB + supplier.supplier_upload[i].file_url}}" target="_blank"
+														ng-if="supplier.supplier_upload[i].file_url!=''">{{supplier.supplier_upload[i].file_url}}</a>
+													</td>
+													<td><input type="button" node="{{i}}" id="insertfile{{i}}" class="form-control insertfile" value="选择文件" /></td>
+													<td><a ng-click="reduceStep('file', i)" class="btn btn-sm btn-rounded"><i class="fa fa-fw m-r-xs fa-trash"></i> </a></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<footer class="panel-footer text-right">
+							<div class="btn-group">
+								<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+								<button type="submit" class="btn btn-rounded btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}"
+								trigger-loading="beginLoading"><i class="fa fa-save"> </i> 保存</button>
+							</div>
+						</footer>
+					</div>
+				</form>
+			</div>
+			<div ng-include="__RESOURCE+'views/Common/CategoryAuditing.html'" ng-if="editType=='edit'"></div>
+		</div>
+	</div>
+</script>
+<!-- AddEditResearch.html.html -->
+<!--SelectPayment.html-->
+<script type="text/ng-template" id="SelectPayment.html">
+<div class="aside box-shadow aside-m" tabindex="-1" role="dialog">
+	<div class="panel panel-default">
+		<form name="engineForm" class="form-horizontal form-validation" role="form" ng-submit="engineNumOk(enI)">
+		<div class="panel-heading">
+			<div class="panel-heading">
+				<i class="fa fa-building-o"> </i>
+				<span class="no-margin">选择付款方式</span>
+			</div>
+		</div>
+		<div class="p">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>选择</td>
+						<td>付款方式全称</td>
+						<td>付款方式简述</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(i, payment) in paymentList">
+						<td class="w-thumb-lg text-nowrap">
+							<label class="checkbox-inline no-padding-v m-t-ln">
+								<input type="checkbox" value="{{payment.payment_id}}" ng-click="choicePayment(payment)"
+									ng-model="checkPayment[payment.payment_id]"> 
+							</label>
+						</td>
+						<td>{{payment.payment_desc}}</td>
+						<td>{{payment.payment_sdesc}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<footer class="panel-footer text-right bg-white">
+			<div class="btn-group">
+				<button type="button" class="btn btn-rounded btn-default" ng-click="$hide()"><i class="fa fa-times"> </i> 关闭</button>
+				<button type="button" class="btn btn-rounded btn-primary" ng-click="$hide()"><i class="fa fa-save"> </i> 确定</button>
+			</div>
+		</footer>
+		</form>
+	</div>
+</div>
+</script>
+<ng-include src="__RESOURCE+'views/Procurement/SupplierBussiness.html'"></ng-include>

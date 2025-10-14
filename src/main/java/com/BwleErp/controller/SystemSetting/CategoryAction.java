@@ -137,9 +137,9 @@ public class CategoryAction extends AbstractAction {
 		NeedEncrypt needEncrypt = new NeedEncrypt();
 		needEncrypt.setNeedEncrypt(true);
 		needEncrypt.setNeedEncrypt("systype_id", NeedEncrypt._ENCRYPT);
-		List<HashMap<String, Object>> companyList = this.generalService.getList(whereRelation, needEncrypt);
+		List<HashMap<String, Object>> systypeList = this.generalService.getList(whereRelation, needEncrypt);
 		//
-		this.success.setItem("systypeList", companyList);
+		this.success.setItem("systypeList", systypeList);
 	}
 	
 	public void doSaveSystype(HttpServletRequest request, HttpServletResponse response) throws Exception {

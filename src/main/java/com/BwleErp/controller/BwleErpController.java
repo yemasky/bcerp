@@ -63,14 +63,15 @@ public class BwleErpController extends AbstractController {
 	@Override
 	@RequestMapping(value = "/")//value = "/**"
 	public String defaultAction(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
-		model.addAttribute("__WEB", "/erp/");
+		model.addAttribute("__WEB", Config.webUrl);
 		model.addAttribute("__IMGWEB", Config.uploadImagesUrl);
+		model.addAttribute("__FILEWEB", Config.uploadFileUrl);
+		model.addAttribute("__RESOURCE", Config.resourceUrl);
+		model.addAttribute("__VERSION", "");
+		model.addAttribute("__TITLE", "博威利尔.ERP ᵛ¹·⁰·⁰ ");
 		model.addAttribute("__ImagesUploadUrl", EncryptUtiliy.instance().intIDEncrypt(114));
 		model.addAttribute("__ImagesManagerUrl", EncryptUtiliy.instance().intIDEncrypt(115));
 		model.addAttribute("__AuditingViewUrl", EncryptUtiliy.instance().intIDEncrypt(117));
-		model.addAttribute("__RESOURCE", "/static/");
-		model.addAttribute("__VERSION", "");
-		model.addAttribute("__TITLE", "博威利尔.ERP ᵛ¹·⁰·⁰ ");
 		//model.addAttribute("thisDateTime", Utiliy.instance().getTodayDate());
 		model.addAttribute("noLogin", this.noLogin);
 		return "BwleErp/default";

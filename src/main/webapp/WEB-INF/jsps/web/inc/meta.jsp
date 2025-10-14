@@ -4,9 +4,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>${Title}</title>
 <script>var __VERSION = '${__VERSION}'; var baseDateTime = '${thisDateTime}', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
-<link rel="stylesheet" href="${__RESOURCE}styles/app.min.css?${__VERSION}" type="text/css" />
+<link rel="stylesheet" href="${__RESOURCE}styles/app.min.css" type="text/css" />
 <!-- commom -->
-<script src="${__RESOURCE}jquery-3.4.1.min.js?${__VERSION}"></script>
+<script src="${__RESOURCE}jquery-3.4.1.min.js"></script>
 <script>
     var __RESOURCE = '${__RESOURCE}';
 //jQuery 插件
@@ -43,11 +43,11 @@
     }
 })(jQuery);
 </script>
-<script src="${__RESOURCE}angular.min.1.6.8.js?${__VERSION}"></script>
-<script src="${__RESOURCE}angular-lib.min.js?${__VERSION}"></script>
-<script src="${__RESOURCE}angular-lib-extend.min.js?${__VERSION}"></script>
-<script src="${__RESOURCE}vendor/modules/angular-strap/angular-strap.min.js?${__VERSION}"></script>
-<script src="${__RESOURCE}vendor/modules/angular-smart-table/smart-table.min.2.1.10.js?${__VERSION}"></script>   
+<script src="${__RESOURCE}angular.min.1.6.8.js"></script>
+<script src="${__RESOURCE}angular-lib.min.js"></script>
+<script src="${__RESOURCE}angular-lib-extend.min.js"></script>
+<script src="${__RESOURCE}vendor/modules/angular-strap/angular-strap.min.js"></script>
+<script src="${__RESOURCE}vendor/modules/angular-smart-table/smart-table.min.2.1.10.js"></script>   
 <script>//'ui.jp',,'angular-popups', 'ui.select'
 angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar','smart-table'
 ]);
@@ -312,7 +312,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state('app.Booking', {
         url: "/booking/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams, $rootScope, $scope) {
-			return 'resource/views/Booking/'+$routeParams.view+'.html?${__VERSION}';
+			return 'resource/views/Booking/'+$routeParams.view+'.html';
         },
 		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
 		}
@@ -325,7 +325,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state('app.Management', {
         url: "/Management/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
-            return 'resource/views/Management/'+$routeParams.view+'.html?${__VERSION}';
+            return 'resource/views/Management/'+$routeParams.view+'.html';
         },
 		controller: function() {
 			
@@ -334,7 +334,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         url: "/Setting/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams, $rootScope, $scope) {
 			var view = $routeParams.view;//有view访问静态文件
-			if(view != '') return 'resource/views/Setting/'+$routeParams.view+'.html?${__VERSION}';
+			if(view != '') return 'resource/views/Setting/'+$routeParams.view+'.html';
             return randomUrl($routeParams.channel); 
         },
 		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
@@ -349,7 +349,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
-            return 'resource/views/Test/'+$routeParams.test+'.html?${__VERSION}';
+            return 'resource/views/Test/'+$routeParams.test+'.html';
         },
 		controller: function() {
 		}
@@ -547,11 +547,11 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			var thisChannel = [];
 			var employeeChannel = $rootScope.employeeChannel;
 			var k = 0, thisChannel_id = '';
-			if(channel == 'Hotel') {
+			if(channel == '') {
 				/*thisChannel[0] = {};
 				thisChannel[0]['id'] = 0;
 				thisChannel[0]['channel_id'] = 0;
-				thisChannel[0]['channel_name'] = '<i class="fa fa-lightbulb-o"></i> 所有酒店适用</a>';
+				thisChannel[0]['channel_name'] = '<i class="fa fa-lightbulb-o"></i> </a>';
 				k++;*/
 			};
 			for(var i in employeeChannel) {
@@ -711,6 +711,6 @@ app.directive('pageSelect', function() {
       }
 });
 </script>
-<script src="${__RESOURCE}vendor/libs/moment.min.js?${__VERSION}"></script>
-<script src="${__RESOURCE}vendor/libs/daterangepicker.js?${__VERSION}"></script>
-<link rel="stylesheet" href="${__RESOURCE}vendor/libs/daterangepicker.css?${__VERSION}" type="text/css" />
+<script src="${__RESOURCE}vendor/libs/moment.min.js"></script>
+<script src="${__RESOURCE}vendor/libs/daterangepicker.js"></script>
+<link rel="stylesheet" href="${__RESOURCE}vendor/libs/daterangepicker.css" type="text/css" />

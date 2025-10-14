@@ -7,6 +7,9 @@ public class Config {
 	public static String imagesDomain = "";
 	public static String defaultHouseImages = ReadProperties.instance().read("defaultHouseImages");
 	public static String uploadPath = ReadProperties.instance().read("xiaoquUploadPath");
+	public static String webUrl = ReadProperties.instance().read("webUrl");
+	public static String resourceUrl = ReadProperties.instance().read("resourceUrl");
+	public static String uploadFileUrl = ReadProperties.instance().read("uploadFileUrl");
 	public static String uploadImagesUrl = ReadProperties.instance().read("xiaoquUploadImagesUrl");
 	public static String uniqueKey = "c111ba587854480f2a4de8d44204505f";
 	public static String uniqueMd5Key = "1236789acds";

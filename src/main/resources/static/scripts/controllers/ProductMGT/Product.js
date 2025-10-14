@@ -18,6 +18,7 @@ app.controller('ProductController', function($rootScope, $scope, $httpService, $
 	$scope.tab = 1;
 	$scope.classifyList = [];$scope.classifyHash = {};$scope.categoryHash = {};
 	$scope.categoryList = [];$scope.vehicleModelList = [];
+	 $scope.itemsByPage=10;
 	//
 	$httpService.header('method', 'getProduct');
 	$httpService.post(urlParam, $scope, function(result){

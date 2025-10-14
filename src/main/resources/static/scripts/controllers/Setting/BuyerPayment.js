@@ -92,6 +92,8 @@ app.controller('BuyerPaymentController', function($rootScope, $scope, $httpServi
 		$scope.payment.payment_sdesc = $scope.payment.payment_deposit+"%定金，发货前"+$scope.payment.payment_before
 										+"%，入库后"+$scope.payment.payment_days+"天付"+$scope.payment.payment_after
 										+"%，凭发票付"+$scope.payment.payment_receipt+"%";
+		//$scope.payment.payment_desc = "";
+		
 	}
 
 });

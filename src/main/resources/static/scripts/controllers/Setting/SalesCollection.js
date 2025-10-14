@@ -94,5 +94,6 @@ app.controller('SalesCollectionController', function($rootScope, $scope, $httpSe
 		//30% DEPOSIT,60% AGAINST B/L COPY,10% 1DAYS AFTER LAST PAYMENT DATE
 		$scope.collection.collection_en = $scope.collection.collection_deposit+"%DEPOSIT，"+$scope.collection.collection_before
 										+"% AGAINST B/L COPY, "+$scope.collection.collection_after+"% "+$scope.collection.collection_days+" DAYS AFTER LAST PAYMENT DATE";
+		//$scope.collection.collection_cn = "";
 	}
 });

@@ -1,7 +1,7 @@
 app.controller('SupplierResearchController', function($rootScope, $scope, $httpService, $location, $translate, $aside, 
 	$ocLazyLoad, $alert, $stateParams) {
-		$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?"+__VERSION,__RESOURCE+"styles/booking.css",
-						__RESOURCE+"editor/kindeditor/kindeditor-all.js?"+__VERSION,
+		$ocLazyLoad.load([__RESOURCE+"vendor/libs/daterangepicker.js?",__RESOURCE+"styles/booking.css",
+						__RESOURCE+"editor/kindeditor/kindeditor-all.js?",
 					  	__RESOURCE+"editor/kindeditor/themes/default/default.css"]);
 		$rootScope._self_module = $scope.hashEmployeeModule[$stateParams.id];
 		var urlParam = __WEB + 'app.do?channel=' + $stateParams.channel;

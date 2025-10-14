@@ -65,14 +65,17 @@
 				</div>
 				<div class="panel-body p-md">
 					<ul class="nav nav-tabs" ui-nav>
-						<li class="active" ng-click="tab=1;">
+						<li class="active" ng-click="tab=1">
 							<a href>产品明细</a>
 						</li>
-						<li ng-click="tab=2;">
+						<li ng-click="tab=2">
 							<a href>组件、配套及SKU相关</a>
 						</li>
-						<li ng-click="tab=3;">
+						<li ng-click="tab=3">
 							<a href>总成、组件、配套及SKU相关汇总</a>
+						</li>
+						<li ng-click="tab=4">
+							<a href>装箱明细</a>
 						</li>
 					</ul>
 					<div class="p b-a no-b-t bg-white m-b" ng-if="tab==1">
@@ -476,6 +479,292 @@
 							</div>
 						</div>
 					</div>
+					<div class="p b-a no-b-t bg-white m-b" ng-if="tab==3">
+						<div class="form-group m-b-xs">
+							<div class="col-sm-4 no-p-r">
+								组件信息
+							</div>
+						</div>
+					</div>
+					<div class="p b-a no-b-t bg-white m-b" ng-if="tab==4">
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12 no-p-r">
+								装修规格明细
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<td colspan="8">
+												<a ng-click="addStep('zxgg')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-plus m-r-xs"></i> 增加</a>
+												<a ng-click="reduceStep('zxgg')" class="btn btn-sm btn-rounded"><i class="fa fa-fw fa-minus m-r-xs"></i> 减少</a>
+											</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="w-xs"></td>
+											<td class="w-sm">序</td>
+											<td class="w-sm">包装品牌</td>
+											<td class="w-sm">标签</td>
+											<td class="w-sm">印字</td>
+											<td class="w-sm">包装编号</td>
+											<td class="w-sm">供应商简称</td>
+											<td class="w-sm">备注</td>
+										</tr>
+										<tr ng-repeat="(i, x) in step['zxgg']">
+											<td>{{i+1}}</td>
+											<td><input class="form-control" ng-model="packbrand[i].brand_order" /></td>
+											<td><input class="form-control" ng-model="packbrand[i].brand_name" /></td>
+											<td><input class="form-control" ng-model="packbrand[i].brand_tag" /></td>
+											<td><input class="form-control" ng-model="packbrand[i].brand_words" /></td>
+											<td><input class="form-control" ng-model="packbrand[i].brand_no" /></td>
+											<td><input class="form-control" ng-model="packbrand[i].supplier_id" /></td>
+											<td><input class="form-control" ng-model="packbrand[i].brand_node" /></td>
+										</tr>
+										<tr>
+											<td colspan="8">装箱数量</td>
+										</tr>
+										<tr>
+											<td>20尺柜装量</td>
+											<td><input class="form-control" ng-model="packaging.twenty_foot" /></td>
+											<td>按28立方 计算</td>
+											<td>毛重(KG)</td>
+											<td><input class="form-control" ng-model="packaging.twenty_foot_mz" /></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>40尺柜装量</td>
+											<td><input class="form-control" ng-model="packaging.forty_foot" /></td>
+											<td>按58立方 计算</td>
+											<td>毛重(KG)</td>
+											<td><input class="form-control" ng-model="packaging.forty_foot_mz" /></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>40尺高柜装量</td>
+											<td><input class="form-control" ng-model="packaging.hforty_foot" /></td>
+											<td>按68立方 计算</td>
+											<td>毛重(KG)</td>
+											<td><input class="form-control" ng-model="packaging.hforty_foot_mz" /></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td colspan="8">如实际装箱数量与计算不符，可手工调整</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<td colspan="9">内包装说明</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td></td>
+											<td>长</td>
+											<td>x</td>
+											<td>宽</td>
+											<td>x</td>
+											<td>高</td>
+											<td>=</td>
+											<td>体积</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>产品尺寸 CM</td>
+											<td><input type="text" class="form-control" ng-model="packaging.length" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.width" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.height" /></td>
+											<td>=</td>
+											<td><input type="text" class="form-control" ng-model="packaging.volume" /></td>
+											<td>CBM</td>
+										</tr>
+										<tr>
+											<td>内包装尺寸 CM</td>
+											<td><input type="text" class="form-control" ng-model="packaging.nlength" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.nwidth" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.nheight" /></td>
+											<td>=</td>
+											<td><input type="text" class="form-control" ng-model="packaging.nvolume" /></td>
+											<td>CBM</td>
+										</tr>
+										<tr>
+											<td>
+												<label class="radio-inline">
+													<input type="radio" value="1" ng-model="packaging.pack_type"> 袋子
+												</label>
+												<label class="checkbox-inline">
+													<input type="radio" value="0" ng-model="packaging.pack_type"> 纸卡
+												</label>
+											</td>
+											<td><input type="text" class="form-control" ng-model="packaging.llength" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.lwidth" /></td>
+											<td colspan="3">每内包装数量</td>
+											<td><input type="text" class="form-control" ng-model="packaging.lnumber" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>单只净重 G</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.weight" /></td>
+											<td colspan="3">重量核算</td>
+											<td><input type="text" class="form-control" ng-model="packaging.hweight" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>数量核算</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.hnumber" /></td>
+											<td colspan="3">体积核算</td>
+											<td><input type="text" class="form-control" ng-model="packaging.hvolume" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>备注</td>
+											<td colspan="7"><input type="text" class="form-control" ng-model="packaging.node" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<td colspan="9">外包装尺寸</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td></td>
+											<td>长</td>
+											<td>x</td>
+											<td>宽</td>
+											<td>x</td>
+											<td>高</td>
+											<td>=</td>
+											<td>体积</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>外包装尺寸 CM</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_length" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_width" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_height" /></td>
+											<td>=</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_volume" /></td>
+											<td>CBM</td>
+										</tr>
+										<tr>
+											<td>单箱净重 KG</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.w_weight" /></td>
+											<td colspan="3">单箱毛重 KG</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_weight_mz" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>每外包装数量</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.w_number" /></td>
+											<td colspan="3">预估每只净重</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_weight_jz" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>数量核算</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.w_number_hs" /></td>
+											<td colspan="3">预估每只体积</td>
+											<td><input type="text" class="form-control" ng-model="packaging.w_volume_mz" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>备注</td>
+											<td colspan="7"><input type="text" class="form-control" ng-model="packaging.w_node" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group m-b-xs">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<td colspan="9">托盘</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td></td>
+											<td>长</td>
+											<td>x</td>
+											<td>宽</td>
+											<td>x</td>
+											<td>高</td>
+											<td>=</td>
+											<td>体积</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>托盘尺寸 CM</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_length" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_width" /></td>
+											<td>x</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_height" /></td>
+											<td>=</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_volume" /></td>
+											<td>CBM</td>
+										</tr>
+										<tr>
+											<td>单托净重 KG</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.tp_weight" /></td>
+											<td colspan="3">单托毛重 KG</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_weight_mz" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>每托装数量</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.tp_number" /></td>
+											<td colspan="3">重量核算</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_weight_hs" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>数量核算</td>
+											<td colspan="3"><input type="text" class="form-control" ng-model="packaging.tp_number_hs" /></td>
+											<td colspan="3">体积核算</td>
+											<td><input type="text" class="form-control" ng-model="packaging.tp_volume_hs" /></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>备注</td>
+											<td colspan="7"><input type="text" class="form-control" ng-model="packaging.tp_node" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
 				</div>
 				<footer class="panel-footer text-right bg-white">
 					<div class="btn-group" ng-if="product.auditing_state<=0 || product.auditing_state==null">
@@ -511,9 +800,9 @@
 					<tr>
 						<th st-ratio="20" st-sort="commodity_name">品名</th>
 						<th st-ratio="20" st-sort="commodity_enname">英文</th>
-						<th st-ratio="20" st-sort="unit_id">单位</th>
-						<th st-ratio="20" st-sort="unit_id">单位</th>
-						<th st-ratio="20" width="50"></th>
+						<th st-ratio="20" st-sort="tax_refund_rate">退税率</th>
+						<th st-ratio="20" st-sort="commodity_hs_code">HS编码</th>
+						<th st-ratio="20" st-sort="systype_id">产品系统</th>
 					</tr>
 					<tr>
 						<th colspan="5">
@@ -535,9 +824,9 @@
 					<tr ng-repeat="commodity in commodityList" class="cursor" ng-click="choiceCommodity(commodity)">
 						<td>{{commodity.commodity_name}}</td>
 						<td>{{commodity.commodity_enname}}</td>
-						<td>{{commodity.unit_id}}</td>
-						<td>{{commodity.unit_id}}</td>
-						<td></td>
+						<td>{{commodity.tax_refund_rate}}</td>
+						<td>{{commodity.commodity_hs_code}}</td>
+						<td>{{systypeHash[commodity.systype_id].systype_name}}</td>
 					</tr>
 				</tbody>
 				<tfoot>
@@ -720,9 +1009,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<td class="col-sm-12">
-						<input type="text" class="form-control col-sm-2 btn-default w-xsm" ng-repeat="(o, e) in step['oem'+oemI]" ng-model="oem[oemI][o]" required>
-					</td>
+					<tr>
+						<td class="col-sm-12">
+							<input type="text" class="form-control col-sm-2 btn-default w-xsm" ng-repeat="(o, e) in step['oem'+oemI]" ng-model="oem[oemI][o]" required>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

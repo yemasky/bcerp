@@ -449,7 +449,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 								 {id:1,currency_name:"美元",currency_sname:"USD",currency_symbol:"$"},
 								 {id:2,currency_name:"欧元",currency_sname:"EUR",currency_symbol:"€"},
 								 {id:3,currency_name:"人民币",currency_sname:"CNY",currency_symbol:"￥"},];
-		//审核状态 1已遞交審核 2審核通過 -1退回 0未遞交
+		//审核状态   -3作废 -2申请更改 -1退回 0未遞交 1等待审核 2审核通过 3审核完结
 		$scope.auditingStateExplain = {"":"","-1":"已退回","0":"未递交","1":"等待审核","2":"审核通过","3":"审核完结"};
 		//刷新之后数据重新获取
 		console.log("======>",$rootScope.employeeMenu);
@@ -569,7 +569,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
         $rootScope.employeeMenu = {};$rootScope.hashAccess = {};
         $scope.employee = {};$scope.loginEmployee = {};$scope.employeeHash = {};$scope.sectorHash = {};
-        $scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};$scope.commDictHash = {};$scope.dictValHash = {};
+        $scope.countryList = [];$scope.countryHash = {};$scope.cityHash = {};$scope.cityList = {};$scope.commDictHash = {};$scope.dictValHash = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -606,6 +606,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					})
 				}
 				if(typeof(common.countryList) != 'undefined') {
+					$scope.countryList = angular.copy(common.countryList);
 					common.countryList.forEach(function(item) {
 						$scope.countryHash[item.country_id] = {...item};
 					})
@@ -660,6 +661,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			let path = "app/"+$rootScope._self_module.module_channel+'/'+$stateParams.view+'/'+$stateParams.id+'/'+$stateParams.channel;
 			console.log(path);
 			$location.path(path);
+		};
+		$scope.isEmptyObject = function (obj) {
+			return Object.keys(obj).length === 0;
 		};
 		$scope._function = function(){};$scope._param = {};
 		$scope.setController = function(_function, _param) {
