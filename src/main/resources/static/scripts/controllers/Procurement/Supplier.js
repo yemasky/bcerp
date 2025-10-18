@@ -19,7 +19,7 @@ app.controller('SupplierController', function($rootScope, $scope, $httpService, 
 	//增加项相关
 	$scope.step = {};$scope.tab = 1;
 	let aside;
-	$httpService.header('method', 'getResearch');
+	$httpService.header('method', 'getSupplier');
 	$httpService.post(urlParam, $scope, function(result){
 		$scope.loading.hide();
 		$httpService.deleteHeader('method'); 
@@ -85,7 +85,7 @@ app.controller('SupplierController', function($rootScope, $scope, $httpService, 
 		$scope.param.supplier_business = angular.copy($scope.supplier_business);
 		$scope.param.images = angular.copy($scope.images);
 		$scope.param.supplier_upload = angular.copy($scope.supplier.supplier_upload);
-		$httpService.header('method', 'saveResearch');
+		$httpService.header('method', 'saveSupplier');
 		$httpService.post(urlParam+"&edit_id="+$scope.edit_id, $scope, function(result){
 			$scope.loading.percent();
 		    $httpService.deleteHeader('method');
@@ -111,7 +111,7 @@ app.controller('SupplierController', function($rootScope, $scope, $httpService, 
 		function deleteData() {
 			$scope.param = {};
 			$scope.param.delete_id = delete_id;
-			$httpService.header('method', 'deleteResearch');
+			$httpService.header('method', 'deleteSupplier');
 			$httpService.post(urlParam, $scope, function(result) {
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
